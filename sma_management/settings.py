@@ -148,7 +148,8 @@ CORS_ORIGIN_WHITELIST = (
     "http://10.170.139.10:80",
     'http://0.0.0.0:80',
     'http://0.0.0.0:8080',
-    'http://0.0.0.0'
+    'http://0.0.0.0',
+    'http://10.170.129.129'
 )
 
 CORS_ALLOW_METHODS = (
