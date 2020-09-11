@@ -10,5 +10,5 @@ read -r -p "请输入asgi的pid > " pid
 
 kill "$pid"
 
-nohup uvicorn am_sma.asgi:application --host 0.0.0.0 --port 5000 > asgi.log &
+nohup uvicorn sma_investment.asgi:application --host 0.0.0.0 --port 5000 > asgi.log &
 jobs
