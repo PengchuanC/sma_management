@@ -1,0 +1,42 @@
+{% extends 'questionnaire/index.html' %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        {% if not questions %}
+            <div class="q-quest-finished">
+                <div class="ui message">
+                    <div class="header">暂无问卷</div>
+                    <p>目前没有已经录入的问卷，您可以尝试去创建问卷</p>
+                    <a class="fluid ui button" href="{% url 'create' %}">前往填写</a>
+                </div>
+            </div>
+        {% else %}
+            <div class="ui mini breadcrumb">
+                <a class="section" href="{% url 'home' %}">首页</a>
+                <div class="divider"> /</div>
+                <a class="section" href="{% url 'view' %}">查看问卷</a>
+            </div>
+
+            <div class="ui ordered list">
+                {% for question in questions %}
+                    <div class="item">
+                        <h5>客户姓名：{{ question.0 }}</h5>
+                        <div class="list">
+                            {% for detail in question.1 %}
+                                <a class="item" href="{% url 'modify' ri=detail.id %}">{{ detail.date }}&emsp;{{ detail.score }}分</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% else %}
+        <div class="q-quest-finished">
+            <div class="ui message">
+                <div class="header">认证失败</div>
+                <p>在认证成功之前，您没有权限查看此部分内容，请尝试登陆后再访问</p>
+                <a class="fluid ui button" href="{% url 'login' %}">前往认证</a>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

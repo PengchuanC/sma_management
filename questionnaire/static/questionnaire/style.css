@@ -1,0 +1,123 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.q-main {
+    width: 100%;
+}
+
+.q-header {
+    display: inline-flex;
+    width: 100vw;
+    height: 40px;
+    align-content: center;
+    justify-content: space-between;
+    background-color: black;
+    top: 0;
+}
+
+.q-menu-wrapper {
+    display: inline-flex;
+    width: 100%;
+    justify-content: space-between;
+    padding: 0 5%;
+}
+
+.q-login-wrapper {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 400px;
+    transform: translate(-50%, -50%);
+}
+
+.q-content {
+    margin-top: 5px;
+    min-height: calc(100vh - 80px);
+}
+
+.q-divider {
+    height: 1px;
+    width: 100%;
+    background-color: grey;
+}
+
+.q-footer {
+    width: 100%;
+    text-align: center;
+    height: 20px;
+    font-size: 14px;
+    margin-top: 2px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/*问卷填写部分*/
+
+.q-h2 {
+    text-align: center;
+    margin: 30px 0;
+    width: 100%;
+    list-style: none;
+}
+
+.q-subject {
+    margin-bottom: 40px;
+}
+
+.q-quest-wrapper {
+    width: 100%;
+    margin-bottom: 40px;
+    list-style: none;
+}
+
+.q-client-info-item-wrapper {
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.q-client-info-item-wrapper2 {
+    margin-bottom: 10px;
+}
+
+.q-client-info-input {
+    border: 0;
+    outline: 0;
+    width: 200px;
+    border: none;
+    border-bottom: 2px solid grey;
+    outline: none;
+    padding-bottom: 2px;
+    text-align: center;
+}
+
+.q-quest-area {
+    padding-bottom: 10px;
+}
+
+.q-undo {
+    color: red;
+}
+
+.q-choice {
+    display: inline-flex;
+    margin-right: 15px;
+    list-style: none;
+    cursor: pointer;
+}
+
+.q-quest-checkbox {
+    margin-right: 10px;
+    transform: translateY(1px);
+}
+
+.q-quest-submit {
+    transform: translateY(-20px);
+}
+
+.q-quest-finished {
+    position: absolute;
+    left: 50%;
+    top: 30%;
+    transform: translate(-50%, -50%);
+}

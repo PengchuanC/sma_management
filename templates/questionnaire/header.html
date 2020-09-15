@@ -1,0 +1,17 @@
+<div class="inverted fixed q-header">
+    <div class="ui inverted secondary menu mini q-header">
+        <div class="q-menu-wrapper">
+            <div style="display: flex">
+                <a class="item active" style="margin-left: 5%" href="{% url 'home' %}">首页</a>
+                <a class="item" href="{% url 'create' %}">新建问卷</a>
+                <a class="item" href="{% url 'view' %}">查看问卷</a>
+            </div>
+        {% if user.is_authenticated %}
+            <a id="login" href="{% url 'logout' %}" class="item">{{ user }}&nbsp;|&nbsp;退出登录</a>
+        {% else %}
+            <a id="login" href="{% url 'login' %}" class="item">登录</a>
+        {% endif %}
+        </div>
+    </div>
+</div>
+

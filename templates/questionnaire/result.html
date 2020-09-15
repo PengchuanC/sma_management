@@ -1,0 +1,186 @@
+{% extends 'questionnaire/index.html' %}
+
+{% block content %}
+    <div class="ui container">
+        <h3 class="ui header" style="text-align: center">投资策略意见及投资者确认书
+            <div class="sub header">（以下由本公司销售人员填写，本公司与投资者一式一份）</div>
+        </h3>
+        <p>尊敬的投资者</p>
+        <label>
+            姓名/名称：
+            <input type="text" class="q-client-info-input" name="clientName">
+        </label>
+        <label>
+            资金账号：
+            <input type="text" class="q-client-info-input" name="clientAccount">
+        </label>
+        <div style="margin-top: 40px"></div>
+        <div class="q-quest-area">
+            <h5 class="ui header">您的投资目标为</h5>
+            <div style="list-style: none;">
+                <div class="q-choice">
+                    <label class="q-quest-checkbox">
+                        <input type="checkbox" name="target">
+                    </label>
+                    <p>资产保值</p>
+                </div>
+                <div class="q-choice">
+                    <label class="q-quest-checkbox">
+                        <input type="checkbox" name="target">
+                    </label>
+                    <p>均衡增长</p>
+                </div>
+                <div class="q-choice">
+                    <label class="q-quest-checkbox">
+                        <input type="checkbox" name="target">
+                    </label>
+                    <p>高增长</p>
+                </div>
+            </div>
+        </div>
+        <div class="q-quest-area" style="margin-top: 20px">
+            <h5 class="ui header">您对现金流的要求为</h5>
+            <div style="list-style: none;">
+                <div class="q-choice">
+                    <label class="q-quest-checkbox">
+                        <input type="checkbox" name="cash">
+                    </label>
+                    <p>季度</p>
+                </div>
+                <div class="q-choice">
+                    <label class="q-quest-checkbox">
+                        <input type="checkbox" name="cash">
+                    </label>
+                    <p>半年度</p>
+                </div>
+                <div class="q-choice">
+                    <label class="q-quest-checkbox">
+                        <input type="checkbox" name="cash">
+                    </label>
+                    <p>年度</p>
+                </div>
+                <div class="q-choice">
+                    <label class="q-quest-checkbox">
+                        <input type="checkbox" name="cash">
+                    </label>
+                    <p>无特殊要求</p>
+                </div>
+            </div>
+        </div>
+        <div class="q-quest-area" style="margin-top: 20px">
+            <h5 class="ui header">您的投资偏好与风险容忍度为</h5>
+            <div style="list-style: none;">
+                <div class="q-choice">
+                    <label class="q-quest-checkbox">
+                        <input type="checkbox" name="tolerate">
+                    </label>
+                    <p>S1&nbsp;级&emsp;低</p>
+                </div>
+                <div class="q-choice">
+                    <label class="q-quest-checkbox">
+                        <input type="checkbox" name="tolerate">
+                    </label>
+                    <p>S2&nbsp;级&emsp;中低</p>
+                </div>
+                <div class="q-choice">
+                    <label class="q-quest-checkbox">
+                        <input type="checkbox" name="tolerate">
+                    </label>
+                    <p>S3&nbsp;级&emsp;中等</p>
+                </div>
+                <div class="q-choice">
+                    <label class="q-quest-checkbox">
+                        <input type="checkbox" name="tolerate">
+                    </label>
+                    <p>S4&nbsp;级&emsp;中高</p>
+                </div>
+                <div class="q-choice">
+                    <label class="q-quest-checkbox">
+                        <input type="checkbox" name="tolerate">
+                    </label>
+                    <p>S5&nbsp;级&emsp;高</p>
+                </div>
+            </div>
+        </div>
+        <div class="q-quest-area" style="margin-top: 20px">
+            <h5 class="ui header">您的投资策略类型为</h5>
+            <div style="list-style: none;">
+                <div class="q-choice">
+                    <label class="q-quest-checkbox">
+                        <input type="checkbox" name="solution">
+                    </label>
+                    <p>现金策略</p>
+                </div>
+                <div class="q-choice">
+                    <label class="q-quest-checkbox">
+                        <input type="checkbox" name="solution">
+                    </label>
+                    <p>固收策略</p>
+                </div>
+                <div class="q-choice">
+                    <label class="q-quest-checkbox">
+                        <input type="checkbox" name="solution">
+                    </label>
+                    <p>平衡策略</p>
+                </div>
+                <div class="q-choice">
+                    <label class="q-quest-checkbox">
+                        <input type="checkbox" name="solution">
+                    </label>
+                    <p>成长策略</p>
+                </div>
+                <div class="q-choice">
+                    <label class="q-quest-checkbox">
+                        <input type="checkbox" name="solution">
+                    </label>
+                    <p>权益策略</p>
+                </div>
+            </div>
+        </div>
+        <div class="q-quest-area" style="margin-top: 20px">
+            <h5 class="ui header">您的投资中是否会有融资</h5>
+            <div style="list-style: none;">
+                <div class="q-choice">
+                    <label class="q-quest-checkbox">
+                        <input type="checkbox" name="finance">
+                    </label>
+                    <p>不融资</p>
+                </div>
+                <div class="q-choice">
+                    <label class="q-quest-checkbox">
+                        <input type="checkbox" name="finance">
+                    </label>
+                    <p>融资/总资产30%以下</p>
+                </div>
+                <div class="q-choice">
+                    <label class="q-quest-checkbox">
+                        <input type="checkbox" name="finance">
+                    </label>
+                    <p>融资/总资产30%以上，70%以下</p>
+                </div>
+                <div class="q-choice">
+                    <label class="q-quest-checkbox">
+                        <input type="checkbox" name="finance">
+                    </label>
+                    <p>融资/总资产70%以上</p>
+                </div>
+            </div>
+        </div>
+        <div class="q-quest-area" style="margin-top: 20px">
+            <h5 class="ui header">您是否有禁止性投资</h5>
+            <div style="list-style: none;">
+                <div class="q-choice">
+                    <label class="q-quest-checkbox">
+                        <input type="checkbox" name="ban">
+                    </label>
+                    <p>无</p>
+                </div>
+                <div class="q-choice">
+                    <label class="q-quest-checkbox">
+                        <input type="text" name="ban" class="q-client-info-input" placeholder="有，请列明">
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

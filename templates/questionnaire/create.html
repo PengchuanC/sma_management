@@ -1,0 +1,102 @@
+{% extends 'questionnaire/index.html' %}
+
+{% block content %}
+    {% if not finished %}
+        <form action="{% url 'save' %}" method="post">
+            <h2 class="q-h2">SMA业务投资测评</h2>
+            <div>
+                <div class="q-subject">
+                    <h3>客户信息</h3>
+                    <div class="q-quest-wrapper">
+                        <div class="q-client-info-item-wrapper">
+                            <label>
+                                客户名称：
+                                <input type="text" class="q-client-info-input" name="clientName">
+                            </label>
+                        </div>
+                        <div class="q-client-info-item-wrapper">
+                            <label>
+                                客户账号：
+                                <input type="text" class="q-client-info-input" name="clientAccount">
+                            </label>
+                        </div>
+                    </div>
+                    <div class="q-quest-wrapper">
+                        <p>在本公司是否有关联账户，如有请填写</p>
+                        <div class="q-client-info-item-wrapper2">
+                            <label>
+                                客户名称：
+                                <input type="text" class="q-client-info-input" name="associateName">
+                            </label>
+                        </div>
+                        <div class="q-client-info-item-wrapper2">
+                            <label>
+                                客户账号：
+                                <input type="text" class="q-client-info-input" name="associateAccount">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                {% for subject, question in questions.items %}
+                    <div class="q-subject">
+                        <h3>{{ subject }}</h3>
+                        <div class="q-quest-wrapper">
+                            {% for quest in question %}
+                                <div class="q-quest-area">
+                                    <h5>{{ quest.id }}.{{ quest.quest }}</h5>
+                                    <div style="list-style: none;">
+                                        {% for choice in quest.choice %}
+                                            <div class="q-choice">
+                                                <label class="q-quest-checkbox">
+                                                    <input type="checkbox" name="{{ quest.id }}.{{ choice.0 }}">
+                                                </label>
+                                                <p>{{ choice.0 }}.&nbsp;</p>
+                                                <p>{{ choice.1 }}</p>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+                <div class="q-quest-wrapper">
+                    <div class="q-client-info-item-wrapper">
+                        <label>
+                            销售人员：
+                            <input type="text" class="q-client-info-input" name="salesName">
+                        </label>
+                    </div>
+                    <div class="q-client-info-item-wrapper">
+                        <label>
+                            签署日期：
+                            <input type="text" class="q-client-info-input" name="signDate"
+                                   placeholder="yyyy-mm-dd">
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="ui buttons q-quest-submit">
+                <button class="ui button" type="button" id="check">检查</button>
+                <div class="or"></div>
+                <button class="ui red button" type="submit">提交</button>
+            </div>
+        </form>
+    {% else %}
+        <div class="q-quest-finished">
+            {% if success %}
+                <div class="ui message">
+                    <div class="header">问卷填写成功</div>
+                    <p>问卷已经成功保存，您可到查看问卷功能中去查看或修改问卷，也可以通过下方按钮直接访问。</p>
+                    <a class="fluid ui button" href="{% url 'modify' ri=ri %}">查看问卷</a>
+                </div>
+            {% else %}
+                <div class="ui message">
+                    <div class="header">问卷保存失败</div>
+                    <p>请确保客户信息、销售信息和问题都全部填写完成</p>
+                    <p>错误提示：{{ msg }}</p>
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endblock %}

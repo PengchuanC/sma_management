@@ -1,0 +1,24 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <title>SMA业务投资测评</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'questionnaire/semantic-ui/semantic.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'questionnaire/style.css' %}">
+    <script src="{% static 'questionnaire/jquery-3.5.1.min.js' %}"></script>
+    <script src="{% static 'questionnaire/semantic-ui/semantic.min.js' %}"></script>
+</head>
+<body>
+<div class="">
+    {% include 'questionnaire/header.html' %}
+    <div class="ui container q-content">
+        {% block content %}
+            {% include 'questionnaire/home.html' %}
+        {% endblock %}
+    </div>
+    {% include 'questionnaire/footer.html' %}
+</div>
+</body>
+<script src="{% static 'questionnaire/actions.js' %}"></script>
+</html>
