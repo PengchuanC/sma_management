@@ -77,6 +77,20 @@ class ResultInfo(models.Model):
             points += point
         return points
 
+    def rank(self):
+        point = self.score()
+        if point <= 23:
+            r = 'C1'
+        elif 24 <= point <= 32:
+            r = 'C2'
+        elif 33 <= point <= 45:
+            r = 'C3'
+        elif 46 <= point <=56:
+            r = 'C4'
+        else:
+            r = 'C5'
+        return r
+
 
 # 问卷答案
 class Result(models.Model):

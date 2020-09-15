@@ -23,7 +23,7 @@
                         <h5>客户姓名：{{ question.0 }}</h5>
                         <div class="list">
                             {% for detail in question.1 %}
-                                <a class="item" href="{% url 'modify' ri=detail.id %}">{{ detail.date }}&emsp;{{ detail.score }}分</a>
+                                <a class="item" href="{% url 'modify' ri=detail.id %}">{{ detail.date }}&emsp;{{ detail.rank }}</a>
                             {% endfor %}
                         </div>
                     </div>
