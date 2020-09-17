@@ -80,15 +80,15 @@ class ResultInfo(models.Model):
     def rank(self):
         point = self.score()
         if point <= 23:
-            r = 'C1'
+            r = 'S1'
         elif 24 <= point <= 32:
-            r = 'C2'
+            r = 'S2'
         elif 33 <= point <= 45:
-            r = 'C3'
+            r = 'S3'
         elif 46 <= point <=56:
-            r = 'C4'
+            r = 'S4'
         else:
-            r = 'C5'
+            r = 'S5'
         return r
 
 
