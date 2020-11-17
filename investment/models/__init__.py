@@ -7,3 +7,7 @@ __init__.py
 """
 from .index import Index, IndexBasicInfo, IndexQuote
 from .portfolio import *
+from .funds import *
+from .tradingday import TradingDays
+from .stock import *
+from .backtest import *

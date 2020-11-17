@@ -8,14 +8,14 @@ to_database
 from shu import models
 from shu.collect import export
 from shu.configs import tables, mapping
+from sql.progress import progressbar
 
 
 def commit_portfolio():
     """组合基本信息表"""
     data = export('组合信息表')
     for d in data:
-        if not models.Portfolio.objects.filter(**d).exists():
-            models.Portfolio(**d).save()
+        models.Portfolio.objects.update_or_create(port_code=d['port_code'], defaults=d)
 
 
 def commit_other(name):
@@ -35,11 +35,12 @@ def commit_other(name):
 
 
 def run():
-    for name in tables:
+    for i, name in enumerate(tables):
         if name == '组合信息表':
             commit_portfolio()
         else:
             commit_other(name)
+        progressbar(i, len(tables))
 
 
 if __name__ == '__main__':

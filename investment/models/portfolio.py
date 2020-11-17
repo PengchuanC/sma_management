@@ -6,8 +6,6 @@ Portfolio
 @desc:
 """
 
-from django.utils import timezone
-
 from django.db import models
 
 
@@ -22,6 +20,10 @@ class Portfolio(models.Model):
     redemption_fee = models.DecimalField(verbose_name="赎回费", max_digits=6, decimal_places=4, default=0.0)
     base = models.CharField(max_length=100, verbose_name="业绩比较基准")
     describe = models.CharField(verbose_name="组合描述", max_length=100)
+    port_type = models.IntegerField(
+        verbose_name='组合类型', default=3,
+        choices=((1, '现金型'), (2, '固收型'), (3, '平衡型'), (4, '成长型'), (5, '权益型'))
+    )
     launch_date = models.DateTimeField(null=False, verbose_name="成立日期")
 
     class Meta:
@@ -35,7 +37,7 @@ class Portfolio(models.Model):
 
 # 组合资产负债表
 class Balance(models.Model):
-    port_code = models.ForeignKey(to=Portfolio, to_field='port_code', on_delete=models.DO_NOTHING)
+    port_code = models.ForeignKey(to=Portfolio, to_field='port_code', on_delete=models.CASCADE)
     asset = models.DecimalField(verbose_name='资产', max_digits=18, decimal_places=4, default=0)
     debt = models.DecimalField(verbose_name='负债', max_digits=18, decimal_places=4, default=0)
     net_asset = models.DecimalField(verbose_name='资产净值', max_digits=18, decimal_places=4, default=0)
@@ -47,6 +49,7 @@ class Balance(models.Model):
     liquidation = models.DecimalField(verbose_name='证券清算款', max_digits=18, decimal_places=4, default=0)
     value_added = models.DecimalField(verbose_name='估值增值', max_digits=18, decimal_places=4, default=0)
     profit_pay = models.DecimalField(verbose_name='应付利润(红利)', max_digits=18, decimal_places=4, default=0)
+    cash_dividend = models.DecimalField(verbose_name='分红', max_digits=18, decimal_places=4, default=0)
     date = models.DateField(verbose_name='日期', null=False)
 
     class Meta:
@@ -61,7 +64,7 @@ class Balance(models.Model):
 
 # 组合应收应付
 class BalanceExpanded(models.Model):
-    port_code = models.ForeignKey(to=Portfolio, to_field='port_code', on_delete=models.DO_NOTHING)
+    port_code = models.ForeignKey(to=Portfolio, to_field='port_code', on_delete=models.CASCADE)
     dividend_rec = models.DecimalField(verbose_name='应收股利', max_digits=18, decimal_places=4, default=0)
     interest_rec = models.DecimalField(verbose_name='应收利息', max_digits=18, decimal_places=4, default=0)
     purchase_rec = models.DecimalField(verbose_name='应收申购款', max_digits=18, decimal_places=4, default=0)
@@ -139,6 +142,7 @@ class Holding(models.Model):
     def __str__(self):
         return self.port_code.port_code
 
+
 class Transactions(models.Model):
     port_code = models.ForeignKey(Portfolio, to_field='port_code', on_delete=models.CASCADE)
     secucode = models.CharField(max_length=12, null=True, verbose_name="证券代码", blank=True)
@@ -169,12 +173,30 @@ class DetailFee(models.Model):
     management = models.DecimalField(verbose_name='管理费', max_digits=18, decimal_places=4, default=0)
     custodian = models.DecimalField(verbose_name='托管费', max_digits=18, decimal_places=4, default=0)
     audit = models.DecimalField(verbose_name='审计费', max_digits=18, decimal_places=4, default=0)
+    interest = models.DecimalField(verbose_name='应收利息', max_digits=18, decimal_places=4, default=0)
     date = models.DateField(verbose_name='业务日期')
 
     class Meta:
         db_table = 'sma_detail_fee'
         verbose_name = '组合费用提取明细'
         verbose_name_plural = verbose_name
+        get_latest_by = 'date'
+
+    def __str__(self):
+        return self.port_code.port_name
+
+
+# 基准估值表
+class ValuationBenchmark(models.Model):
+    port_code = models.ForeignKey(Portfolio, to_field='port_code', on_delete=models.CASCADE)
+    unit_nav = models.DecimalField(verbose_name="单位净值", max_digits=10, decimal_places=4)
+    date = models.DateField(null=False, verbose_name="交易日")
+
+    class Meta:
+        db_table = 'sma_evaluate_benchmark'
+        verbose_name = '组合基准净值表'
+        verbose_name_plural = verbose_name
+        index_together = ['port_code', 'date']
         get_latest_by = 'date'
 
     def __str__(self):

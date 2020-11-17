@@ -35,7 +35,7 @@ def parse_date(file_abs_path):
 
 
 def read_table(path):
-    yield read_excel(path).to_dict(orient='records')
+    yield read_excel(path, engine='openpyxl', converters={'secucode': str}).to_dict(orient='records')
 
 
 def dataset(name) -> Dict[str, Generator]:
@@ -49,7 +49,7 @@ def dataset(name) -> Dict[str, Generator]:
 def dataset_without_date(name) -> "DataFrame":
     abs_path = table_store_director(name)
     file = whole_files(abs_path)[0]
-    data = read_excel(file)
+    data = read_excel(file, engine='openpyxl')
     data = data.to_dict(orient='records')
     return data
 
