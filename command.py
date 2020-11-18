@@ -8,7 +8,7 @@ command
 import click
 
 from sql import tools
-from shu.to_database import run as shu_run
+from shu.run import shu_commit
 
 
 @click.group()
@@ -53,13 +53,12 @@ def run_index():
 
 @root.command()
 def shu():
-    shu_run()
+    shu_commit()
 
 
-# 'commit_index', 'commit_index_gil', 'commit_index_wind', 'commit_fund', 'commit_trading_day', 'commit_stocks'
-@click.command()
+@root.command()
 def run_all():
-    shu_run()
+    shu_commit()
     tools.commit_stocks()
     tools.commit_fund()
     tools.commit_index()
