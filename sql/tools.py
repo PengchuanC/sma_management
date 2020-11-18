@@ -13,6 +13,11 @@ from sql.commit.tradingday import commit_tradingdays
 from sql.commit.stock import commit_stock, commit_industry_sw
 
 
+__all__ = (
+    'commit_index', 'commit_index_gil', 'commit_index_wind', 'commit_fund', 'commit_trading_day', 'commit_stocks'
+)
+
+
 def commit_index_gil():
     """指数数据-聚源"""
     with atomic():
@@ -48,8 +53,3 @@ def commit_trading_day():
 def commit_stocks():
     commit_stock()
     commit_industry_sw()
-
-
-__all__ = [
-    'commit_index', 'commit_index_gil', 'commit_index_wind', 'commit_fund', 'commit_trading_day', 'commit_stocks'
-]

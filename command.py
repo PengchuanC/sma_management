@@ -56,5 +56,15 @@ def shu():
     shu_run()
 
 
+# 'commit_index', 'commit_index_gil', 'commit_index_wind', 'commit_fund', 'commit_trading_day', 'commit_stocks'
+@click.command()
+def run_all():
+    shu_run()
+    tools.commit_stocks()
+    tools.commit_fund()
+    tools.commit_index()
+    tools.commit_tradingdays()
+
+
 if __name__ == '__main__':
     root()

@@ -28,6 +28,7 @@ class BackTestView(APIView):
         else:
             date = parse(date).date()
         btc = BTConfig()
+        btc.end = date
         bt = BackTest(btc)
         bt.init()
         port = {'cash': 0.02, 'fix': 0.05, 'equal': 0.10, 'increase': 0.15, 'equity': 0.18}
