@@ -134,7 +134,7 @@ def commit_fund_data():
     factory = FundCommitFactory()
     m: Union[models.FundPrice, models.FundAdjPrice, models.FundHoldingStock]
     for m in model_mapping.keys():
-        print(m.Meta.db_table)
+        print(m)
         factory.set_model(m)
         tasks = factory.generate_task()
         commit_in_threading(tasks)
