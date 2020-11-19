@@ -111,3 +111,20 @@ class FundHoldingStock(models.Model):
 
     def __str__(self):
         return self.secucode.secucode
+
+
+# 基金申购费率-折后
+class FundPurchaseFee(models.Model):
+    secucode = models.ForeignKey(Funds, to_field='secucode', on_delete=models.CASCADE, verbose_name='基金代码')
+    operate = models.CharField(verbose_name='交易方向', max_length=4, choices=(('buy', '买'), ('sell', '卖')))
+    low = models.IntegerField(verbose_name='区间下限(<x)', default=0)
+    high = models.IntegerField(verbose_name='区间上限(x<=)', null=True)
+    fee = models.DecimalField(verbose_name="费率", max_digits=18, decimal_places=6)
+
+    class Meta:
+        db_table = "sma_fund_purchase_fee"
+        verbose_name = "基金申购赎回费率(天天基金网)"
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.secucode.secucode

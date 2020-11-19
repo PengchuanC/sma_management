@@ -9,6 +9,7 @@ import click
 
 from sql import tools
 from shu.run import shu_commit
+from crawl import fund_limit, fund_fee
 
 
 @click.group()
@@ -61,8 +62,10 @@ def run_all():
     shu_commit()
     tools.commit_stocks()
     tools.commit_fund()
-    tools.commit_index()
+    tools.commit_index_gil()
     tools.commit_tradingdays()
+    fund_limit.commit_fund_limit()
+    fund_fee.commit_fund_fee()
 
 
 if __name__ == '__main__':

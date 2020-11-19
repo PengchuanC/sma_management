@@ -59,6 +59,11 @@ class FundHoldingStockAdmin(admin.ModelAdmin):
     list_display = ('secucode', 'stockcode', 'stockname', 'serial', 'ratio', 'date')
 
 
+@admin.register(models.FundPurchaseFee)
+class FundPurchaseFeeAdmin(admin.ModelAdmin):
+    list_display = ('secucode', 'operate', 'low', 'high', 'fee')
+
+
 # 组合部分
 @admin.register(models.Portfolio)
 class PortfolioAdmin(admin.ModelAdmin):

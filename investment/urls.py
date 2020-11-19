@@ -19,6 +19,7 @@ urlpatterns = [
     path('analysis/attribute/', views.AttributeChartView.as_view()),
     path('analysis/fundholding/', views.FundHoldingView.as_view()),
     path('analysis/fundholding/stock/', views.FundHoldingStockView.as_view()),
+    path('overview/', views.OverviewView.as_view()),
 
     path('test/', views.TestViews.as_view()),
     path('mvo/index/', views.IndexInfoViews.as_view()),
