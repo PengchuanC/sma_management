@@ -6,10 +6,11 @@ configs
 @desc:
 """
 from shu import models
+from pathlib import Path
 
 
 # 文件存放地址
-target = "./data"
+target = str(Path(__file__).parent / 'data')
 
 # 待导入表单的信息
 tables = {
