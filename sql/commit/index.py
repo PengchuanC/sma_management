@@ -7,7 +7,6 @@ index
 """
 
 from datetime import timedelta
-from WindPy import w
 
 from sql import models
 from sql.commit.wind_wrapper import use_wind
@@ -90,6 +89,7 @@ def _commit_index_quote(codelist: list, func: callable):
 @use_wind
 def get_index_basic_info_wind():
     """获取指数数据-wind"""
+    from WindPy import w
     basic = models.IndexBasicInfo.objects.values_list('secucode')
     basic = [x[0] for x in basic]
     indexes = get_indexes()

@@ -8,12 +8,11 @@ wind_wrapper
 
 from functools import wraps
 
-from WindPy import w
-
 
 def use_wind(func):
     @wraps(func)
     def inner(*args, **kwargs):
+        from WindPy import w
         if not w.isconnected():
             w.start()
         ret = func(*args, **kwargs)
