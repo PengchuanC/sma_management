@@ -10,7 +10,7 @@ from pathlib import Path
 
 
 # 文件存放地址
-target = str(Path(__file__).parent / 'data')
+target = str(Path(__file__).parent / 'sma_export' / 'data')
 
 # 待导入表单的信息
 tables = {
