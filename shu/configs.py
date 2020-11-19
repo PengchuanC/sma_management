@@ -9,7 +9,7 @@ from shu import models
 
 
 # 文件存放地址
-target = "P:/code/sma/exc/从数据库读取组合信息/sma_export/data"
+target = "./data"
 
 # 待导入表单的信息
 tables = {
