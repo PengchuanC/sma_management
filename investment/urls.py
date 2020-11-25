@@ -21,6 +21,14 @@ urlpatterns = [
     path('analysis/fundholding/stock/', views.FundHoldingStockView.as_view()),
     path('overview/', views.OverviewView.as_view()),
 
+    path('warehouse/portfolio/', views.SimpleEmuView.get_portfolio),
+    path('warehouse/portfolio/cash/', views.SimpleEmuView.get_portfolio_cash),
+    path('warehouse/fundlist/', views.SimpleEmuView.get_funds),
+    path('warehouse/fundnav/', views.SimpleEmuView.get_fund_nav),
+    path('warehouse/history/', views.SimpleEmuView.get_trading_history),
+    path('warehouse/ransom/', views.SimpleEmuView.get_ransom_fee),
+    path('warehouse/purchase/', views.SimpleEmuView.get_purchase_fee),
+
     path('test/', views.TestViews.as_view()),
     path('mvo/index/', views.IndexInfoViews.as_view()),
     path('mvo/optimize/', views.MvoViews.as_view()),

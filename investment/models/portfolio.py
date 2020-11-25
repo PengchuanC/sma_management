@@ -201,3 +201,25 @@ class ValuationBenchmark(models.Model):
 
     def __str__(self):
         return self.port_code.port_name
+
+
+# 组合风格
+class PortfolioStyle(models.Model):
+    port_code = models.ForeignKey(Portfolio, to_field='port_code', on_delete=models.CASCADE, verbose_name='组合代码')
+    small_value = models.DecimalField(verbose_name='小盘价值', max_digits=6, decimal_places=4, default=0)
+    small_growth = models.DecimalField(verbose_name='小盘成长', max_digits=6, decimal_places=4, default=0)
+    mid_value = models.DecimalField(verbose_name='中盘价值', max_digits=6, decimal_places=4, default=0)
+    mid_growth = models.DecimalField(verbose_name='中盘成长', max_digits=6, decimal_places=4, default=0)
+    large_value = models.DecimalField(verbose_name='大盘价值', max_digits=6, decimal_places=4, default=0)
+    large_growth = models.DecimalField(verbose_name='大盘成长', max_digits=6, decimal_places=4, default=0)
+    bond = models.DecimalField(verbose_name='债券', max_digits=6, decimal_places=4, default=0)
+    r_square = models.DecimalField(verbose_name='R方', max_digits=6, decimal_places=4, default=0)
+    date = models.DateField(verbose_name='日期')
+
+    class Meta:
+        db_table = 'sma_style'
+        verbose_name = '组合风格'
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.port_code.port_code

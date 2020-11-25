@@ -34,3 +34,16 @@ class StockIndustrySW(models.Model):
 
     def __str__(self):
         return self.secucode.secucode
+
+
+class StockRealtimePrice(models.Model):
+    secucode = models.ForeignKey(Stock, to_field='secucode', on_delete=models.CASCADE, verbose_name="股票代码")
+    prev_close = models.DecimalField(verbose_name='昨收', max_digits=10, decimal_places=4, null=True)
+    price = models.DecimalField(verbose_name='实时价格', max_digits=10, decimal_places=4, null=True)
+    date = models.DateField(verbose_name='日期', null=False)
+    time = models.TimeField(verbose_name='时间', null=False)
+
+    class Meta:
+        db_table = 'sma_stocks_realtime_price'
+        verbose_name = '股票实时价格'
+        verbose_name_plural = verbose_name

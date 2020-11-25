@@ -22,3 +22,5 @@ def load_configs(file='configs.yaml'):
 
 
 configs = load_configs()
+special_table = ['组合信息表', '基金风格表']
+special_table_en = ['sma_portfolio', 'sma_fund_style']

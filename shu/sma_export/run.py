@@ -10,6 +10,7 @@ from threading import Thread
 
 from shu.sma_export.dataset import export, last_trading_day, TABLES, whole_trading_days
 from shu.sma_export.shu import concat_path, mk_dirs
+from shu.sma_export.parse_configs import special_table_en
 
 
 class Export(Thread):
@@ -19,7 +20,7 @@ class Export(Thread):
         self.table = table
 
     def export(self):
-        if self.table == 'sma_portfolio':
+        if self.table in special_table_en:
             data = export(self.table)
             file = concat_path(self.name, f'{self.table}.xlsx')
             data.to_excel(file, index=False)

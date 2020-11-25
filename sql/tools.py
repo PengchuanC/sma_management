@@ -11,10 +11,12 @@ from sql.commit.index import commit_basic_info, commit_index_quote, commit_basic
 from sql.commit.funds import commit_funds, commit_fund_data
 from sql.commit.tradingday import commit_tradingdays
 from sql.commit.stock import commit_stock, commit_industry_sw
+from sql.commit import commit_style
 
 
 __all__ = (
-    'commit_index', 'commit_index_gil', 'commit_index_wind', 'commit_fund', 'commit_trading_day', 'commit_stocks'
+    'commit_index', 'commit_index_gil', 'commit_index_wind', 'commit_fund', 'commit_trading_day', 'commit_stocks',
+    'commit_preprocess'
 )
 
 
@@ -53,3 +55,7 @@ def commit_trading_day():
 def commit_stocks():
     commit_stock()
     commit_industry_sw()
+
+
+def commit_preprocess():
+    commit_style()

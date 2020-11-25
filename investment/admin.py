@@ -38,6 +38,11 @@ class FundsAdmin(admin.ModelAdmin):
     list_display = ('secucode', 'secuname')
 
 
+@admin.register(models.FundStyle)
+class FundStyleAdmin(admin.ModelAdmin):
+    list_display = ('secucode', 'fundstyle', 'fundtype')
+
+
 @admin.register(models.FundPrice)
 class FundPriceAdmin(admin.ModelAdmin):
     list_display = ('secucode', 'nv', 'nav', 'acc_nav', 'dailyprofit', 'date')
@@ -128,6 +133,15 @@ class BenchmarkValuationAdmin(admin.ModelAdmin):
     list_filter = ('port_code', 'date')
 
 
+@admin.register(models.PortfolioStyle)
+class PortfolioStyleAdmin(admin.ModelAdmin):
+    list_display = (
+        'port_code', 'small_value', 'small_growth', 'mid_value', 'mid_growth',
+        'large_growth', 'bond', 'r_square', 'date'
+    )
+    list_filter = ('port_code', 'date')
+
+
 # 回测部分
 @admin.register(models.AssetWeight)
 class AssetWeightAdmin(admin.ModelAdmin):
@@ -142,3 +156,8 @@ class AssetWeightAdmin(admin.ModelAdmin):
 @admin.register(models.StockIndustrySW)
 class StockIndustrySWAdmin(admin.ModelAdmin):
     list_display = ('secucode', 'firstindustryname', 'secondindustryname')
+
+
+@admin.register(models.StockRealtimePrice)
+class StockRealtimePriceAdmin(admin.ModelAdmin):
+    list_display = ('secucode', 'prev_close', 'price', 'date', 'time')

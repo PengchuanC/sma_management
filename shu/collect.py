@@ -12,6 +12,7 @@ from dateutil.parser import parse
 from pandas import read_excel
 
 from shu.configs import target
+from shu.sma_export.parse_configs import special_table
 
 
 def table_store_director(name) -> str:
@@ -49,13 +50,13 @@ def dataset(name) -> Dict[str, Generator]:
 def dataset_without_date(name) -> "DataFrame":
     abs_path = table_store_director(name)
     file = whole_files(abs_path)[0]
-    data = read_excel(file, engine='openpyxl')
+    data = read_excel(file, engine='openpyxl', converters={'secucode_id': str})
     data = data.to_dict(orient='records')
     return data
 
 
 def export(name):
     """输出读取的数据"""
-    if name == '组合信息表':
+    if name in special_table:
         return dataset_without_date(name)
     return dataset(name)

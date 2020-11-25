@@ -64,6 +64,7 @@ def run_all():
     tools.commit_fund()
     tools.commit_index_gil()
     tools.commit_tradingdays()
+    tools.commit_preprocess()
     fund_limit.commit_fund_limit()
     fund_fee.commit_fund_fee()
 

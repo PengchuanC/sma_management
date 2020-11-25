@@ -5,3 +5,5 @@ __init__.py
 @date: 2020-09-04
 @desc:
 """
+
+from sql.preprocess.style import commit_style

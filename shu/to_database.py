@@ -5,17 +5,26 @@ to_database
 @date: 2020-09-08
 @desc:
 """
-from shu import models
 from shu.collect import export
 from shu.configs import tables, mapping
 from sql.progress import progressbar
 
+from shu.sma_export.parse_configs import special_table
+from investment.models import Funds
 
-def commit_portfolio():
+
+def commit_portfolio(name):
     """组合基本信息表"""
-    data = export('组合信息表')
+    table = tables.get(name)
+    m = mapping.get(table)
+    data = export(name)
     for d in data:
-        models.Portfolio.objects.update_or_create(port_code=d['port_code'], defaults=d)
+        if 'port_code' in d:
+            m.objects.update_or_create(port_code=d['port_code'], defaults=d)
+        if 'secucode_id' in d and 'fundtype' in d:
+            f = Funds.objects.filter(secucode=d['secucode_id']).last()
+            if f:
+                m.objects.update_or_create(secucode=f, defaults=d)
 
 
 def commit_other(name):
@@ -36,8 +45,8 @@ def commit_other(name):
 
 def run():
     for i, name in enumerate(tables):
-        if name == '组合信息表':
-            commit_portfolio()
+        if name in special_table:
+            commit_portfolio(name)
         else:
             commit_other(name)
         progressbar(i, len(tables))

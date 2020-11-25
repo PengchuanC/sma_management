@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'corsheaders',
     'investment.apps.InvestmentConfig',
     'questionnaire.apps.QuestionnaireConfig',
-    'rest_framework'
+    'rest_framework',
+    'channels',
 ]
 
 MIDDLEWARE = [
@@ -160,3 +161,6 @@ CORS_ALLOW_HEADERS = (
     'x-csrftoken',
     'x-requested-with',
 )
+
+# channels设置
+ASGI_APPLICATION = 'sma_management.asgi.application'

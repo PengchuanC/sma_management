@@ -21,3 +21,4 @@ targets:
   sma_transactions: '组合流水表'
   sma_detail_fee: '组合费用表'
   sma_evaluate_benchmark: '基准净值表'
+  sma_fund_style: '基金风格表'
