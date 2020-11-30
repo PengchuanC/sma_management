@@ -9,7 +9,7 @@ commit
 from django.db.transaction import atomic
 from sql.commit.index import commit_basic_info, commit_index_quote, commit_basic_info_wind, commit_index_quote_wind
 from sql.commit.funds import commit_funds, commit_fund_data, commit_fund_associate, commit_fund_asset_allocate
-from sql.commit.funds_extend import commit_holding_top_ten, commit_holding_stock_detail
+from sql.commit.funds_extend import commit_holding_top_ten, commit_holding_stock_detail, commit_announcement
 from sql.commit.tradingday import commit_tradingdays
 from sql.commit.stock import commit_stock, commit_industry_sw
 from sql.commit import commit_style
@@ -49,6 +49,7 @@ def commit_fund():
     commit_fund_asset_allocate()
     commit_holding_top_ten()
     commit_holding_stock_detail()
+    commit_announcement()
 
 
 def commit_trading_day():
