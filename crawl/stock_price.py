@@ -110,8 +110,8 @@ class CrawlStockPrice(object):
     def run(self):
         now = datetime.datetime.now().time()
         while True:
-            if datetime.time(9, 30, 0) < now < datetime.time(11, 30, 0) \
-                    or datetime.time(13, 0, 0) < now < datetime.time(15, 0, 10):
+            if (datetime.time(9, 30, 0) < now < datetime.time(11, 30, 0)) \
+                    or (datetime.time(13, 0, 0) < now < datetime.time(15, 0, 10)):
                 commit_stock_price(self.stocks)
                 time.sleep(CRAWL_STOP_TIME)
             else:
@@ -120,6 +120,5 @@ class CrawlStockPrice(object):
 
 
 if __name__ == '__main__':
-    # c = CrawlStockPrice()
-    # c.run()
-    test()
+    c = CrawlStockPrice()
+    c.run()

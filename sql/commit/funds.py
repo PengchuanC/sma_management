@@ -10,6 +10,7 @@ import datetime
 
 from django.db.models import Max
 from threading import Thread, Lock
+from concurrent.futures import ThreadPoolExecutor, wait, ALL_COMPLETED
 from typing import List, Union, Optional
 from sql import models
 from sql.sql_templates import funds as template
@@ -17,13 +18,12 @@ from sql.utils import read_oracle, render
 from sql.progress import progressbar
 
 
-__all__ = ('commit_funds', 'commit_fund_data')
+__all__ = ('commit_funds', 'commit_fund_associate', 'commit_fund_data', 'commit_fund_asset_allocate')
 
 
 model_mapping = {
     models.FundPrice: template.acc_nav,
-    models.FundAdjPrice: template.adj_nav,
-    models.FundHoldingStock: template.fund_top_ten_stock
+    models.FundAdjPrice: template.adj_nav
 }
 
 
@@ -41,6 +41,39 @@ def commit_funds():
     funds_jy = funds_jy.to_dict(orient='records')
     for f in funds_jy:
         models.Funds.objects.update_or_create(secucode=f.pop('secucode'), defaults=f)
+
+
+def commit_fund_associate():
+    """更新基金代码关联表，主要针对ETF和LOF"""
+    sql = template.fund_associate
+    funds_jy = read_oracle(sql)
+    for _, row in funds_jy.iterrows():
+        fund = models.Funds.objects.get(secucode=row.secucode)
+        models.FundAssociate.objects.update_or_create(secucode=fund, defaults={'relate': row.relate})
+
+
+def commit_fund_asset_allocate():
+    """更新基金资产配置比例"""
+    sql = template.fund_allocate
+    data = read_oracle(sql)
+    data = data.fillna(0)
+    codes = models.Funds.objects.filter(secucode__in=list(data.secucode)).all()
+    codes = {x.secucode: x for x in codes}
+    data = data.to_dict(orient='records')
+    executor = ThreadPoolExecutor(max_workers=16)
+
+    def target(r):
+        if r['secucode'] in codes.keys():
+            fund = codes.get(r.pop('secucode'))
+            models.FundAssetAllocate.objects.update_or_create(
+                secucode=fund, date=r['date'], defaults=r
+            )
+
+    tasks = []
+    for row in data:
+        ret = executor.submit(target, row)
+        tasks.append(ret)
+    wait(tasks, return_when=ALL_COMPLETED)
 
 
 def get_fund_last_update_date(model):
@@ -141,4 +174,4 @@ def commit_fund_data():
 
 
 if __name__ == '__main__':
-    commit_fund_data()
+    commit_fund_asset_allocate()

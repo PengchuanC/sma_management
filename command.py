@@ -59,6 +59,7 @@ def shu():
 
 @root.command()
 def run_all():
+    """存在依赖顺序，shu必须先commit"""
     shu_commit()
     tools.commit_stocks()
     tools.commit_fund()

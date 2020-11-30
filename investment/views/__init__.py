@@ -6,3 +6,4 @@ from .analysis import *
 from .backtest import BackTestView, BacktestWeightView
 from .overview import *
 from .trade_emulate import SimpleEmuView
+from .announcement import AnnouncementViews

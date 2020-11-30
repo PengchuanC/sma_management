@@ -19,7 +19,10 @@ def fund_holding_stock(port_code: str, date: str):
     for fund in funds:
         stocks = models.FundHoldingStock.objects.filter(
             secucode=fund, date=recent.get(fund)
-        ).values('secucode', 'stockcode', 'stockname', 'ratio')
+        ).values('secucode', 'stockcode', 'stockname', 'ratio', 'publish')
+        publish = set([x['publish'] for x in stocks])
+        if '年报' in publish:
+            stocks = [x for x in stocks if x['publish'] == '年报']
         query_set.extend(stocks)
 
     data: pd.DataFrame = pd.DataFrame(query_set)

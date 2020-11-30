@@ -61,12 +61,27 @@ class FundPurchaseAndRedeemAdmin(admin.ModelAdmin):
 
 @admin.register(models.FundHoldingStock)
 class FundHoldingStockAdmin(admin.ModelAdmin):
-    list_display = ('secucode', 'stockcode', 'stockname', 'serial', 'ratio', 'date')
+    list_display = ('secucode', 'stockcode', 'stockname', 'serial', 'ratio', 'publish', 'date')
 
 
 @admin.register(models.FundPurchaseFee)
 class FundPurchaseFeeAdmin(admin.ModelAdmin):
     list_display = ('secucode', 'operate', 'low', 'high', 'fee')
+
+
+@admin.register(models.FundAssociate)
+class FundAssociateAdmin(admin.ModelAdmin):
+    list_display = ('secucode', 'relate')
+
+
+@admin.register(models.FundAssetAllocate)
+class FundAssetAllocateAdmin(admin.ModelAdmin):
+    list_display = ('secucode', 'stock', 'bond', 'fund', 'metals', 'monetary', 'date')
+
+
+@admin.register(models.FundAnnouncement)
+class FundAnnouncementAdmin(admin.ModelAdmin):
+    list_display = ('secucode', 'secuabbr', 'date', 'title', 'content')
 
 
 # 组合部分

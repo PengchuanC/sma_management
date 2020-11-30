@@ -20,6 +20,7 @@ class Portfolio(models.Model):
     redemption_fee = models.DecimalField(verbose_name="赎回费", max_digits=6, decimal_places=4, default=0.0)
     base = models.CharField(max_length=100, verbose_name="业绩比较基准")
     describe = models.CharField(verbose_name="组合描述", max_length=100)
+    activation = models.DecimalField(verbose_name="开户费", max_digits=10, decimal_places=2, default=0)
     port_type = models.IntegerField(
         verbose_name='组合类型', default=3,
         choices=((1, '现金型'), (2, '固收型'), (3, '平衡型'), (4, '成长型'), (5, '权益型'))

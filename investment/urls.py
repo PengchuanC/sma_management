@@ -14,12 +14,14 @@ from investment import views
 urlpatterns = [
     path('basic/all/', views.BasicInfo.as_view()),
     path('basic/capital/', views.Capital.as_view()),
+    path('basic/announcement/', views.AnnouncementViews.as_view()),
     path('history/summary/', views.HistoryView.as_view()),
     path('analysis/performance/', views.PerformanceView.as_view()),
     path('analysis/attribute/', views.AttributeChartView.as_view()),
     path('analysis/fundholding/', views.FundHoldingView.as_view()),
     path('analysis/fundholding/stock/', views.FundHoldingStockView.as_view()),
     path('overview/', views.OverviewView.as_view()),
+    path('overview/allocate/', views.OverviewView.asset_allocate),
 
     path('warehouse/portfolio/', views.SimpleEmuView.get_portfolio),
     path('warehouse/portfolio/cash/', views.SimpleEmuView.get_portfolio_cash),

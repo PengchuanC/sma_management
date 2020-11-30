@@ -12,7 +12,7 @@ from rest_framework.views import APIView, Response
 
 from investment.models import (
     Income, IncomeAsset, ValuationBenchmark as VB, Holding, Balance, FundAdjPrice as FAP, TradingDays,
-    FundPurchaseAndRedeem as FAR, StockIndustrySW as SISW
+    FundPurchaseAndRedeem as FAR, StockIndustrySW as SISW, FundAssetAllocate as FAA, FundAssociate
 )
 from investment.utils.calc import Formula
 from investment.utils import fund, period_change as pc
@@ -84,20 +84,14 @@ class FundHoldingView(APIView):
     """持有基金分析
     """
 
-    @staticmethod
-    def get(request):
+    def get(self, request):
         date = request.query_params.get('date')
         port_code = request.query_params.get('portCode')
         if not date:
             date = datetime.date.today().strftime('%Y-%m-%d')
         date = Holding.objects.filter(port_code=port_code, date__lte=date).aggregate(mdate=Max('date'))['mdate']
-        holding = Holding.objects.filter(port_code=port_code, date=date).values('secucode', 'mkt_cap')
-        na = Balance.objects.get(port_code=port_code, date=date).net_asset
-        holding = pd.DataFrame(holding)
 
-        holding['ratio'] = holding.mkt_cap / na
-        holding = holding[holding['ratio'] > 0]
-        holding = holding.sort_values(by=['ratio'], ascending=False).reset_index(drop=True)
+        holding = self.fund_ratio(port_code, date)
         holding['key'] = holding.index + 1
 
         funds = list(set(list(holding.secucode)))
@@ -113,6 +107,18 @@ class FundHoldingView(APIView):
 
         holding = holding.to_dict(orient='records')
         return Response(holding)
+
+    @staticmethod
+    def fund_ratio(port_code: str, date: datetime.date):
+        """组合持有基金的比例"""
+        holding = Holding.objects.filter(port_code=port_code, date=date).values('secucode', 'mkt_cap')
+        na = Balance.objects.get(port_code=port_code, date=date).net_asset
+        holding = pd.DataFrame(holding)
+
+        holding['ratio'] = holding.mkt_cap / na
+        holding = holding[holding['ratio'] > 0]
+        holding = holding.sort_values(by=['ratio'], ascending=False).reset_index(drop=True)
+        return holding
 
     @staticmethod
     def period_return(funds: list, date: datetime.date):
@@ -138,6 +144,7 @@ class FundHoldingView(APIView):
 
     @staticmethod
     def fund_limit(funds):
+        """基金当日申赎限制"""
         date = FAR.objects.aggregate(mdate=Max('date'))['mdate']
         limit = FAR.objects.filter(secucode__in=funds, date=date).values(
             'secucode', 'apply_type', 'redeem_type', 'min_apply', 'max_apply'
@@ -145,8 +152,40 @@ class FundHoldingView(APIView):
         limit = pd.DataFrame(limit)
         return limit
 
+    @staticmethod
+    def asset_allocate(port_code: str, date: datetime.date):
+        """获取组合的资产配置情况
+        :return: {'stock': 0, 'bond': 0, 'fund': 0, 'metals': 0, 'monetary': 0}
+        """
+        holding = FundHoldingView.fund_ratio(port_code, date)
+        funds = list(holding.secucode)
+        dates = FAA.objects.filter(secucode__in=funds).values('secucode').annotate(max_date=Max('date'))
+        data = []
+        for x in dates:
+            secucode = x['secucode']
+            date = x['max_date']
+            d = FAA.objects.filter(secucode=secucode, date=date).values(
+                'secucode', 'stock', 'bond', 'fund', 'metals', 'monetary'
+            )[0]
+            # 处理联接基金及LOF
+            if d['fund'] > 0.9:
+                relate = FundAssociate.objects.filter(relate=secucode)[0].secucode.secucode
+                d = FAA.objects.filter(secucode=relate, date=date).values(
+                    'secucode', 'stock', 'bond', 'fund', 'metals', 'monetary'
+                )[0]
+                d['secucode'] = secucode
+            data.append(d)
+        data = pd.DataFrame(data).set_index('secucode')
+        data = data.merge(holding[['secucode', 'ratio']], left_index=True, right_on='secucode').set_index('secucode')
+        columns = ['stock', 'bond', 'fund', 'metals', 'monetary']
+        for col in columns:
+            data[col] *= data['ratio']
+        data = data[columns]
+        return data.sum().to_dict()
+
 
 class FundHoldingStockView(APIView):
+    """持有股票分析"""
     @staticmethod
     def get(request):
         port_code = request.query_params.get('portCode')
@@ -157,6 +196,10 @@ class FundHoldingStockView(APIView):
             date = Balance.objects.filter(port_code=port_code, date__lte=date).last().date.strftime('%Y-%m-%d')
         ret = fund_holding_stock(port_code, date)
         ind = FundHoldingStockView.industry_sw(ret)
+        ratio = FundHoldingView.asset_allocate(port_code, date)
+        equity = ratio.get('stock')
+        ind['ratio'] = ind['ratio'].astype('float')
+        ind['ratioinequity'] = ind['ratio'] / equity
         ret = ret.to_dict(orient='records')
         ind = ind.to_dict(orient='records')
         return Response({'stock': ret, 'industry': ind})
@@ -175,3 +218,4 @@ class FundHoldingStockView(APIView):
         ind = ind.reset_index(drop=True)
         ind['key'] = ind.index + 1
         return ind
+

@@ -2,7 +2,6 @@
 pre_valuation
 ~~~~~~~~~~~~~
 盘中估值，采用socket协议
-TODO: 当前涨跌幅需要再除以 前十大股票市值占比/权益资产市值占比
 """
 
 import json
@@ -15,11 +14,13 @@ from channels.db import database_sync_to_async
 
 from investment import models
 from investment.utils.holding import fund_holding_stock
+from investment.views.analysis import FundHoldingView
 
 
 class PreValuationConsumer(AsyncJsonWebsocketConsumer):
     connected = False
     holding = None
+    equity = 0
 
     async def connect(self):
         self.connected = True
@@ -48,6 +49,10 @@ class PreValuationConsumer(AsyncJsonWebsocketConsumer):
             return
         date = models.Balance.objects.filter(port_code=port_code).last().date
         holding = fund_holding_stock(port_code, date)
+        ratio = FundHoldingView.asset_allocate(port_code, date)
+        stock = ratio['stock']
+        equity = float(holding.ratio.sum()) / stock
+        self.equity = equity
         self.holding = holding
         stocks = holding.stockcode
         stocks = models.StockRealtimePrice.objects.filter(secucode__in=stocks).values(
@@ -59,6 +64,7 @@ class PreValuationConsumer(AsyncJsonWebsocketConsumer):
         data['real_change'] = (data.ratio * data.change).astype('float')
         data.time = data.time.apply(lambda x: x.strftime('%H:%M:%S'))
         data = data.groupby('time')['real_change'].sum().reset_index()
+        data['real_change'] = data['real_change'] / equity
         data = data.rename(columns={'time': 'name', 'real_change': 'value'}).to_dict(orient='records')
         return data
 
@@ -80,5 +86,5 @@ class PreValuationConsumer(AsyncJsonWebsocketConsumer):
         stocks['change'] = stocks.price / stocks.prev_close - 1
         data = holding.merge(stocks, left_on='stockcode', right_on='secucode', how='inner')
         data['real_change'] = data.ratio * data.change
-        data['real_change'] = data['real_change'].astype('float')
+        data['real_change'] = data['real_change'].astype('float') / self.equity
         return [{'name': last.strftime('%H:%M:%S'), 'value': data.real_change.sum()}]
