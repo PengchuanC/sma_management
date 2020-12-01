@@ -28,7 +28,7 @@ def commit_index_gil():
 
 
 def commit_index_wind():
-    """指数数据-万得"""
+    """指数数据-万得，当前仅上海金数据使用Wind"""
     with atomic():
         commit_basic_info_wind()
         commit_index_quote_wind()
@@ -43,6 +43,7 @@ def commit_index():
 
 
 def commit_fund():
+    """提交规模基金相关数据"""
     commit_funds()
     commit_fund_associate()
     commit_fund_data()
@@ -63,4 +64,5 @@ def commit_stocks():
 
 
 def commit_preprocess():
+    """提交预处理的数据，主要指组合风格分析及brinson归因等"""
     commit_style()

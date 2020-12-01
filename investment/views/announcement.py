@@ -24,7 +24,7 @@ class AnnouncementViews(APIView):
             page = 1
         m = models.FundAnnouncement
         ret = m.objects.order_by('-date').values('id', 'secucode', 'secuabbr', 'title', 'date')
-        need = ret[(page-1)*num+1: page*num]
+        need = ret[(page-1)*num: page*num]
         return Response(need)
 
     @staticmethod
