@@ -131,7 +131,6 @@ class FundHoldingView(APIView):
         tradingdays = TradingDays.objects.filter(date__range=[start, date]).values('date')
         tradingdays = [x['date'] for x in tradingdays]
         data = data[data.index.isin(tradingdays)]
-        data.to_clipboard()
         p = pc.Performance(data)
         col = ['day', 'week', 'month', 'quarter', 'half_year', 'year', 'ytd']
         ret = []
