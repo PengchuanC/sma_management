@@ -15,3 +15,14 @@ gil = {
     'password': 'zgquery',
     'database': 'ZXDB'
 }
+
+
+# Barra数据库-datayes
+
+datayes = {
+    'host': '10.170.225.10',
+    'port': 1521,
+    'user': 'datayes',
+    'password': 'datayes0108',
+    'database': 'qtdatadb',
+}

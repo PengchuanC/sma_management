@@ -176,3 +176,11 @@ class StockIndustrySWAdmin(admin.ModelAdmin):
 @admin.register(models.StockRealtimePrice)
 class StockRealtimePriceAdmin(admin.ModelAdmin):
     list_display = ('secucode', 'prev_close', 'price', 'date', 'time')
+
+
+@admin.register(models.StockExpose)
+class StockExposeAdmin(admin.ModelAdmin):
+    list_display = (
+        'secucode', 'date', 'beta', 'momentum', 'size', 'earnyild', 'resvol', 'growth', 'btop',
+        'leverage', 'liquidty', 'sizenl'
+    )

@@ -20,3 +20,25 @@ stock_sw = """
         m.Standard = 24
         AND s.SecuCategory = 1
 """
+
+
+# 股票因子暴露度
+stock_expose = """
+    SELECT
+        TRADE_DATE AS "date",
+        TICKER_SYMBOL AS secucode,
+        BETA,
+        MOMENTUM,
+        "SIZE" as "size",
+        EARNYILD,
+        RESVOL,
+        GROWTH,
+        BTOP,
+        LEVERAGE,
+        LIQUIDTY,
+        SIZENL
+    FROM
+        DATAYES."dy1d_exposure" dde
+    WHERE
+        TRADE_DATE >= '<date>'
+"""

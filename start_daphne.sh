@@ -1,3 +1,4 @@
 
+echo start backend server
 
-daphne -p 8000 sma_management.asgi:application
+nohup daphne -p 8000 sma_management.asgi:application > daphne.log &

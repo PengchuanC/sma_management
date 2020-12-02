@@ -47,3 +47,27 @@ class StockRealtimePrice(models.Model):
         db_table = 'sma_stocks_realtime_price'
         verbose_name = '股票实时价格'
         verbose_name_plural = verbose_name
+
+
+class StockExpose(models.Model):
+    secucode = models.ForeignKey(Stock, to_field='secucode', on_delete=models.CASCADE, verbose_name="股票代码")
+    date = models.DateField(verbose_name='日期', null=False)
+    beta = models.DecimalField(verbose_name='贝塔', max_digits=18, decimal_places=3)
+    momentum = models.DecimalField(verbose_name='动量', max_digits=18, decimal_places=3)
+    size = models.DecimalField(verbose_name='市值', max_digits=18, decimal_places=3)
+    earnyild = models.DecimalField(verbose_name='盈利', max_digits=18, decimal_places=3)
+    resvol = models.DecimalField(verbose_name='波动', max_digits=18, decimal_places=3)
+    growth = models.DecimalField(verbose_name='成长', max_digits=18, decimal_places=3)
+    btop = models.DecimalField(verbose_name='质量', max_digits=18, decimal_places=3)
+    leverage = models.DecimalField(verbose_name='杠杆', max_digits=18, decimal_places=3)
+    liquidty = models.DecimalField(verbose_name='流动', max_digits=18, decimal_places=3)
+    sizenl = models.DecimalField(verbose_name='非线性市值', max_digits=18, decimal_places=3)
+
+    class Meta:
+        db_table = 'sma_stock_exposure'
+        verbose_name = '股票因子暴露'
+        verbose_name_plural = verbose_name
+        index_together = ('secucode', 'date')
+
+    def __str__(self):
+        return self.secucode.secucode

@@ -117,6 +117,7 @@ def commit_basic_info_wind():
 @use_wind
 def get_index_quote_wind(secucode):
     """获取指数收盘价-wind"""
+    from WindPy import w
     last = models.IndexQuote.objects.filter(secucode=secucode).last()
     if last:
         date = last.date

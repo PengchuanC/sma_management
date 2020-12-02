@@ -6,7 +6,7 @@ connector
 @desc:
 """
 from sqlalchemy import create_engine
-from .configs import gil
+from .configs import gil, datayes
 
 
 def make_engine(user, password, host, port, database):
@@ -15,6 +15,7 @@ def make_engine(user, password, host, port, database):
 
 
 oracle = make_engine(**gil)
+datayes = make_engine(**datayes)
 
 
-__all__ = ['oracle']
+__all__ = ['oracle', 'datayes']
