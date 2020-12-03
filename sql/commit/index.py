@@ -7,6 +7,7 @@ index
 """
 
 from datetime import timedelta
+from typing import List, Dict
 
 from sql import models
 from sql.commit.wind_wrapper import use_wind
@@ -143,4 +144,49 @@ def commit_index_quote_wind():
     _commit_index_quote(indexes, get_index_quote_wind)
 
 
-__all__ = ['commit_basic_info', 'commit_basic_info_wind', 'commit_index_quote', 'commit_index_quote_wind']
+def _commit_index_component(code_list: list):
+    """同步指数成分列表
+
+    从聚源数据库获取股票规模指数的成分及权重，如中证800、沪深300
+
+    Args:
+        code_list (List[str]): 股票规模指数列表
+
+    Returns:
+        DataFrame: 从数据库查询到的相关数据
+        example:
+        >>> _commit_index_component(['000001', '000906'])
+             secucode stockcode  weight       date
+        0      000001    600000   0.717 2020-11-30
+        1      000001    600004   0.086 2020-11-30
+        2      000001    600006   0.031 2020-11-30
+
+    """
+    code_list = "'" + "','".join(code_list) + "'"
+    sql = render(template.component, '<codelist>', code_list)
+    data = read_oracle(sql)
+    return data
+
+
+def commit_index_component():
+    """同步指数成分列表
+
+    从聚源数据库获取股票规模指数的成分及权重，如中证800、沪深300
+    :return:
+    """
+    ib = models.IndexBasicInfo
+    indexes: List[ib] = ib.objects.filter(category='规模类指数', component='股票').all()
+    indexes: List[models.Index] = [x.secucode for x in indexes]
+    indexes_code: List[str] = [x.secucode for x in indexes]
+    data = _commit_index_component(indexes_code)
+    indexes: Dict[str, models.Index] = {x.secucode: x for x in indexes}
+    data.secucode = data.secucode.apply(lambda x: indexes.get(x))
+    for _, r in data.iterrows():
+        r = r.to_dict()
+        models.IndexComponent.objects.update_or_create(secucode=r['secucode'], date=r['date'], defaults=r)
+
+
+__all__ = [
+    'commit_basic_info', 'commit_basic_info_wind', 'commit_index_quote', 'commit_index_quote_wind',
+    'commit_index_component'
+]

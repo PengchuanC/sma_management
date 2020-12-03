@@ -59,11 +59,24 @@ fund_top_ten_stock = """
     JOIN jydb.secumain s2 ON
         k.stockinnercode = s2.innercode
     WHERE
-        k.InfoPublDate = (
-        SELECT
-            max(InfoPublDate)
-        FROM
-            JYDB.MF_KEYSTOCKPORTFOLIO mk)
+        k.InfoPublDate > TO_DATE('<date>', 'YYYY-MM-DD')
+    UNION ALL
+    SELECT
+        s.secucode,
+        k.reportdate AS "date",
+        s2.secucode AS stockcode,
+        s2.secuabbr AS stockname,
+        k.serialnumber AS "serial",
+        k.ratioinnv AS ratio,
+        '季报' AS publish
+    FROM
+        jydb.secumain s
+    JOIN jydb.MF_KeyStockPortfolio k ON
+        s.innercode = k.innercode
+    JOIN jydb.hk_secumain s2 ON
+        k.stockinnercode = s2.innercode
+    WHERE
+        k.InfoPublDate > TO_DATE('<date>', 'YYYY-MM-DD')
 """
 
 fund_top_ten_stock_date = """SELECT max(InfoPublDate) as "date" FROM JYDB.MF_KEYSTOCKPORTFOLIO"""
@@ -71,34 +84,55 @@ fund_top_ten_stock_date = """SELECT max(InfoPublDate) as "date" FROM JYDB.MF_KEY
 
 # 基金年报、中报完整持仓
 fund_holding_stock_detail = """
-     SELECT
-        a.secucode,
-        s2.SECUCODE AS stockcode,
-        s2.SECUABBR AS stockname,
-        a.serialnumber AS serial,
-        a.ratioinnv AS ratio,
-        '年报' AS publish,
-        a.reportdate AS "date"
+ SELECT
+    a.secucode,
+    s2.SECUCODE AS stockcode,
+    s2.SECUABBR AS stockname,
+    a.serialnumber AS serial,
+    a.ratioinnv AS ratio,
+    '年报' AS publish,
+    a.reportdate AS "date"
+FROM
+    (
+    SELECT
+        s.SECUCODE,
+        ms.REPORTDATE,
+        ms.SERIALNUMBER,
+        ms.STOCKINNERCODE,
+        ms.RATIOINNV
     FROM
-        (
-        SELECT
-            s.SECUCODE,
-            ms.REPORTDATE,
-            ms.SERIALNUMBER,
-            ms.STOCKINNERCODE,
-            ms.RATIOINNV
-        FROM
-            JYDB.MF_STOCKPORTFOLIODETAIL ms
-        JOIN JYDB.SECUMAIN s ON
-            ms.INNERCODE = s.INNERCODE) a
-    JOIN Jydb.SECUMAIN s2 ON
-        a.stockinnercode = s2.INNERCODE
-    WHERE
-        reportdate = (
-        SELECT
-            max(REPORTDATE)
-        FROM
-            JYDB.MF_STOCKPORTFOLIODETAIL ms2)
+        JYDB.MF_STOCKPORTFOLIODETAIL ms
+    JOIN JYDB.SECUMAIN s ON
+        ms.INNERCODE = s.INNERCODE) a
+JOIN Jydb.SECUMAIN s2 ON
+    a.stockinnercode = s2.INNERCODE
+WHERE
+    reportdate > TO_DATE('<date>', 'YYYY-MM-DD') 
+UNION ALL
+ SELECT
+    a.secucode,
+    s2.SECUCODE AS stockcode,
+    s2.SECUABBR AS stockname,
+    a.serialnumber AS serial,
+    a.ratioinnv AS ratio,
+    '年报' AS publish,
+    a.reportdate AS "date"
+FROM
+    (
+    SELECT
+        s.SECUCODE,
+        ms.REPORTDATE,
+        ms.SERIALNUMBER,
+        ms.STOCKINNERCODE,
+        ms.RATIOINNV
+    FROM
+        JYDB.MF_STOCKPORTFOLIODETAIL ms
+    JOIN JYDB.SECUMAIN s ON
+        ms.INNERCODE = s.INNERCODE) a
+JOIN Jydb.HK_SECUMAIN s2 ON
+    a.stockinnercode = s2.INNERCODE
+WHERE
+    reportdate > TO_DATE('<date>', 'YYYY-MM-DD')
 """
 
 fund_holding_stock_detail_date = """SELECT max(REPORTDATE) as "date" FROM JYDB.MF_STOCKPORTFOLIODETAIL"""
@@ -155,7 +189,7 @@ fund_allocate = """
 
 
 # 基金公告
-fund_announcement="""
+fund_announcement = """
     SELECT
         s.SECUCODE,
         s.SECUABBR,

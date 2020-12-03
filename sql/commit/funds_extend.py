@@ -6,6 +6,7 @@ funds_extend
 import datetime
 import math
 
+from django.db.models import Max
 from sql import models
 from sql.sql_templates import funds
 from sql.utils import read_oracle, render
@@ -14,13 +15,13 @@ from sql.utils import read_oracle, render
 def commit_holding_stock_detail():
     """同步基金完整持仓"""
     publish = '年报'
-    _commit(publish, funds.fund_holding_stock_detail, funds.fund_holding_stock_detail_date)
+    _commit_holding_stocks(publish, funds.fund_holding_stock_detail)
 
 
 def commit_holding_top_ten():
     """同步基金季报重仓股"""
     publish = '季报'
-    _commit(publish, funds.fund_top_ten_stock, funds.fund_top_ten_stock_date)
+    _commit_holding_stocks(publish, funds.fund_top_ten_stock)
 
 
 def commit_announcement():
@@ -47,14 +48,19 @@ def commit_announcement():
             print(e.__class__)
 
 
-def _commit(publish: str, sql, sql_date):
-    """"""
-    max_date = read_oracle(sql_date)['date'][0].date()
+def _commit_holding_stocks(publish: str, sql):
+    """同步基金持仓数据
+
+    基金持仓来源于两张表，一为重仓股，源于季报，一为完成持仓，源于半年报或年报
+    """
+    exist = models.FundHoldingStock.objects.filter(publish=publish).aggregate(max_date=Max('date'))
+    max_date = exist['max_date'] or datetime.date(2020, 1, 1)
     existed = models.FundHoldingStock.objects.filter(publish=publish, date=max_date).values('secucode').distinct()
     existed = [x['secucode'] for x in existed]
 
     full = models.Funds.objects.all()
     need = [x.secucode for x in full if x.secucode not in existed]
+    sql = render(sql, '<date>', max_date.strftime('%Y-%m-%d'))
     data = read_oracle(sql)
     data = data[data.secucode.isin(need)]
     full = {x.secucode: x for x in full}
@@ -67,4 +73,4 @@ def _commit(publish: str, sql, sql_date):
 
 
 if __name__ == '__main__':
-    commit_announcement()
+    commit_holding_top_ten()

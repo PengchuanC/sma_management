@@ -7,11 +7,13 @@ commit
 """
 
 from django.db.transaction import atomic
-from sql.commit.index import commit_basic_info, commit_index_quote, commit_basic_info_wind, commit_index_quote_wind
+from sql.commit.index import (
+    commit_basic_info, commit_index_quote, commit_basic_info_wind, commit_index_quote_wind, commit_index_component
+)
 from sql.commit.funds import commit_funds, commit_fund_data, commit_fund_associate, commit_fund_asset_allocate
 from sql.commit.funds_extend import commit_holding_top_ten, commit_holding_stock_detail, commit_announcement
 from sql.commit.tradingday import commit_tradingdays
-from sql.commit.stock import commit_stock, commit_industry_sw, commit_stock_expose
+from sql.commit.stock import commit_stock, commit_industry_sw, commit_stock_expose, commit_stock_daily_quote
 from sql.commit import commit_style
 
 
@@ -25,6 +27,7 @@ def commit_index_gil():
     with atomic():
         commit_basic_info()
         commit_index_quote()
+        commit_index_component()
 
 
 def commit_index_wind():
@@ -40,6 +43,7 @@ def commit_index():
     commit_index_quote()
     commit_basic_info_wind()
     commit_index_quote_wind()
+    commit_index_component()
 
 
 def commit_fund():
@@ -62,8 +66,11 @@ def commit_stocks():
     commit_stock()
     commit_industry_sw()
     commit_stock_expose()
+    commit_index_quote_wind()
 
 
 def commit_preprocess():
-    """提交预处理的数据，主要指组合风格分析及brinson归因等"""
+    """提交预处理的数据
+    主要指组合风格分析及brinson归因等
+    """
     commit_style()

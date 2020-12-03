@@ -71,3 +71,16 @@ class StockExpose(models.Model):
 
     def __str__(self):
         return self.secucode.secucode
+
+
+class StockDailyQuote(models.Model):
+    secucode = models.ForeignKey(Stock, to_field='secucode', on_delete=models.CASCADE, verbose_name="股票代码")
+    closeprice = models.DecimalField(verbose_name='收盘价', max_digits=10, decimal_places=2)
+    prevcloseprice = models.DecimalField(verbose_name='收盘价', max_digits=10, decimal_places=2)
+    date = models.DateField(verbose_name='交易日', null=False)
+
+    class Meta:
+        db_table = 'sma_stock_daily_quote'
+        verbose_name = '股票日行情'
+        verbose_name_plural = verbose_name
+        unique_together = (('secucode', 'date'),)

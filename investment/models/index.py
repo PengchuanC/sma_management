@@ -7,6 +7,7 @@ index
 1.指数列表
 2.指数基础信息
 3.指数行情-股票、债券、港股
+4.指数成分表
 """
 
 from django.db import models
@@ -25,7 +26,7 @@ class Index(models.Model):
 
 
 class IndexBasicInfo(models.Model):
-    secucode = models.ForeignKey(to=Index, to_field='secucode', on_delete=models.CASCADE)
+    secucode = models.ForeignKey(to=Index, to_field='secucode', on_delete=models.CASCADE, verbose_name='指数代码')
     secuabbr = models.CharField(max_length=100, verbose_name='证券简称', null=False)
     chiname = models.CharField(max_length=100, verbose_name='中文名称')
     category = models.CharField(max_length=20, verbose_name='指数类别')
@@ -43,7 +44,7 @@ class IndexBasicInfo(models.Model):
 
 
 class IndexQuote(models.Model):
-    secucode = models.ForeignKey(to=Index, to_field='secucode', on_delete=models.CASCADE)
+    secucode = models.ForeignKey(to=Index, to_field='secucode', on_delete=models.CASCADE, verbose_name='指数代码')
     pre_close = models.DecimalField(verbose_name='昨收', max_digits=10, decimal_places=4)
     close = models.DecimalField(verbose_name='收盘价', max_digits=10, decimal_places=4)
     change = models.DecimalField(verbose_name='涨跌幅', max_digits=19, decimal_places=8)
@@ -57,3 +58,17 @@ class IndexQuote(models.Model):
 
     def __str__(self):
         return self.secucode.secucode
+
+
+class IndexComponent(models.Model):
+    secucode = models.ForeignKey(to=Index, to_field='secucode', on_delete=models.CASCADE, verbose_name='指数代码')
+    stockcode = models.CharField(verbose_name='股票代码', max_length=20)
+    weight = models.DecimalField(verbose_name='权重', max_digits=10, decimal_places=4, default=0)
+    date = models.DateField(verbose_name='日期', null=False)
+
+    class Meta:
+        db_table = 'sma_index_component'
+        verbose_name = '指数成分'
+        verbose_name_plural = verbose_name
+        get_latest_by = 'date'
+        unique_together = (('secucode', 'date'),)

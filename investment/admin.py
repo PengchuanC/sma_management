@@ -26,6 +26,11 @@ class IndexQuoteAdmin(admin.ModelAdmin):
     list_filter = ('secucode', )
 
 
+@admin.register(models.IndexComponent)
+class IndexComponentAdmin(admin.ModelAdmin):
+    list_display = ('secucode', 'stockcode', 'weight', 'date')
+
+
 @admin.register(models.DetailFee)
 class DetailFeeAdmin(admin.ModelAdmin):
     list_display = ['port_code', 'management', 'custodian', 'audit', 'interest', 'date']
@@ -62,6 +67,7 @@ class FundPurchaseAndRedeemAdmin(admin.ModelAdmin):
 @admin.register(models.FundHoldingStock)
 class FundHoldingStockAdmin(admin.ModelAdmin):
     list_display = ('secucode', 'stockcode', 'stockname', 'serial', 'ratio', 'publish', 'date')
+    search_fields = ('secucode__secucode',)
 
 
 @admin.register(models.FundPurchaseFee)
@@ -184,3 +190,8 @@ class StockExposeAdmin(admin.ModelAdmin):
         'secucode', 'date', 'beta', 'momentum', 'size', 'earnyild', 'resvol', 'growth', 'btop',
         'leverage', 'liquidty', 'sizenl'
     )
+
+
+@admin.register(models.StockDailyQuote)
+class StockDailyQuoteAdmin(admin.ModelAdmin):
+    list_display = ('secucode', 'closeprice', 'prevcloseprice', 'date')

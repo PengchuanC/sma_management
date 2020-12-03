@@ -2,7 +2,8 @@
 
 stock = """
     select secucode, secuabbr as secuname from jydb.secumain where secucategory=1 and listedstate = 1 
-    order by secucode
+    UNION ALL
+    select secucode, secuabbr as secuname from jydb.hk_secumain where SECUMARKET = 72 and listedstate = 1
 """
 
 
@@ -41,4 +42,21 @@ stock_expose = """
         DATAYES."dy1d_exposure" dde
     WHERE
         TRADE_DATE >= '<date>'
+"""
+
+
+# 股票收盘价
+stock_quote = """
+    SELECT
+        s.SECUCODE,
+        qd.CLOSEPRICE,
+        qd.PREVCLOSEPRICE,
+        qd.TRADINGDAY AS "date"
+    FROM
+        JYDB.QT_DAILYQUOTE qd
+    JOIN JYDB.SECUMAIN s ON
+        qd.INNERCODE = s.INNERCODE
+    WHERE
+        s.SECUCATEGORY = 1
+        AND qd.TRADINGDAY > TO_DATE('<date>', 'YYYY-MM-DD')
 """

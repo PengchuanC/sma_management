@@ -2,13 +2,14 @@
 组合持股相关
 """
 
+import datetime
 import pandas as pd
 
 from django.db.models import Max
 from .. import models
 
 
-def fund_holding_stock(port_code: str, date: str):
+def fund_holding_stock(port_code: str, date: str or datetime.date):
     """获取组合在给定日期的持股情况"""
     funds = models.Holding.objects.filter(port_code=port_code, date=date).values('secucode', 'mkt_cap')
     na = models.Balance.objects.get(port_code=port_code, date=date).net_asset
