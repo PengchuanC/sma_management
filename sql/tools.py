@@ -65,9 +65,9 @@ def commit_trading_day():
 
 def commit_stocks():
     commit_stock()
+    commit_stock_daily_quote()
     commit_industry_sw()
     commit_stock_expose()
-    commit_index_quote_wind()
 
 
 def commit_preprocess():
