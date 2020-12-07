@@ -95,7 +95,7 @@ class FundAnnouncementAdmin(admin.ModelAdmin):
 class PortfolioAdmin(admin.ModelAdmin):
     list_display = (
         'id', 'port_code', 'port_name', 'manager', 'init_money', 'purchase_fee', 'redemption_fee', 'base', 'describe',
-        'port_type', 'launch_date'
+        'port_type', 'launch_date', 'valid'
     )
     list_display_links = ('port_code', )
 
@@ -161,6 +161,11 @@ class PortfolioStyleAdmin(admin.ModelAdmin):
         'large_growth', 'bond', 'r_square', 'date'
     )
     list_filter = ('port_code', 'date')
+
+
+@admin.register(models.PortfolioBrinson)
+class PortfolioBrinsonAdmin(admin.ModelAdmin):
+    list_display = ('port_code', 'index', 'date', 'industry', 'q1', 'q2', 'q3', 'q4')
 
 
 # 回测部分

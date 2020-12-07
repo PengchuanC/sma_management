@@ -71,4 +71,3 @@ class IndexComponent(models.Model):
         verbose_name = '指数成分'
         verbose_name_plural = verbose_name
         get_latest_by = 'date'
-        unique_together = (('secucode', 'date'),)

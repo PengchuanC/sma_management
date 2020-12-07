@@ -27,6 +27,8 @@ def fund_holding_stock(port_code: str, date: str or datetime.date):
         query_set.extend(stocks)
 
     data: pd.DataFrame = pd.DataFrame(query_set)
+    if data.empty:
+        return None
     data['ratio'] = data.aggregate(func=lambda x: x['ratio']*funds.get(x['secucode']), axis=1)
     names = dict(zip(data['stockcode'], data['stockname']))
     data = data.groupby(['stockcode'])['ratio'].sum()

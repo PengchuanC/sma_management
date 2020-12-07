@@ -26,6 +26,7 @@ class Portfolio(models.Model):
         choices=((1, '现金型'), (2, '固收型'), (3, '平衡型'), (4, '成长型'), (5, '权益型'))
     )
     launch_date = models.DateTimeField(null=False, verbose_name="成立日期")
+    valid = models.BooleanField(verbose_name='有效', default=True)
 
     class Meta:
         db_table = 'sma_portfolio'
@@ -220,6 +221,26 @@ class PortfolioStyle(models.Model):
     class Meta:
         db_table = 'sma_style'
         verbose_name = '组合风格'
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.port_code.port_code
+
+
+# 组合Brinson归因
+class PortfolioBrinson(models.Model):
+    port_code = models.ForeignKey(Portfolio, to_field='port_code', on_delete=models.CASCADE, verbose_name='组合代码')
+    index = models.CharField(verbose_name='指数代码', max_length=20, null=False)
+    date = models.DateField(verbose_name='日期', null=False)
+    industry = models.CharField(verbose_name='行业', max_length=20, null=False)
+    q1 = models.DecimalField(verbose_name='q1', max_digits=12, decimal_places=8)
+    q2 = models.DecimalField(verbose_name='q2', max_digits=12, decimal_places=8)
+    q3 = models.DecimalField(verbose_name='q3', max_digits=12, decimal_places=8)
+    q4 = models.DecimalField(verbose_name='q4', max_digits=12, decimal_places=8)
+
+    class Meta:
+        db_table = 'sma_brinson'
+        verbose_name = '组合Brinson'
         verbose_name_plural = verbose_name
 
     def __str__(self):

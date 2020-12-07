@@ -12,9 +12,12 @@ from functools import wraps
 def use_wind(func):
     @wraps(func)
     def inner(*args, **kwargs):
-        from WindPy import w
-        if not w.isconnected():
-            w.start()
-        ret = func(*args, **kwargs)
+        try:
+            from WindPy import w
+            if not w.isconnected():
+                w.start()
+            ret = func(*args, **kwargs)
+        except ImportError:
+            ret = func(*args, **kwargs)
         return ret
     return inner

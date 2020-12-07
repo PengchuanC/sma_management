@@ -7,3 +7,4 @@ __init__.py
 """
 
 from sql.preprocess.style import commit_style
+from sql.preprocess.brinson import commit_brinson

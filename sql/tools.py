@@ -15,6 +15,7 @@ from sql.commit.funds_extend import commit_holding_top_ten, commit_holding_stock
 from sql.commit.tradingday import commit_tradingdays
 from sql.commit.stock import commit_stock, commit_industry_sw, commit_stock_expose, commit_stock_daily_quote
 from sql.commit import commit_style
+from sql.commit import commit_brinson
 
 
 __all__ = (
@@ -74,3 +75,4 @@ def commit_preprocess():
     主要指组合风格分析及brinson归因等
     """
     commit_style()
+    commit_brinson()

@@ -183,7 +183,7 @@ def commit_index_component():
     data.secucode = data.secucode.apply(lambda x: indexes.get(x))
     for _, r in data.iterrows():
         r = r.to_dict()
-        models.IndexComponent.objects.update_or_create(secucode=r['secucode'], date=r['date'], defaults=r)
+        models.IndexComponent.objects.update_or_create(secucode=r['secucode'], stockcode=r['stockcode'], date=r['date'], defaults=r)
 
 
 __all__ = [
