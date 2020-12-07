@@ -49,7 +49,7 @@ def commit_fund_associate():
     funds_jy = read_oracle(sql)
     for _, row in funds_jy.iterrows():
         fund = models.Funds.objects.get(secucode=row.secucode)
-        models.FundAssociate.objects.update_or_create(secucode=fund, defaults={'relate': row.relate})
+        models.FundAssociate.objects.update_or_create(relate=row.relate, secucode=fund)
 
 
 def commit_fund_asset_allocate():
