@@ -90,7 +90,10 @@ def _commit_index_quote(codelist: list, func: callable):
 @use_wind
 def get_index_basic_info_wind():
     """获取指数数据-wind"""
-    from WindPy import w
+    try:
+        from WindPy import w
+    except:
+        return
     basic = models.IndexBasicInfo.objects.values_list('secucode')
     basic = [x[0] for x in basic]
     indexes = get_indexes()
@@ -118,7 +121,10 @@ def commit_basic_info_wind():
 @use_wind
 def get_index_quote_wind(secucode):
     """获取指数收盘价-wind"""
-    from WindPy import w
+    try:
+        from WindPy import w
+    except:
+        return
     last = models.IndexQuote.objects.filter(secucode=secucode).last()
     if last:
         date = last.date
