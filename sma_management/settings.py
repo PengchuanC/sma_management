@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'questionnaire.apps.QuestionnaireConfig',
     'rest_framework',
     'channels',
+    'drf_yasg'
 ]
 
 MIDDLEWARE = [
