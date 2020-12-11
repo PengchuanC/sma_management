@@ -179,3 +179,18 @@ class FundAnnouncement(models.Model):
 
     def __str__(self):
         return self.secucode.secucode
+
+
+# 基金管理人
+class FundAdvisor(models.Model):
+    secucode = models.ForeignKey(Funds, to_field='secucode', on_delete=models.CASCADE, verbose_name='基金代码')
+    advisorcode = models.IntegerField(verbose_name='管理人代码', null=False)
+    advisorname = models.CharField(verbose_name='管理人名称', max_length=50, null=False)
+
+    class Meta:
+        db_table = 'sma_fund_advisor'
+        verbose_name = '基金管理人'
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.secucode.secucode

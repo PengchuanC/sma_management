@@ -90,6 +90,11 @@ class FundAnnouncementAdmin(admin.ModelAdmin):
     list_display = ('secucode', 'secuabbr', 'date', 'title', 'content')
 
 
+@admin.register(models.FundAdvisor)
+class FundAdvisorAdmin(admin.ModelAdmin):
+    list_display = ('secucode', 'advisorcode', 'advisorname')
+
+
 # 组合部分
 @admin.register(models.Portfolio)
 class PortfolioAdmin(admin.ModelAdmin):

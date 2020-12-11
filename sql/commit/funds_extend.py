@@ -48,6 +48,24 @@ def commit_announcement():
             print(e.__class__)
 
 
+def commit_fund_advisor():
+    """同步基金管理人名称数据
+
+    Returns:
+
+    """
+    data = read_oracle(funds.fund_advisor)
+    fund = models.Funds.objects.all()
+    fund = {x.secucode: x for x in fund}
+    exists = models.FundAdvisor.objects.all()
+    exists = [x.secucode for x in exists]
+    data = data[~data.secucode.isin(exists)]
+    data.secucode = data.secucode.apply(lambda x: fund.get(x))
+    data = data[data.secucode.notnull()]
+    model = [models.FundAdvisor(**x) for _, x in data.iterrows()]
+    models.FundAdvisor.objects.bulk_create(model)
+
+
 def _commit_holding_stocks(publish: str, sql):
     """同步基金持仓数据
 
@@ -73,4 +91,4 @@ def _commit_holding_stocks(publish: str, sql):
 
 
 if __name__ == '__main__':
-    commit_holding_top_ten()
+    commit_fund_advisor()

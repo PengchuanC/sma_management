@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package tools;
+
+
+// 服务入口
+service CommandTool {
+  rpc CommitIndexGil(Request) returns (Response);
+  rpc CommitFund(Request) returns (Response);
+}
+
+
+// 结构体：请求参数
+message Request {
+  string name = 1;
+}
+
+// 结构体返回参数
+message Response {
+  bool ok = 1;
+}

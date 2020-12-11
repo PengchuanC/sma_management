@@ -29,6 +29,10 @@ urlpatterns = [
 
     path('warehouse/portfolio/', views.SimpleEmuView.get_portfolio),
     path('warehouse/portfolio/cash/', views.SimpleEmuView.get_portfolio_cash),
+    path('warehouse/complex/', views.ComplexEmuView.as_view()),
+    path('warehouse/complex/bulk/', views.ComplexEmuBulkView.as_view()),
+    path('warehouse/complex/download/', views.ComplexEmuView.download),
+    path('warehouse/complex/holding/', views.ComplexEmuView.fund_holding_ratio_http),
     path('warehouse/fundlist/', views.SimpleEmuView.get_funds),
     path('warehouse/fundnav/', views.SimpleEmuView.get_fund_nav),
     path('warehouse/history/', views.SimpleEmuView.get_trading_history),

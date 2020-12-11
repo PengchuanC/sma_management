@@ -220,3 +220,18 @@ fund_announcement = """
     ORDER BY
         "date"
 """
+
+
+# 基金管理人
+fund_advisor = """
+    SELECT
+        s.SECUCODE,
+        mi.INVESTADVISORCODE AS advisorcode,
+        mi.INVESTADVISORABBRNAME AS advisorname
+    FROM
+        JYDB.MF_FUNDARCHIVES mf
+    JOIN JYDB.SECUMAIN s ON
+        mf.INNERCODE = s.INNERCODE
+    JOIN JYDB.MF_INVESTADVISOROUTLINE mi ON
+        mf.INVESTADVISORCODE = mi.INVESTADVISORCODE
+"""

@@ -11,16 +11,11 @@ from sql.commit.index import (
     commit_basic_info, commit_index_quote, commit_basic_info_wind, commit_index_quote_wind, commit_index_component
 )
 from sql.commit.funds import commit_funds, commit_fund_data, commit_fund_associate, commit_fund_asset_allocate
-from sql.commit.funds_extend import commit_holding_top_ten, commit_holding_stock_detail, commit_announcement
+from sql.commit.funds_extend import *
 from sql.commit.tradingday import commit_tradingdays
 from sql.commit.stock import commit_stock, commit_industry_sw, commit_stock_expose, commit_stock_daily_quote
 from sql.commit import commit_style
 from sql.commit import commit_brinson
-
-
-__all__ = (
-    'commit_index', 'commit_index_gil', 'commit_index_wind', 'commit_fund', 'commit_trading_day', 'commit_stocks',
-)
 
 
 def commit_index_gil():
@@ -56,6 +51,7 @@ def commit_fund():
     commit_holding_top_ten()
     commit_holding_stock_detail()
     commit_announcement()
+    commit_fund_advisor()
 
 
 def commit_trading_day():
@@ -76,3 +72,8 @@ def commit_preprocess():
     """
     commit_style()
     commit_brinson()
+
+
+__all__ = (
+    'commit_index', 'commit_index_gil', 'commit_index_wind', 'commit_fund', 'commit_trading_day', 'commit_stocks',
+)

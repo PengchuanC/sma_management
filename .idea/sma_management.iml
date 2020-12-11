@@ -19,6 +19,10 @@
     <orderEntry type="jdk" jdkName="Python 3.9" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
+  <component name="PyDocumentationSettings">
+    <option name="format" value="GOOGLE" />
+    <option name="myDocStringFormat" value="Google" />
+  </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Django" />
     <option name="TEMPLATE_FOLDERS">

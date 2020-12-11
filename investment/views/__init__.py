@@ -6,5 +6,5 @@ from .analysis import *
 from .analysis_attribute import *
 from .backtest import BackTestView, BacktestWeightView
 from .overview import *
-from .trade_emulate import SimpleEmuView
+from .trade_emulate import SimpleEmuView, ComplexEmuView, ComplexEmuBulkView
 from .announcement import AnnouncementViews
