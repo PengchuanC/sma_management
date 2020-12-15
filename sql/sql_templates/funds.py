@@ -25,7 +25,7 @@ acc_nav = """
 """
 
 
-# 基金累计净值数据
+# 基金复权净值数据
 adj_nav = """
     SELECT
         s.secucode AS secucode,

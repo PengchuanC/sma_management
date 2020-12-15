@@ -5,6 +5,7 @@ from concurrent.futures import ThreadPoolExecutor
 from dateutil.parser import parse
 from django.forms import model_to_dict
 from django.http import HttpResponse, Http404
+from django.core.cache import cache
 from rest_framework.views import APIView, Response
 from investment.utils.backtest import BackTest, BTConfig
 from investment.utils.calc import Formula
@@ -22,6 +23,11 @@ class BackTestView(APIView):
     date = None
 
     def get(self, request):
+        resp = cache.get_or_set('backtest', self.process(request))
+        return Response(resp)
+
+    @staticmethod
+    def process(request):
         date = request.query_params.get('date')
         if not date:
             date = datetime.date.today()
@@ -42,7 +48,7 @@ class BackTestView(APIView):
         data = pd.merge(data, index, left_index=True, right_index=True)
         data = data[data.index < date]
         perf = data.copy()
-        perf = self.calc_performance(perf)
+        perf = BackTestView.calc_performance(perf)
         perf = perf.reset_index()
         names = {
             'cash': '现金型', 'fix': '固收型', 'equal': '平衡型', 'increase': '成长型', 'equity': '权益型',
@@ -69,7 +75,7 @@ class BackTestView(APIView):
         data = data.to_dict(orient='records')
         perf = perf.to_dict(orient='records')
         fund_date = date
-        return Response({'nav': data, 'perf': perf})
+        return {'nav': data, 'perf': perf}
 
     @staticmethod
     def get_index():
@@ -126,8 +132,12 @@ class BackTestView(APIView):
 
 
 class BacktestWeightView(APIView):
+    def get(self, request):
+        w = cache.get_or_set('backtest_weight', self.process(request))
+        return Response(w)
+
     @staticmethod
-    def get(request):
+    def process(request):
         smooth = request.query_params.get('smooth', False)
         data = models.AssetWeight.objects.filter(date__gte='2014-01-01').all()
         data = [model_to_dict(x) for x in data]
@@ -156,7 +166,7 @@ class BacktestWeightView(APIView):
         tpe.submit(write_file, w, file_dir)
 
         w = w.to_dict(orient='records')
-        return Response(w)
+        return w
 
     @staticmethod
     def download(request):

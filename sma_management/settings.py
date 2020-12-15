@@ -165,3 +165,13 @@ CORS_ALLOW_HEADERS = (
 
 # channels设置
 ASGI_APPLICATION = 'sma_management.asgi.application'
+
+
+# 缓存设置
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+        'TIMEOUT': 3600,
+    }
+}
