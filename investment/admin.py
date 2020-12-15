@@ -56,6 +56,7 @@ class FundPriceAdmin(admin.ModelAdmin):
 @admin.register(models.FundAdjPrice)
 class FundAdjPriceAdmin(admin.ModelAdmin):
     list_display = ('secucode', 'nav', 'adj_nav', 'date')
+    list_per_page = 60
 
 
 @admin.register(models.FundPurchaseAndRedeem)
