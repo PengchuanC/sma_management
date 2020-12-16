@@ -46,4 +46,8 @@ urlpatterns = [
     path('backtest/download/', views.BackTestView.download),
     path('backtest/weight/', views.BacktestWeightView.as_view()),
     path('backtest/weight/download/', views.BacktestWeightView.download),
+
+    path('mock/date/', views.change_date),
+    path('mock/detail/', views.change_detail),
+    path('mock/', views.mock),
 ]

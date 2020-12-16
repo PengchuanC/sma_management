@@ -129,3 +129,7 @@ webencodings==0.5.1
 xlrd==1.2.0
 xlwt==1.3.0
 zope.interface==5.2.0
+
+numpy~=1.19.2+mkl
+cvxopt~=1.2.5
+scipy~=1.5.3
