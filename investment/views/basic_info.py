@@ -1,14 +1,16 @@
 """
 获取全部组合和组合基础信息
 """
+import pandas as pd
 
 from collections import Counter
-from django.db.models import Sum
+from django.db.models import Sum, Count, Max
 from rest_framework.views import Response, APIView
 from dateutil.parser import parse
+from django.http import JsonResponse
 
-from investment.models import portfolio
-from investment.utils.date import latest_trading_day
+from investment.models import portfolio, Balance, Income
+from investment.utils.date import latest_trading_day, quarter_end_in_date_series
 
 
 class BasicInfo(APIView):
@@ -91,3 +93,57 @@ class Capital(APIView):
                 pr.append(_pr)
                 count += 1
         return Response({'total': ret, 'date': date.strftime('%Y-%m-%d'), 'detail': pr})
+
+
+class ProfitAttribute(object):
+    """全部sma产品盈亏分布情况
+
+    """
+
+    @staticmethod
+    def quarter(request):
+        """每季度增加资金
+
+        Args:
+            request: Django request object
+
+        Returns:
+            季度末新增资金
+
+        """
+        dates = Balance.objects.filter(port_code__valid=True).values('date').order_by('date').distinct()
+        dates = [x['date'] for x in dates]
+        dates = quarter_end_in_date_series(dates)
+        asset = Balance.objects.filter(
+            port_code__valid=True, date__in=dates
+        ).values('date').annotate(s=Sum('asset'), c=Count('asset'))
+        asset = [x for x in asset]
+        asset = [{'date': 0, 's': 0, 'c': 0}] + asset
+        asset = pd.DataFrame(asset).set_index('date')
+        asset = asset.diff(1).dropna()
+        total = asset.sum()
+        asset = asset.reset_index().to_dict(orient='records')
+        total = total.to_dict()
+        return JsonResponse({'data': asset, 'total': total})
+
+    @staticmethod
+    def profit(request):
+        """全部sma产品盈亏分布情况
+
+        Args:
+            request: Django request object
+
+        Returns:
+
+        """
+        profit_sum = Income.objects.filter(port_code__valid=True).values('port_code').annotate(s=Sum('change'))
+        profit = {'up': 0, 'down': 0}
+        count = {'up': 0, 'down': 0}
+        for p in profit_sum:
+            if p['s'] > 0:
+                count['up'] += 1
+                profit['up'] += p['s']
+            else:
+                count['down'] += 1
+                profit['down'] += p['s']
+        return JsonResponse({'profit': profit, 'count': count})

@@ -12,8 +12,6 @@ from django.http import JsonResponse
 from investment import models
 from investment.views.backtest import BackTestView
 
-from investment.utils.calc import Formula
-
 
 def change_date(request):
     """获取全部调仓日期
@@ -94,9 +92,10 @@ def mock(request):
             mock_holding[x.secucode] -= float(x.order_value)
             mock_holding['cny'] += -float(x.operation_amount)
 
-        # 转入和转出是相对应的，转换操作会影响费用
+        # 转入和转出是相对应的，有转出就有转入，转换操作会影响费用
         elif '转出' in op:
             mock_holding[x.secucode] += float(x.order_value)
+            mock_holding['cny'] += float(x.fee)
         else:
             mock_holding[x.secucode] -= float(x.order_value)
             mock_holding['cny'] += float(x.fee)
