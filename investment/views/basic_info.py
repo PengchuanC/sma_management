@@ -122,9 +122,12 @@ class ProfitAttribute(object):
         asset = pd.DataFrame(asset).set_index('date')
         asset = asset.diff(1).dropna()
         total = asset.sum()
-        asset = asset.reset_index().to_dict(orient='records')
+        asset = asset.reset_index()
+        asset.date = asset.date.apply(lambda x: x.strftime('%Y%m'))
+        asset = asset.to_dict(orient='records')
         total = total.to_dict()
-        return JsonResponse({'data': asset, 'total': total})
+        asset.append({'date': '合计', 's': total['s'], 'c': total['c']})
+        return JsonResponse({'data': asset})
 
     @staticmethod
     def profit(request):

@@ -133,3 +133,4 @@ zope.interface==5.2.0
 numpy~=1.19.2+mkl
 cvxopt~=1.2.5
 scipy~=1.5.3
+itsdangerous~=1.1.0

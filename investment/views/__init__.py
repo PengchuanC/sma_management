@@ -1,5 +1,5 @@
 from .mvo import IndexInfoViews, MvoViews
-from .test import TestViews
+from .test import TestViews, token
 from .basic_info import BasicInfo, Capital, ProfitAttribute
 from .history import HistoryView
 from .analysis import *
