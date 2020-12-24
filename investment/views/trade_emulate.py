@@ -296,7 +296,6 @@ class ComplexEmuView(APIView):
         p_fee, _ = p.calc_purchase_fee(amount)
         records.append({'secucode': dst, 'operate': '转入', 'amount': amount, 'fee': round(p_fee, 2), 'key': count})
         template = pd.DataFrame(template)
-        template.to_clipboard(index=False)
         self.generate_instruct(template)
         return records
 
