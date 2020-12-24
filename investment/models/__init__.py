@@ -11,3 +11,4 @@ from .funds import *
 from .tradingday import TradingDays
 from .stock import *
 from .backtest import *
+from .client_questionnaire import *

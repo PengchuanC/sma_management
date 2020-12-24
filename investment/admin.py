@@ -174,6 +174,14 @@ class PortfolioBrinsonAdmin(admin.ModelAdmin):
     list_display = ('port_code', 'index', 'date', 'industry', 'q1', 'q2', 'q3', 'q4')
 
 
+@admin.register(models.ClientQ)
+class ClientQAdmin(admin.ModelAdmin):
+    list_display = (
+        'port_code', 'risk', 'maturity', 'arr', 'volatility', 'fluidity', 'age', 'experience', 'plan', 'tolerance',
+        'alter_limit', 'cross_border_limit'
+    )
+
+
 # 回测部分
 @admin.register(models.AssetWeight)
 class AssetWeightAdmin(admin.ModelAdmin):

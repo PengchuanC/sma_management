@@ -5,7 +5,9 @@ overview
 """
 
 from django.db.models import F
+from django.forms.models import model_to_dict
 from django.http import JsonResponse
+from asgiref.sync import sync_to_async
 from rest_framework.views import APIView, Response
 from investment import models
 from investment.views.analysis import FundHoldingView
@@ -39,3 +41,17 @@ class OverviewView(APIView):
             {'name': '货币', 'value': float(r['monetary'])}
         ]
         return JsonResponse({'data': ret})
+
+    @staticmethod
+    async def question(request):
+        """客户评测
+
+        Args:
+            request:
+
+        Returns:
+
+        """
+        port_code = request.GET.get('portCode')
+        data = await sync_to_async(models.ClientQ.objects.get)(port_code=port_code)
+        return JsonResponse({'data': model_to_dict(data)})

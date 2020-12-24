@@ -27,7 +27,7 @@ class TestViews(APIView):
         return Response(r)
 
 
-def token(request):
+async def token(request):
     username = request.GET.get('username')
     password = request.GET.get('password')
     token_ = tjs.dumps({'username': username, 'password': password})
