@@ -7,7 +7,7 @@ overview
 from django.db.models import F
 from django.forms.models import model_to_dict
 from django.http import JsonResponse
-from asgiref.sync import sync_to_async
+from channels.db import database_sync_to_async
 from rest_framework.views import APIView, Response
 from investment import models
 from investment.views.analysis import FundHoldingView
@@ -53,5 +53,5 @@ class OverviewView(APIView):
 
         """
         port_code = request.GET.get('portCode')
-        data = await sync_to_async(models.ClientQ.objects.get)(port_code=port_code)
+        data = await database_sync_to_async(models.ClientQ.objects.get)(port_code=port_code)
         return JsonResponse({'data': model_to_dict(data)})
