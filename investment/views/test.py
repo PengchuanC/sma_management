@@ -7,11 +7,6 @@ test
 """
 
 from rest_framework.views import Response, APIView
-from django.http import JsonResponse
-from itsdangerous import TimedJSONWebSignatureSerializer
-
-
-tjs = TimedJSONWebSignatureSerializer(secret_key='hxb xabj789323121=')
 
 
 class TestViews(APIView):
@@ -25,10 +20,3 @@ class TestViews(APIView):
         r = o.optimize([0.02, 0.05, 0.12, 0.15])
 
         return Response(r)
-
-
-async def token(request):
-    username = request.GET.get('username')
-    password = request.GET.get('password')
-    token_ = tjs.dumps({'username': username, 'password': password})
-    return JsonResponse({'token': str(token_)})

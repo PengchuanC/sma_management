@@ -43,7 +43,6 @@ urlpatterns = [
     path('warehouse/purchase/', views.SimpleEmuView.get_purchase_fee),
 
     path('test/', views.TestViews.as_view()),
-    path('test/token/', views.token),
 
     path('mvo/index/', views.IndexInfoViews.as_view()),
     path('mvo/optimize/', views.MvoViews.as_view()),
