@@ -67,3 +67,11 @@ class BTConfig(object):
         data = [model_to_dict(x) for x in data]
         data = pd.DataFrame(data)
         return data
+
+
+class IBTConfig(BTConfig):
+    start = date(2007, 1, 1)
+    equity = ["H00300", "H00905", "000832", "HSITR"]
+    bond = ["Y00001", "Y00045"]
+    alter = ["AU9999.SGE"]
+    cash = ["H11025"]

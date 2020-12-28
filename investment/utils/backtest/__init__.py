@@ -1,2 +1,2 @@
-from .backtest import BackTest
-from .configs import BTConfig, Config
+from .backtest import BackTest, IBackTest
+from .configs import BTConfig, Config, IBTConfig

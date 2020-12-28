@@ -7,7 +7,7 @@ from django.forms import model_to_dict
 from django.http import HttpResponse, Http404
 from django.core.cache import cache
 from rest_framework.views import APIView, Response
-from investment.utils.backtest import BackTest, BTConfig
+from investment.utils.backtest import BackTest, BTConfig, IBTConfig, IBackTest
 from investment.utils.calc import Formula
 from investment import models
 from investment.utils.download import file_dir
@@ -27,15 +27,15 @@ class BackTestView(APIView):
         return Response(resp)
 
     @staticmethod
-    def process(request):
+    def process(request, btc=BTConfig, bt=BackTest):
         date = request.query_params.get('date')
         if not date:
             date = datetime.date.today()
         else:
             date = parse(date).date()
-        btc = BTConfig()
+        btc = btc()
         btc.end = date
-        bt = BackTest(btc)
+        bt = bt(btc)
         bt.init()
         port = {'cash': 0.02, 'fix': 0.05, 'equal': 0.10, 'increase': 0.15, 'equity': 0.18}
         data = []
@@ -82,7 +82,7 @@ class BackTestView(APIView):
         """获取指数回测业绩"""
         codes = {'000906': 'zz800', 'Y00001': 'zcf'}
         data = models.IndexQuote.objects.filter(
-            secucode__in=codes.keys(), date__gte='2017-01-01'
+            secucode__in=codes.keys(), date__gte='2007-01-01'
         ).values('secucode', 'date', 'close')
         data = pd.DataFrame(data)
         data.close = data.close.astype('float')
@@ -177,3 +177,14 @@ class BacktestWeightView(APIView):
                 response['Content-Disposition'] = 'inline; filename=' + file_path.name
                 return response
         raise Http404
+
+
+class BackTestIndexView(APIView):
+    """指数组合回测
+
+    回测分为基金组合和指数组合，此处处理指数组合
+    """
+    @staticmethod
+    def get(request):
+        data = BackTestView.process(request, btc=IBTConfig, bt=IBackTest)
+        return Response(data)

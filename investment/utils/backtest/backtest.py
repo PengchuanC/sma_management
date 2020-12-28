@@ -2,8 +2,8 @@ import datetime
 import pandas as pd
 
 from copy import deepcopy
-from .configs import BTConfig
-from ...models import FundAdjPrice as FundNav
+from .configs import BTConfig, IBTConfig
+from ...models import FundAdjPrice as FundNav, IndexQuote as IQ
 
 
 class BackTest(object):
@@ -37,7 +37,6 @@ class BackTest(object):
 
     def load_funds_adj_nav(self):
         """载入基金复权单位净值"""
-        f = FundNav
         funds = self.c.equity + self.c.bond + self.c.alter + self.c.cash
         query = FundNav.objects.filter(
             secucode__in=funds, date__range=[self.c.start, self.c.end]
@@ -76,7 +75,8 @@ class BackTest(object):
         :param date: 指定日期 : datetime.date
         """
         # 日期重设为小于当前日期的第一个权重存在的日期
-        date = [x for x in weight_df.index if x < date][-1]
+        dates = [x for x in weight_df.index if x < date]
+        date = dates[-1] if dates else weight_df.index[0]
         self.change_date = date
         ws = weight_df.loc[date]
         w = {}
@@ -125,3 +125,24 @@ class BackTest(object):
             ret = self.back_test_normal(weight, self.nav)
         ret = pd.DataFrame(ret, columns=['date', f'{target_risk}']).set_index('date')
         return ret
+
+
+class IBackTest(BackTest):
+    """针对指数构建的回测组合"""
+
+    def __init__(self, config: IBTConfig):
+        self.c = deepcopy(config)
+        super().__init__(config)
+
+    def load_funds_adj_nav(self):
+        """载入指数收盘价"""
+        indexes = self.c.equity + self.c.bond + self.c.alter + self.c.cash
+        query = IQ.objects.filter(
+            secucode__in=indexes, date__range=[self.c.start, self.c.end]
+        ).values('date', 'secucode', 'close')
+        df = pd.DataFrame(query)
+        df.close = df.close.astype('float')
+        df = pd.pivot_table(df, index=['date'], columns=['secucode'], values=['close'])['close']
+        df = df.dropna(how='any')
+        df.columns = [x for x in df.columns]
+        self.nav = df
