@@ -44,8 +44,8 @@ class BackTestView(APIView):
             ret.columns = [name]
             data.append(ret)
         data = pd.concat(data, axis=1)
-        index = BackTestView.get_index()
-        data = pd.merge(data, index, left_index=True, right_index=True, how='left')
+        index = BackTestView.get_index(date=data.index[0])
+        data = pd.merge(data, index, left_index=True, right_index=True, how='inner')
         data = data[data.index < date]
         perf = data.copy()
         perf = BackTestView.calc_performance(perf)
@@ -78,11 +78,11 @@ class BackTestView(APIView):
         return {'nav': data, 'perf': perf}
 
     @staticmethod
-    def get_index():
+    def get_index(date='2017-01-01'):
         """获取指数回测业绩"""
         codes = {'000906': 'zz800', 'Y00001': 'zcf'}
         data = models.IndexQuote.objects.filter(
-            secucode__in=codes.keys(), date__gte='2007-01-01'
+            secucode__in=codes.keys(), date__gte=date
         ).values('secucode', 'date', 'close')
         data = pd.DataFrame(data)
         data.close = data.close.astype('float')
