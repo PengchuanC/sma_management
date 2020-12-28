@@ -186,5 +186,5 @@ class BackTestIndexView(APIView):
     """
     @staticmethod
     def get(request):
-        data = BackTestView.process(request, btc=IBTConfig, bt=IBackTest)
+        data = cache.get_or_set('index_backtest', BackTestView.process(request, btc=IBTConfig, bt=IBackTest))
         return Response(data)
