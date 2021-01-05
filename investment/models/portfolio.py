@@ -245,3 +245,20 @@ class PortfolioBrinson(models.Model):
 
     def __str__(self):
         return self.port_code.port_code
+
+
+# TA对照表
+class Sales(models.Model):
+    port_code = models.ForeignKey(Portfolio, to_field='port_code', on_delete=models.CASCADE, verbose_name='组合代码')
+    name = models.CharField(verbose_name='姓名', max_length=20, null=False)
+    mobile = models.CharField(verbose_name='手机', max_length=20)
+    mail = models.CharField(verbose_name='邮箱', max_length=50)
+
+    class Meta:
+        db_table = 'sma_sales'
+        verbose_name = '组合对应销售人员'
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.port_code.port_code
+

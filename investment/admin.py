@@ -182,6 +182,11 @@ class ClientQAdmin(admin.ModelAdmin):
     )
 
 
+@admin.register(models.Sales)
+class SalesAdmin(admin.ModelAdmin):
+    list_display = ('port_code', 'name', 'mobile', 'mail')
+
+
 # 回测部分
 @admin.register(models.AssetWeight)
 class AssetWeightAdmin(admin.ModelAdmin):

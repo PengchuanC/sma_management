@@ -35,7 +35,6 @@ from copy import deepcopy
 from investment import models
 from investment.utils import fund as fund_util
 
-
 # 投资指令模板
 from investment.utils.download import file_dir
 
@@ -90,7 +89,7 @@ class PurchaseFee(object):
         for d in self.data:
             if all({money / 10000 >= d.low, d.high is None}):
                 return d.fee, d.fee
-            elif d.low <= money/10000 < d.high:
+            elif d.low <= money / 10000 < d.high:
                 return float(d.fee) * money, d.fee
         return None
 
@@ -288,13 +287,16 @@ class ComplexEmuView(APIView):
             r_fee = rf.calc_fee_ratio(date)
             records.append({
                 'secucode': secucode, 'operate': '转出', 'amount': share,
-                'fee': round(r_fee*nav*share, 2), 'key': count
+                'fee': round(r_fee * nav * share, 2), 'key': count, 'secuname': src_['secuname']
             })
             count += 1
         amount = round(float(amount), 2)
         p = PurchaseFee(dst)
         p_fee, _ = p.calc_purchase_fee(amount)
-        records.append({'secucode': dst, 'operate': '转入', 'amount': amount, 'fee': round(p_fee, 2), 'key': count})
+        name = models.Funds.objects.get(secucode=dst).secuname
+        records.append({
+            'secucode': dst, 'secuname': name, 'operate': '转入', 'amount': amount, 'fee': round(p_fee, 2), 'key': count
+        })
         template = pd.DataFrame(template)
         self.generate_instruct(template)
         return records
@@ -395,6 +397,7 @@ class ComplexEmuBulkView(ComplexEmuView):
         template = []
         records = []
         count = 0
+        src_name = {x['secucode']: x['secuname'] for x in src}
         for dst_ in dst:
             secucode = dst_['secucode']
             need_amount = average
@@ -421,14 +424,18 @@ class ComplexEmuBulkView(ComplexEmuView):
                     r = RansomFee(sell_code)
                     r_fee = r.calc_fee_ratio(date) * shares * nav
                     records.append(
-                        {'secucode': sell_code, 'operate': '转出', 'amount': shares, 'fee': r_fee, 'key': count})
-                    update = OrderedDict({'基金代码': port_code, '证券代码': sell_code, '指令数量': shares, '转入证券代码': secucode})
+                        {'secucode': sell_code, 'secuname': src_name[sell_code], 'operate': '转出', 'amount': shares,
+                         'fee': r_fee, 'key': count})
+                    update = OrderedDict(
+                        {'基金代码': port_code, '基金名称': dst_['secuname'], '证券代码': sell_code, '指令数量': shares,
+                         '转入证券代码': secucode})
                     t.update(update)
                     template.append(t)
                     count += 1
             p = PurchaseFee(secucode)
             p_amount, _ = p.calc_purchase_fee(float(average))
-            records.append({'secucode': secucode, 'operate': '转入', 'amount': average, 'fee': p_amount, 'key': count})
+            records.append({'secucode': secucode, 'secuname': dst_['secuname'], 'operate': '转入', 'amount': average,
+                            'fee': p_amount, 'key': count})
             count += 1
         template = pd.DataFrame(template)
         self.generate_instruct(template)

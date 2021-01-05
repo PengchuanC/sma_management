@@ -4,7 +4,7 @@
 import pandas as pd
 
 from collections import Counter
-from django.db.models import Sum, Count, Max
+from django.db.models import Sum, Count
 from rest_framework.views import Response, APIView
 from dateutil.parser import parse
 from django.http import JsonResponse
@@ -21,7 +21,7 @@ class BasicInfo(APIView):
             balance__date=last
         ).values(
             'port_code', 'port_type', 'port_name', 'launch_date', 'balance__net_asset', 'init_money',
-            'balance__unit_nav', 'balance__acc_nav', 'balance__savings'
+            'balance__unit_nav', 'balance__acc_nav', 'balance__savings', 'sales__name'
         )
         purchase = portfolio.Transactions.objects.filter(operation='TA申购').values('port_code').annotate(
             money=Sum('operation_amount'))
@@ -34,7 +34,7 @@ class BasicInfo(APIView):
         profit = {x['port_code']: x['profit'] for x in profit}
         rename = {
             'balance__net_asset': 'net_asset', 'balance__unit_nav': 'nav', 'balance__acc_nav': 'nav_acc',
-            'balance__savings': 'cash'
+            'balance__savings': 'cash', 'sales__name': 'fa'
         }
         f_ports = []
         pt = {1: '现金型', 2: '固收型', 3: '平衡型', 4: '成长型', 5: '权益型'}
@@ -52,7 +52,8 @@ class BasicInfo(APIView):
             f_ports.append(p)
             count += 1
             total += float(p['net_asset'])
-        return Response({'data': f_ports, 'num': count, 'total': total, 'avg': total / count})
+        return Response(
+            {'data': f_ports, 'num': count, 'total': total, 'avg': total / count, 'last': last.strftime('%Y-%m-%d')})
 
 
 class Capital(APIView):
@@ -66,9 +67,9 @@ class Capital(APIView):
         else:
             date = parse(date).date()
         date = portfolio.Balance.objects.filter(date__lte=date).last().date
-        rename = {'TA申购': 'purchase', 'TA赎回': 'ransom'}
+        rename = {'TA申购冲现': 'purchase', 'TA赎回冲现': 'ransom'}
         ret = portfolio.Transactions.objects.filter(
-            date=date, operation__in=['TA申购', 'TA赎回'], port_code__balance__date=date
+            date=date, operation__in=['TA申购冲现', 'TA赎回冲现'], port_code__balance__date=date
         ).values('operation').annotate(amount=Sum('operation_amount')).values(
             'operation', 'amount', 'port_code__balance__unit_nav'
         )

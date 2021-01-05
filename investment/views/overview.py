@@ -19,6 +19,7 @@ class OverviewView(APIView):
     def get(request):
         """产品净值曲线"""
         port_code = request.query_params.get('portCode')
+        base = models.Portfolio.objects.get(port_code=port_code).base
         p = models.Balance.objects.filter(port_code=port_code).annotate(p=F('unit_nav')).values('date', 'p')
         b = models.ValuationBenchmark.objects.filter(port_code=port_code).annotate(b=F('unit_nav')).values('date', 'b')
         b = {x['date']: x['b'] for x in b}
@@ -26,7 +27,7 @@ class OverviewView(APIView):
         for p_ in p:
             date = p_['date']
             ret.append({'date': date, 'p': p_['p'], 'b': b[date]})
-        return Response(ret)
+        return Response({'data': ret, 'base': base})
 
     @staticmethod
     def asset_allocate(request):

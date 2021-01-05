@@ -150,7 +150,7 @@ def format_response(response: str, time: str):
         else:
             price = float(item[6])
             prev = float(item[3])
-        yield {'secucode': code, 'date': date, 'time': time, 'price': price, 'prev_close': prev}
+        yield {'secucode_id': code, 'date': date, 'time': time, 'price': price, 'prev_close': prev}
 
 
 async def insert(values: List[dict]):
@@ -163,8 +163,8 @@ async def insert(values: List[dict]):
 
     """
     sql = Price.insert()
-    with database as db:
-        db.execute(sql, values)
+    async with database as db:
+        await db.execute_many(sql, values)
 
 
 def chunk(array, size=1):
@@ -179,8 +179,8 @@ async def commit(stocks: List[str]):
     resp: str = await request(stocks)
     time = datetime.datetime.now().time().strftime('%H:%M:%S')
     ret = format_response(resp, time)
-    print(list(ret))
-    # insert(ret)
+    ret = list(ret)
+    await insert(ret)
 
 
 async def main():

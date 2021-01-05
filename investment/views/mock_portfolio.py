@@ -112,10 +112,11 @@ def mock(request):
     index = [x.strftime('%Y-%m-%d') for x in nav.index]
     ret = pd.DataFrame(ret.T, columns=['调仓组合', '不调仓组合'], index=index)
     ret = ret / ret.iloc[0, :]
+    last = ret.index[-1]
     perf = BackTestView.calc_performance(ret)
     perf = perf.reset_index()
     perf = perf.to_dict(orient='records')
     ret = np.round(ret, 4)
     ret['date'] = ret.index
     ret = ret.to_dict(orient='records')
-    return JsonResponse({'data': ret, 'perf': perf})
+    return JsonResponse({'data': ret, 'perf': perf, 'last': last})

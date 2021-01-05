@@ -7,6 +7,7 @@ import datetime
 import pandas as pd
 
 from dateutil.relativedelta import relativedelta
+from dateutil.parser import parse
 from django.db.models import Max
 from rest_framework.views import APIView, Response
 
@@ -69,15 +70,32 @@ class AttributeChartView(APIView):
         if not date:
             date = datetime.date.today().strftime('%Y-%m-%d')
         d: IncomeAsset = IncomeAsset.objects.filter(port_code=port_code, date__lte=date).last()
-        # a = Income.objects.filter(port_code=port_code, date__lte=date).last().net_asset
+        date = d.date.strftime('%Y-%m-%d')
         cp = float(Income.objects.filter(port_code=port_code, date__lte=date).last().unit_nav) - 1
         a = d.total_profit
         data = {
             'total_profit': round(cp * 100, 2), 'equity': round(cp * float(d.equity/a) * 100, 2),
             'bond': round(cp*float(d.bond/a)*100, 2), 'alter': round(cp*float(d.alter/a)*100, 2),
-            'moeny': round(cp*float(d.money/a)*100, 2)
+            'money': round(cp*float(d.money/a)*100, 2)
         }
-        return Response(data)
+        # 周度区间
+        ltw = AttributeChartView.last_trading_day_of_last_week(date)
+        sd: IncomeAsset = IncomeAsset.objects.get(port_code=port_code, date=ltw)
+        scp = float(Income.objects.filter(port_code=port_code, date=ltw).last().unit_nav)
+        scp = cp + 1 - scp
+        a = d.total_profit - sd.total_profit
+        week = {}
+        for attr in ['total_profit', 'equity', 'bond', 'alter', 'money']:
+            week[attr] = round(scp * float((getattr(d, attr) - getattr(sd, attr)) / a) * 100, 2)
+        return Response({'data': data, 'week': week})
+
+    @staticmethod
+    def last_trading_day_of_last_week(date: str):
+        """上周最后一个交易日"""
+        date = parse(date).date()
+        sunday = date - datetime.timedelta(days=date.weekday()+1)
+        prev = Balance.objects.filter(date__lt=sunday).last().date
+        return prev
 
 
 class FundHoldingView(APIView):
@@ -199,6 +217,8 @@ class FundHoldingStockView(APIView):
         equity = ratio.get('stock')
         ind['ratio'] = ind['ratio'].astype('float')
         ind['ratioinequity'] = ind['ratio'] / equity
+        ret['ofnv'] = ret['ratio'] / ret['ratio'].sum()
+        ret['cumsum'] = ret['ratio'].cumsum()
         ret = ret.to_dict(orient='records')
         ind = ind.to_dict(orient='records')
         return Response({'stock': ret, 'industry': ind})
