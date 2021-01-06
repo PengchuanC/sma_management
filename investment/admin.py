@@ -192,6 +192,14 @@ class PreValueNavAdmin(admin.ModelAdmin):
     list_display = ('port_code', 'date', 'value')
 
 
+@admin.register(models.ClientPR)
+class ClientPRAdmin(admin.ModelAdmin):
+    list_display = (
+        'port_code', 'purchase_amount', 'ransom_share', 'p_open_date'
+        , 'r_open_date', 'p_confirm', 'r_confirm', 'complete'
+    )
+
+
 # 回测部分
 @admin.register(models.AssetWeight)
 class AssetWeightAdmin(admin.ModelAdmin):

@@ -277,3 +277,25 @@ class PreValuedNav(models.Model):
     def __str__(self):
         return self.port_code.port_code
 
+
+# 客户申赎申请
+class ClientPR(models.Model):
+    port_code = models.ForeignKey(Portfolio, to_field='port_code', on_delete=models.CASCADE, verbose_name='组合代码')
+    purchase_amount = models.DecimalField(verbose_name='申购金额', max_digits=18, decimal_places=2, null=True, blank=True)
+    ransom_share = models.DecimalField(verbose_name='赎回份额', max_digits=18, decimal_places=2, null=True, blank=True)
+    p_open_date = models.DateField(verbose_name='申购开放日', null=True, blank=True)
+    r_open_date = models.DateField(verbose_name='赎回开放日', null=True, blank=True)
+    p_confirm = models.IntegerField(
+        choices=((1, 'T+1'), (2, 'T+2'), (3, 'T+3'), (4, 'T+4')), verbose_name='赎回确认日', null=True, blank=True)
+    r_confirm = models.IntegerField(
+        choices=((1, 'T+1'), (2, 'T+2'), (3, 'T+3'), (4, 'T+4')), verbose_name='赎回确认日', null=True, blank=True)
+    complete = models.BooleanField(verbose_name='是否完成', default=False, blank=True)
+
+    class Meta:
+        db_table = 'sma_client_pr'
+        verbose_name = '组合客户申赎记录'
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.port_code.port_code
+
