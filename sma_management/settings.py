@@ -192,7 +192,7 @@ DATABASE_ROUTERS = ['investment.router.Router']
 Q_CLUSTER = {
     'name': 'DjangORM',
     'workers': 4,
-    'timeout': 90,
+    'timeout': 600,
     'retry': 120,
     'queue_limit': 50,
     'bulk': 10,
