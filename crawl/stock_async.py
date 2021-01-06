@@ -125,11 +125,10 @@ async def request(params: str) -> str:
     return content
 
 
-def format_response(response: str, time: str):
+def format_response(response: str):
     """格式化爬取的结果
 
     Args:
-        time: 执行爬虫的时间
         response: 响应内容
 
     Returns:
@@ -150,7 +149,7 @@ def format_response(response: str, time: str):
         else:
             price = float(item[6])
             prev = float(item[3])
-        yield {'secucode_id': code, 'date': date, 'time': time, 'price': price, 'prev_close': prev}
+        yield {'secucode_id': code, 'date': date, 'time': TIME, 'price': price, 'prev_close': prev}
 
 
 async def insert(values: List[dict]):
@@ -177,8 +176,7 @@ async def commit(stocks: List[str]):
     stocks: List[str] = [format_stock(x) for x in stocks]
     stocks: str = ','.join(stocks)
     resp: str = await request(stocks)
-    time = datetime.datetime.now().time().strftime('%H:%M:%S')
-    ret = format_response(resp, time)
+    ret = format_response(resp)
     ret = list(ret)
     await insert(ret)
 
@@ -186,6 +184,8 @@ async def commit(stocks: List[str]):
 async def main():
     stocks: List[str] = await stocks_in_portfolio()
     stocks_chunk = chunk(stocks, 20)
+    global TIME
+    TIME = datetime.datetime.now().time().strftime('%H:%M:%S')
     for sc in stocks_chunk:
         await commit(sc)
 

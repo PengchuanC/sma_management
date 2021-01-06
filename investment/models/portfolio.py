@@ -262,3 +262,18 @@ class Sales(models.Model):
     def __str__(self):
         return self.port_code.port_code
 
+
+# 每日预估净值记录
+class PreValuedNav(models.Model):
+    port_code = models.ForeignKey(Portfolio, to_field='port_code', on_delete=models.CASCADE, verbose_name='组合代码')
+    date = models.DateField(null=False, verbose_name='预估值日期')
+    value = models.DecimalField(verbose_name='预估净值', decimal_places=6, max_digits=8)
+
+    class Meta:
+        db_table = 'sma_portfolio_pre_valuation'
+        verbose_name = '组合每日预估值记录'
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.port_code.port_code
+

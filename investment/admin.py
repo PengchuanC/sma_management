@@ -187,6 +187,11 @@ class SalesAdmin(admin.ModelAdmin):
     list_display = ('port_code', 'name', 'mobile', 'mail')
 
 
+@admin.register(models.PreValuedNav)
+class PreValueNavAdmin(admin.ModelAdmin):
+    list_display = ('port_code', 'date', 'value')
+
+
 # 回测部分
 @admin.register(models.AssetWeight)
 class AssetWeightAdmin(admin.ModelAdmin):

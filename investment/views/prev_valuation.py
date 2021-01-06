@@ -69,14 +69,19 @@ class PreValuationConsumer(AsyncJsonWebsocketConsumer):
         return data
 
     @database_sync_to_async
-    def push(self):
+    async def push(self):
         """后续推送的数据"""
         holding = self.holding
         if not isinstance(holding, pd.DataFrame):
             return
         if datetime.datetime.now().time() > datetime.time(15, 0, 20):
-            self.disconnect(0)
+            await self.disconnect(0)
             return
+        return self.calc(holding, self.equity)
+
+    @staticmethod
+    def calc(holding, equity):
+        """计算实时涨跌幅"""
         last = models.StockRealtimePrice.objects.last().time
         stocks = holding.stockcode
         stocks = models.StockRealtimePrice.objects.filter(
@@ -86,5 +91,5 @@ class PreValuationConsumer(AsyncJsonWebsocketConsumer):
         stocks['change'] = stocks.price / stocks.prev_close - 1
         data = holding.merge(stocks, left_on='stockcode', right_on='secucode', how='inner')
         data['real_change'] = data.ratio * data.change
-        data['real_change'] = data['real_change'].astype('float') / self.equity
+        data['real_change'] = data['real_change'].astype('float') / equity
         return [{'name': last.strftime('%H:%M:%S'), 'value': data.real_change.sum()}]

@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'questionnaire.apps.QuestionnaireConfig',
     'rest_framework',
     'channels',
-    'drf_yasg'
+    'drf_yasg',
+    'django_q'
 ]
 
 MIDDLEWARE = [
@@ -181,8 +182,19 @@ CACHES = {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
         'LOCATION': 'unique-snowflake',
         'TIMEOUT': 3600,
-    }
+    },
 }
 
 # 分库路由
 DATABASE_ROUTERS = ['investment.router.Router']
+
+
+Q_CLUSTER = {
+    'name': 'DjangORM',
+    'workers': 4,
+    'timeout': 90,
+    'retry': 120,
+    'queue_limit': 50,
+    'bulk': 10,
+    'orm': 'default'
+}
