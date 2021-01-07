@@ -69,15 +69,16 @@ class PreValuationConsumer(AsyncJsonWebsocketConsumer):
         return data
 
     @database_sync_to_async
-    async def push(self):
+    def push(self):
         """后续推送的数据"""
         holding = self.holding
         if not isinstance(holding, pd.DataFrame):
             return
         if datetime.datetime.now().time() > datetime.time(15, 0, 20):
-            await self.disconnect(0)
+            self.disconnect(0)
             return
-        return self.calc(holding, self.equity)
+        ret = self.calc(holding, self.equity)
+        return ret
 
     @staticmethod
     def calc(holding, equity):

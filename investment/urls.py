@@ -17,6 +17,8 @@ urlpatterns = [
     path('basic/announcement/', views.AnnouncementViews.as_view()),
     path('basic/quarter/', views.ProfitAttribute.quarter),
     path('basic/profit/', views.ProfitAttribute.profit),
+    path('basic/pr/', views.PurchaseAndRansom.as_view()),
+
     path('history/summary/', views.HistoryView.as_view()),
     path('analysis/performance/', views.PerformanceView.as_view()),
     path('analysis/attribute/', views.AttributeChartView.as_view()),

@@ -8,8 +8,9 @@ from django.db.models import Sum, Count
 from rest_framework.views import Response, APIView
 from dateutil.parser import parse
 from django.http import JsonResponse
+from django.forms.models import model_to_dict
 
-from investment.models import portfolio, Balance, Income
+from investment.models import portfolio, Balance, Income, ClientPR
 from investment.utils.date import latest_trading_day, quarter_end_in_date_series
 
 
@@ -151,3 +152,39 @@ class ProfitAttribute(object):
                 count['down'] += 1
                 profit['down'] += p['s']
         return JsonResponse({'profit': profit, 'count': count})
+
+
+class PurchaseAndRansom(APIView):
+    """客户申购赎回申请
+
+    """
+
+    @staticmethod
+    def get(request):
+        """全部未完成申请赎回记录
+
+        Args:
+            request:
+
+        Returns:
+
+        """
+        completed = ClientPR.objects.filter(complete=True).all()
+        completed = [PurchaseAndRansom.to_dict(x) for x in completed]
+        uncompleted = ClientPR.objects.filter(complete=False).all()
+        uncompleted = [PurchaseAndRansom.to_dict(x) for x in uncompleted]
+        return Response({'completed': completed, 'uncompleted': uncompleted})
+
+    @staticmethod
+    def put(request):
+        idx = request.query_params.get('id')
+        ret: ClientPR = ClientPR.objects.get(id=idx)
+        ret.complete = True
+        ret.save()
+        return Response({'code': 0})
+
+    @staticmethod
+    def to_dict(m):
+        ret = model_to_dict(m)
+        ret['key'] = ret['id']
+        return ret
