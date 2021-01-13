@@ -23,7 +23,7 @@ class BackTestView(APIView):
     date = None
 
     def get(self, request):
-        resp = cache.get_or_set('backtest', self.process(request))
+        resp = self.process(request)
         return Response(resp)
 
     @staticmethod
@@ -46,7 +46,7 @@ class BackTestView(APIView):
         data = pd.concat(data, axis=1)
         index = BackTestView.get_index(date=data.index[0])
         data = pd.merge(data, index, left_index=True, right_index=True, how='inner')
-        data = data[data.index < date]
+        data = data[data.index <= date]
         perf = data.copy()
         perf = BackTestView.calc_performance(perf)
         perf = perf.reset_index()

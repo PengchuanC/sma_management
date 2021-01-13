@@ -53,6 +53,7 @@ def category_capital_flow(category: str, date: datetime.date):
     flow['MA5_HIGH'] = flow['MA5'] + flow['SIGMA5']
     flow['MA5_LOW'] = flow['MA5'] - flow['SIGMA5']
     flow = flow.dropna(how='any')
+    flow['date'] = flow.index
     return flow
 
 

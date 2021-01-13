@@ -186,7 +186,7 @@ CACHES = {
 }
 
 # 分库路由
-DATABASE_ROUTERS = ['investment.router.Router']
+DATABASE_ROUTERS = ['investment.router.AuthRouter', 'investment.router.Router']
 
 
 Q_CLUSTER = {
