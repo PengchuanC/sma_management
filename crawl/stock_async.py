@@ -1,8 +1,9 @@
 import re
 import asyncio
 import datetime
+import time
 from math import ceil
-from functools import wraps
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 import aiohttp
 import databases
@@ -24,6 +25,9 @@ default = DATABASES['default']
 URI = f"mysql://{default['USER']}:{default['PASSWORD']}@{default['HOST']}:{default['PORT']}/{default['NAME']}" \
       f"?charset=utf8mb4"
 metadata = sa.MetaData()
+
+# 任务调度器
+scheduler = AsyncIOScheduler()
 
 # 数据来源
 basicUrl = "http://hq.sinajs.cn/"
@@ -60,10 +64,6 @@ Price = sa.Table(
     sa.Column('date', sa.DATE()),
     sa.Column('time', sa.TIME())
 )
-
-
-def cache():
-    pass
 
 
 async def stocks_in_portfolio() -> list:
@@ -190,6 +190,23 @@ async def main():
         await commit(sc)
 
 
+async def clear():
+    """清除历史交易日数据"""
+    sql = 'truncate table sma_stocks_realtime_price;'
+    async with database as db:
+        await db.execute(sql)
+
+
+def schedule():
+    scheduler.add_job(main, 'cron', day_of_week='1-5', hour='9', minute='30-59', second='*/10')
+    scheduler.add_job(main, 'cron', day_of_week='1-5', hour='10,13,14', second='*/10')
+    scheduler.add_job(main, 'cron', day_of_week='1-5', hour='11', minute='0-29', second='*/10')
+    scheduler.add_job(main, 'cron', day_of_week='1-5', hour='13', minute='0', second='10')
+    scheduler.add_job(main, 'cron', day_of_week='1-5', hour='9', minute='0', second='0')
+    scheduler.start()
+
+
 if __name__ == '__main__':
+    schedule()
     pool = asyncio.get_event_loop()
-    pool.run_until_complete(main())
+    pool.run_forever()

@@ -84,3 +84,19 @@ class StockDailyQuote(models.Model):
         verbose_name = '股票日行情'
         verbose_name_plural = verbose_name
         unique_together = (('secucode', 'date'),)
+
+
+class CapitalFlow(models.Model):
+    secucode = models.ForeignKey(Stock, verbose_name='证券代码', to_field='secucode', on_delete=models.CASCADE)
+    date = models.DateField(verbose_name='交易日期', null=False, blank=False)
+    buyvalue = models.DecimalField(verbose_name='买入金额', decimal_places=4, max_digits=18, default=0)
+    sellvalue = models.DecimalField(verbose_name='买入金额', decimal_places=4, max_digits=18, default=0)
+    netvalue = models.DecimalField(verbose_name='买入金额', decimal_places=4, max_digits=18, default=0)
+
+    class Meta:
+        db_table = "sma_stock_capital_flow"
+        verbose_name = "股票资金流动"
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.secucode.secucode

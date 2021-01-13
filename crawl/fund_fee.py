@@ -103,6 +103,8 @@ class CrawlFee(object):
             data = self.data[-3]
         elif len(self.data) == 9:
             data = self.data[-2]
+        else:
+            return
         data.columns = ['适用金额', '适用期限', '适用费率']
         data['适用金额'] = data['适用金额'].apply(judge_buy_amount)
         data['适用费率'] = data['适用费率'].apply(judge_buy_fee)

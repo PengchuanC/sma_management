@@ -232,3 +232,8 @@ class StockExposeAdmin(admin.ModelAdmin):
 @admin.register(models.StockDailyQuote)
 class StockDailyQuoteAdmin(admin.ModelAdmin):
     list_display = ('secucode', 'closeprice', 'prevcloseprice', 'date')
+
+
+@admin.register(models.CapitalFlow)
+class CapitalFlowAdmin(admin.ModelAdmin):
+    list_display = ('secucode', 'date', 'buyvalue', 'sellvalue', 'netvalue')

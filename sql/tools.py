@@ -13,7 +13,9 @@ from sql.commit.index import (
 from sql.commit.funds import commit_funds, commit_fund_data, commit_fund_associate, commit_fund_asset_allocate
 from sql.commit.funds_extend import *
 from sql.commit.tradingday import commit_tradingdays
-from sql.commit.stock import commit_stock, commit_industry_sw, commit_stock_expose, commit_stock_daily_quote
+from sql.commit.stock import (
+    commit_stock, commit_industry_sw, commit_stock_expose, commit_stock_daily_quote, commit_stock_capital_flow
+)
 from sql.commit import commit_style
 from sql.commit import commit_brinson
 
@@ -64,6 +66,7 @@ def commit_stocks():
     commit_stock_daily_quote()
     commit_industry_sw()
     commit_stock_expose()
+    commit_stock_capital_flow()
 
 
 def commit_preprocess():

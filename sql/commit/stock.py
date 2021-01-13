@@ -7,6 +7,8 @@ index
 """
 
 import datetime
+from django.db import transaction
+from copy import deepcopy
 from math import ceil
 from dateutil.parser import parse
 from sql import models
@@ -30,19 +32,42 @@ def commit_stock():
     full = read_oracle(template.stock)
     full = full.to_dict(orient='records')
     length = len(full)
-    for i, stock in enumerate(full):
-        models.Stock.objects.update_or_create(secucode=stock.pop('secucode'), defaults=stock)
-        progressbar(i, length)
+    with transaction.atomic():
+        for i, stock in enumerate(full):
+            models.Stock.objects.update_or_create(secucode=stock.pop('secucode'), defaults=stock)
+            progressbar(i, length)
 
 
 def commit_industry_sw():
     """同步股票申万行业分类"""
     full = read_oracle(template.stock_sw)
+    full.to_clipboard()
     full = full.to_dict(orient='records')
-    for stock in full:
-        f = models.Stock.objects.filter(secucode=stock.pop('secucode')).last()
-        if f:
-            models.StockIndustrySW.objects.update_or_create(secucode=f, defaults=stock)
+    stocks = list({x['secucode'] for x in full if not x['secucode'].startswith('X')})
+    all_ = models.Stock.objects.filter(secucode__in=stocks).all()
+    all_ = {x.secucode: x for x in all_}
+    with transaction.atomic():
+        for s in full:
+            # 不使用深拷贝这里导致了一个严重的问题：数据错乱
+            s = deepcopy(s)
+            c = s['secucode']
+            if any([c.startswith('4'), c.startswith('8'), c.startswith('X')]):
+                continue
+            f = all_.get(s.pop('secucode'))
+            if not f:
+                continue
+            s['secucode'] = f
+            m: models.StockIndustrySW = models.StockIndustrySW.objects.filter(secucode=f).last()
+            first = s['firstindustryname']
+            second = s['secondindustryname']
+            if m:
+                if m.firstindustryname == first:
+                    continue
+                m.firstindustryname = first
+                m.secondindustryname = second
+                m.save()
+            else:
+                models.StockIndustrySW.objects.create(secucode=f, firstindustryname=first, secondindustryname=second)
 
 
 def commit_stock_expose():
@@ -92,5 +117,29 @@ def commit_stock_daily_quote():
         models.StockDailyQuote.objects.bulk_create(r)
 
 
+def commit_stock_capital_flow():
+    """同步股票日度资金流动
+
+    首先从本地表单sma_stock_capital_flow查询最新交易日期
+    根据最新交易日期从聚源查询全部股票大于该日期的资金流动数据
+    最终只会保留本地表单sma_stocks中收录的股票的资金流动数据
+    """
+    exist = models.CapitalFlow.objects.last()
+    if exist:
+        date = exist.date
+    else:
+        date = datetime.date(2020, 1, 1)
+    sql = render(template.stock_capital_flow, '<date>', date.strftime('%Y-%m-%d'))
+    data = read_oracle(sql)
+    stocks = models.Stock.objects.all()
+    stocks = {x.secucode: x for x in stocks}
+    data.secucode = data.secucode.apply(lambda x: stocks.get(x))
+    data = data[data.secucode.notnull()]
+    ret = [models.CapitalFlow(**x) for _, x in data.iterrows()]
+    ret = chunk(ret, 5000)
+    for r in ret:
+        models.CapitalFlow.objects.bulk_create(r)
+
+
 if __name__ == '__main__':
-    commit_stock_daily_quote()
+    commit_industry_sw()

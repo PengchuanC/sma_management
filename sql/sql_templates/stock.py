@@ -10,16 +10,20 @@ stock = """
 # 股票申万行业分类
 stock_sw = """
     SELECT
-        SecuCode,
-        FirstIndustryName,
-        SecondIndustryName
-    FROM
-        jydb.secumain s
-    JOIN jydb.LC_ExgIndustry m ON
-        s.CompanyCode = m.CompanyCode
-    WHERE
-        m.Standard = 24
-        AND s.SecuCategory = 1
+            SecuCode,
+            FirstIndustryName,
+            SecondIndustryName
+        FROM
+            jydb.secumain s
+        JOIN jydb.LC_ExgIndustry m ON
+            s.CompanyCode = m.CompanyCode
+        WHERE
+            m.Standard = 24
+            AND m.IFPERFORMED=1
+            AND s.SecuCategory = 1
+            AND s.LISTEDSECTOR IN (1, 2, 6, 7)
+        ORDER BY 
+            s.secucode
 """
 
 
@@ -59,4 +63,21 @@ stock_quote = """
     WHERE
         s.SECUCATEGORY = 1
         AND qd.TRADINGDAY > TO_DATE('<date>', 'YYYY-MM-DD')
+"""
+
+
+# 股票资金流动
+stock_capital_flow = """
+    SELECT
+        s.SECUCODE,
+        qt.TRADINGDATE AS "date",
+        qt.BUYVALUE,
+        qt.SELLVALUE,
+        (qt.BUYVALUE - qt.SELLVALUE) AS NETVALUE 
+    FROM
+        JYDB.QT_TRADINGCAPITALFLOW qt
+    JOIN JYDB.SECUMAIN s ON
+        s.INNERCODE = qt.INNERCODE
+    WHERE
+        qt.TRADINGDATE >= TO_DATE('<date>', 'YYYY-MM-DD')
 """

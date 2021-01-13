@@ -1,10 +1,6 @@
-from django.test import TestCase
-
-from investment.functions import mvo
+from django.test import Client
 
 
-class OptimizeTestCase(TestCase):
-    def test_close_price(self):
-        o = mvo.Optimize()
-        o.prepare()
-        self.assertEqual(1, 1)
+client = Client()
+resp = client.get('/management/api/v1/test/')
+print(resp.content_type)
