@@ -5,7 +5,7 @@ index
 @date: 2020-09-04
 @desc: 同步指数数据
 """
-
+import datetime
 from datetime import timedelta
 from typing import List, Dict
 
@@ -32,6 +32,7 @@ def get_index_basic_info():
     added = "'" + "','".join(added) + "'"
     sql = render(template.basic_info, '<codelist>', added)
     data = read_oracle(sql)
+    data.basedate = data.basedate.apply(lambda x: x.strftime('%Y-%m-%d'))
     data = data.to_dict(orient='records')
     return data
 
@@ -57,7 +58,11 @@ def get_index_quote(secucode):
     if last:
         date = last.date
     else:
-        date = models.IndexBasicInfo.objects.get(secucode=secucode).basedate.date()
+        date = models.IndexBasicInfo.objects.get(secucode=secucode).basedate
+        if not date:
+            date = datetime.date(2005, 1, 1)
+        else:
+            date = date.date()
     for tmpl in [template.quote, template.quote_cb, template.quote_os]:
         sql = render(tmpl, '<code>', secucode)
         sql = render(sql, '<date>', date.strftime('%Y-%m-%d'))

@@ -39,6 +39,7 @@ def tradingday():
 
 @index.command()
 def gil():
+    tools.commit_basic_info()
     tools.commit_index_gil()
 
 
@@ -63,6 +64,7 @@ def run_all():
     shu_commit()
     tools.commit_stocks()
     tools.commit_fund()
+    tools.commit_basic_info()
     tools.commit_index_gil()
     tools.commit_tradingdays()
     tools.commit_preprocess()
