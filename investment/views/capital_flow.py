@@ -7,6 +7,8 @@ capital_flow
 """
 
 import datetime
+import math
+
 import pandas as pd
 
 from django.http import JsonResponse
@@ -33,11 +35,19 @@ class CapitalFlowView(APIView):
         ret = cf.category_capital_flow(category, start)
 
         code = cf.index_code_by_name(category)
-        pct = models.IndexQuote.objects.filter(secucode=code, date__gte=start).values('date', 'change')
+        pct = models.IndexQuote.objects.filter(secucode=code, date__range=(start, end)).values('date', 'change')
         pct = pd.DataFrame(pct)
         ret = ret.merge(pct, how='left', on='date')
+        ret = ret.dropna(how='any')
+        ret = ret.drop(['netvalue', 'SIGMA5'], axis=1)
+        max_ = ret.max()
+        min_ = ret.min()
+        max_cf = max([max(max_[['MA3', 'MA5', 'MA10', 'MA5_HIGH', 'MA5_LOW']]), abs(min(min_[['MA3', 'MA5', 'MA10', 'MA5_HIGH', 'MA5_LOW']]))])
+        max_chg = max([max_['change'], abs(min_['change'])])
+        max_cf = math.ceil(max_cf/100)*100
+        max_chg = math.ceil(max_chg)
         ret = ret.to_dict(orient='records')
-        return Response(ret)
+        return Response({'data': ret, 'max1': max_cf, 'max2': max_chg})
 
     @staticmethod
     def category(request):

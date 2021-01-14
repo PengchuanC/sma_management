@@ -1,7 +1,9 @@
 import datetime
 from typing import List
+from decimal import Decimal
 
 import pandas as pd
+from numpy import round as npround
 
 from investment import models
 
@@ -47,12 +49,14 @@ def category_capital_flow(category: str, date: datetime.date):
     flow = models.CapitalFlow.objects.filter(secucode__in=stocks, date__gte=date).values('date', 'netvalue')
     flow: pd.DataFrame = pd.DataFrame(flow)
     flow = flow.groupby('date').sum()
+    flow['netvalue'] /= Decimal(1e6)
     flow['MA3'] = flow['netvalue'].rolling(3 + 1).mean()
     flow['MA5'] = flow['netvalue'].rolling(5 + 1).mean()
     flow['MA10'] = flow['netvalue'].rolling(10 + 1).mean()
     flow['SIGMA5'] = flow['netvalue'].rolling(5 + 1).std()*0.3
     flow['MA5_HIGH'] = flow['MA5'] + flow['SIGMA5']
     flow['MA5_LOW'] = flow['MA5'] - flow['SIGMA5']
+    flow = npround(flow, 2)
     flow = flow.dropna(how='any')
     flow = flow.reset_index()
     return flow
