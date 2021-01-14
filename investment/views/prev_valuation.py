@@ -48,9 +48,7 @@ class PreValuationConsumer(AsyncJsonWebsocketConsumer):
         """连接时一次性返回的数据"""
         if datetime.datetime.now().time() < datetime.time(9, 30, 0):
             return
-        last = models.Balance.objects.filter(port_code=port_code).last()
-        time = last.time()
-        date = last.date()
+        date = models.Balance.objects.filter(port_code=port_code).last().date
         holding = fund_holding_stock(port_code, date)
         ratio = FundHoldingView.asset_allocate(port_code, date)
         stock = ratio['stock']
@@ -58,7 +56,7 @@ class PreValuationConsumer(AsyncJsonWebsocketConsumer):
         self.equity = equity
         self.holding = holding
         stocks = holding.stockcode
-        stocks = models.StockRealtimePrice.objects.filter(secucode__in=stocks, time__lt=time).values(
+        stocks = models.StockRealtimePrice.objects.filter(secucode__in=stocks).values(
             'secucode', 'prev_close', 'price', 'time'
         )
         stocks = pd.DataFrame(stocks)
@@ -69,7 +67,7 @@ class PreValuationConsumer(AsyncJsonWebsocketConsumer):
         data = data.groupby('time')['real_change'].sum().reset_index()
         data['real_change'] = data['real_change'] / equity
         data = data.rename(columns={'time': 'name', 'real_change': 'value'}).to_dict(orient='records')
-        return data
+        return data[:-1]
 
     @database_sync_to_async
     def push(self):
