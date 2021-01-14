@@ -21,6 +21,7 @@ class PreValuationConsumer(AsyncJsonWebsocketConsumer):
     connected = False
     holding = None
     equity = 0
+    time = datetime.datetime.now().time().strftime('%H:%M:%S')
 
     async def connect(self):
         self.connected = True
@@ -47,7 +48,9 @@ class PreValuationConsumer(AsyncJsonWebsocketConsumer):
         """连接时一次性返回的数据"""
         if datetime.datetime.now().time() < datetime.time(9, 30, 0):
             return
-        date = models.Balance.objects.filter(port_code=port_code).last().date
+        last = models.Balance.objects.filter(port_code=port_code).last()
+        time = last.time()
+        date = last.date()
         holding = fund_holding_stock(port_code, date)
         ratio = FundHoldingView.asset_allocate(port_code, date)
         stock = ratio['stock']
@@ -55,7 +58,7 @@ class PreValuationConsumer(AsyncJsonWebsocketConsumer):
         self.equity = equity
         self.holding = holding
         stocks = holding.stockcode
-        stocks = models.StockRealtimePrice.objects.filter(secucode__in=stocks).values(
+        stocks = models.StockRealtimePrice.objects.filter(secucode__in=stocks, time__lt=time).values(
             'secucode', 'prev_close', 'price', 'time'
         )
         stocks = pd.DataFrame(stocks)
@@ -84,6 +87,7 @@ class PreValuationConsumer(AsyncJsonWebsocketConsumer):
     def calc(holding, equity):
         """计算实时涨跌幅"""
         last = models.StockRealtimePrice.objects.last().time
+        last = models.StockRealtimePrice.objects.filter(time__lt=last).last().time
         stocks = holding.stockcode
         stocks = models.StockRealtimePrice.objects.filter(
             secucode__in=stocks, time=last
