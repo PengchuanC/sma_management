@@ -57,5 +57,19 @@ def category_capital_flow(category: str, date: datetime.date):
     return flow
 
 
+def index_code_by_name(category: str):
+    """根据行业简称获取行业指数代码
+
+    Args:
+        category: 行业名称
+
+    Returns:
+        指数代码
+
+    """
+    bi = models.IndexBasicInfo.objects.filter(secuabbr__like=f'%{category}%').last()
+    return bi.secucode
+
+
 if __name__ == '__main__':
     sw_categories()

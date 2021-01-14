@@ -48,7 +48,7 @@ class Router(object):
     @staticmethod
     def db_for_read(model, **hints):
         """读取使用备库"""
-        return 'slave'
+        return 'default'
 
     @staticmethod
     def db_for_write(model, **hints):

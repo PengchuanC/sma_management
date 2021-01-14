@@ -187,8 +187,7 @@ async def main():
     global TIME
     TIME = datetime.datetime.now().time().strftime('%H:%M:%S')
     for sc in stocks_chunk:
-        # await commit(sc)
-        print(sc)
+        await commit(sc)
 
 
 async def clear():
