@@ -9,4 +9,4 @@ sleep 3s
 
 nohup daphne -p 5000 sma_management.asgi:application > daphne.log &
 nohup /usr/local/python3/bin/python3 manage.py qcluster > django_q.log &
-nohup /usr/local/python3/bin/python3 -m crwal.stock_async.py
+nohup /usr/local/python3/bin/python3 -m crwal.stock_async.py > stock_price.log &
