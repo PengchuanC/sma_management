@@ -58,5 +58,6 @@ urlpatterns = [
     path('mock/detail/', views.change_detail),
     path('mock/', views.mock),
 
-    path('capital/category/', views.CapitalFlowView.as_view()),
+    path('capital/', views.CapitalFlowView.as_view()),
+    path('capital/category/', views.CapitalFlowView.category),
 ]

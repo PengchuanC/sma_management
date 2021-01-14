@@ -120,7 +120,7 @@ async def request(params: str) -> str:
         行情
 
     """
-    async with aiohttp.request('GET', basicUrl, params={'list': params}) as r:
+    async with aiohttp.request('GET', basicUrl, params={'list': params}, timeout=5) as r:
         content = await r.text()
     return content
 
@@ -149,7 +149,7 @@ def format_response(response: str):
         else:
             price = float(item[6])
             prev = float(item[3])
-        yield {'secucode_id': code, 'date': date, 'time': TIME, 'price': price, 'prev_close': prev}
+        return [{'secucode_id': code, 'date': date, 'time': TIME, 'price': price, 'prev_close': prev}]
 
 
 async def insert(values: List[dict]):
@@ -177,15 +177,15 @@ async def commit(stocks: List[str]):
     stocks: str = ','.join(stocks)
     resp: str = await request(stocks)
     ret = format_response(resp)
-    ret = list(ret)
     await insert(ret)
 
 
 async def main():
     stocks: List[str] = await stocks_in_portfolio()
-    stocks_chunk = chunk(stocks, 20)
+    stocks_chunk = chunk(stocks, 50)
     global TIME
     TIME = datetime.datetime.now().time().strftime('%H:%M:%S')
+    print(TIME)
     for sc in stocks_chunk:
         await commit(sc)
 

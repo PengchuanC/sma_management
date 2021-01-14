@@ -13,8 +13,9 @@ def sw_categories() -> List[str]:
         申万行业指数名称
 
     """
-    categories = models.StockIndustrySW.objects.values_list('firstindustryname').distinct()
-    categories = [x[0] for x in categories]
+    categories = models.IndexBasicInfo.objects.filter(
+        secuabbr__icontains='申万').order_by('secucode').values_list('secuabbr')
+    categories = [x[0][2:] for x in categories]
     return categories
 
 
@@ -53,7 +54,7 @@ def category_capital_flow(category: str, date: datetime.date):
     flow['MA5_HIGH'] = flow['MA5'] + flow['SIGMA5']
     flow['MA5_LOW'] = flow['MA5'] - flow['SIGMA5']
     flow = flow.dropna(how='any')
-    flow['date'] = flow.index
+    flow = flow.reset_index()
     return flow
 
 
@@ -67,7 +68,7 @@ def index_code_by_name(category: str):
         指数代码
 
     """
-    bi = models.IndexBasicInfo.objects.filter(secuabbr__like=f'%{category}%').last()
+    bi = models.IndexBasicInfo.objects.filter(secuabbr=f'申万{category}').last()
     return bi.secucode
 
 
