@@ -41,7 +41,6 @@ def commit_stock():
 def commit_industry_sw():
     """同步股票申万行业分类"""
     full = read_oracle(template.stock_sw)
-    full.to_clipboard()
     full = full.to_dict(orient='records')
     stocks = list({x['secucode'] for x in full if not x['secucode'].startswith('X')})
     all_ = models.Stock.objects.filter(secucode__in=stocks).all()
