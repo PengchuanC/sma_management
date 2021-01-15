@@ -85,10 +85,7 @@ class PreValuationConsumer(AsyncJsonWebsocketConsumer):
     def calc(holding, equity):
         """计算实时涨跌幅"""
         last = models.StockRealtimePrice.objects.last().time
-        print(last)
         last = models.StockRealtimePrice.objects.filter(time__lt=last).last().time
-        print(last)
-        print('-----------*------------')
         stocks = holding.stockcode
         stocks = models.StockRealtimePrice.objects.filter(
             secucode__in=stocks, time=last

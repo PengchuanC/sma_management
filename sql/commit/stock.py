@@ -142,4 +142,4 @@ def commit_stock_capital_flow():
 
 
 if __name__ == '__main__':
-    commit_industry_sw()
+    commit_stock_expose()
