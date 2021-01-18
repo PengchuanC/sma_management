@@ -55,10 +55,10 @@ def category_capital_flow(category: str, date: datetime.date):
     last = models.TradingDays.objects.filter(date__gt=d).first().date
     flow.iloc[-1, 0] = last
     flow['netvalue'] /= Decimal(1e6)
-    flow['MA3'] = flow['netvalue'].shift(1).rolling(3).mean()
-    flow['MA5'] = flow['netvalue'].shift(1).rolling(5).mean()
-    flow['MA10'] = flow['netvalue'].shift(1).rolling(10).mean()
-    flow['SIGMA5'] = flow['netvalue'].shift(1).rolling(5).std()*0.3
+    flow['MA3'] = flow['netvalue'].rolling(3).mean()
+    flow['MA5'] = flow['netvalue'].rolling(5).mean()
+    flow['MA10'] = flow['netvalue'].rolling(10).mean()
+    flow['SIGMA5'] = flow['netvalue'].rolling(5).std()*0.3
     flow['MA5_HIGH'] = flow['MA5'] + flow['SIGMA5']
     flow['MA5_LOW'] = flow['MA5'] - flow['SIGMA5']
     flow = npround(flow, 2)
