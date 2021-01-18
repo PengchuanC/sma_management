@@ -49,6 +49,11 @@ def category_capital_flow(category: str, date: datetime.date):
     flow = models.CapitalFlow.objects.filter(secucode__in=stocks, date__gte=date).values('date', 'netvalue')
     flow: pd.DataFrame = pd.DataFrame(flow)
     flow = flow.groupby('date').sum()
+    flow = flow.reset_index()
+    flow.date = flow.date.shift(-1)
+    d = flow.iloc[-2, 0]
+    last = models.TradingDays.objects.filter(date__gt=d).first().date
+    flow.iloc[-1, 0] = last
     flow['netvalue'] /= Decimal(1e6)
     flow['MA3'] = flow['netvalue'].shift(1).rolling(3).mean()
     flow['MA5'] = flow['netvalue'].shift(1).rolling(5).mean()

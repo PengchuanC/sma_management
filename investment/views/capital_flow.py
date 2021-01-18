@@ -6,7 +6,6 @@ capital_flow
 @date: 2021-01-13
 """
 
-import datetime
 import math
 
 import pandas as pd
@@ -15,6 +14,7 @@ from django.http import JsonResponse
 from dateutil.relativedelta import relativedelta
 from dateutil.parser import parse
 from rest_framework.views import APIView, Response
+from numpy import round as npround
 
 from investment.utils import capital_flow as cf
 from investment import models
@@ -37,8 +37,8 @@ class CapitalFlowView(APIView):
         code = cf.index_code_by_name(category)
         pct = models.IndexQuote.objects.filter(secucode=code, date__range=(start, end)).values('date', 'change')
         pct = pd.DataFrame(pct)
+        pct['change'] = round(pct['change'].astype('float'), 2)
         ret = ret.merge(pct, how='left', on='date')
-        ret = ret.dropna(how='any')
         ret = ret.drop(['netvalue', 'SIGMA5'], axis=1)
         max_ = ret.max()
         min_ = ret.min()
@@ -46,6 +46,7 @@ class CapitalFlowView(APIView):
         max_chg = max([max_['change'], abs(min_['change'])])
         max_cf = math.ceil(max_cf/100)*100
         max_chg = math.ceil(max_chg)
+        ret = ret.fillna('null')
         ret = ret.to_dict(orient='records')
         return Response({'data': ret, 'max1': max_cf, 'max2': max_chg})
 
