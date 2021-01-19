@@ -48,7 +48,12 @@ def commit_fund_associate():
     sql = template.fund_associate
     funds_jy = read_oracle(sql)
     for _, row in funds_jy.iterrows():
-        fund = models.Funds.objects.get(secucode=row.secucode)
+        exist = models.FundAssociate.objects.filter(secucode=row.secucode, relate=row.relate).all()
+        if exist:
+            continue
+        fund = models.Funds.objects.filter(secucode=row.secucode).first()
+        if not fund:
+            continue
         models.FundAssociate.objects.update_or_create(relate=row.relate, secucode=fund)
 
 
@@ -174,4 +179,4 @@ def commit_fund_data():
 
 
 if __name__ == '__main__':
-    commit_fund_asset_allocate()
+    commit_fund_associate()

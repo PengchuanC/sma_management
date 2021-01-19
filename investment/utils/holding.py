@@ -12,8 +12,12 @@ from .. import models
 def fund_holding_stock(port_code: str, date: str or datetime.date):
     """获取组合在给定日期的持股情况"""
     funds = models.Holding.objects.filter(port_code=port_code, date=date).values('secucode', 'mkt_cap')
+    fund_codes = [x['secucode'] for x in funds]
+    # 获取基金主代码
+    associate = models.FundAssociate.objects.filter(relate__in=fund_codes).values('secucode', 'relate')
+    associate = {x['relate']: x['secucode'] for x in associate}
     na = models.Balance.objects.get(port_code=port_code, date=date).net_asset
-    funds = {x['secucode']: x['mkt_cap'] / na for x in funds}
+    funds = {associate.get(x['secucode'], x['secucode']): x['mkt_cap'] / na for x in funds}
     recent_report_date = models.FundHoldingStock.objects.values('secucode').annotate(recent=Max('date'))
     recent = {x['secucode']: x['recent'] for x in recent_report_date}
     query_set = []

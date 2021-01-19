@@ -84,7 +84,7 @@ fund_top_ten_stock_date = """SELECT max(InfoPublDate) as "date" FROM JYDB.MF_KEY
 
 # 基金年报、中报完整持仓
 fund_holding_stock_detail = """
- SELECT
+SELECT
     a.secucode,
     s2.SECUCODE AS stockcode,
     s2.SECUABBR AS stockname,
@@ -109,7 +109,7 @@ JOIN Jydb.SECUMAIN s2 ON
 WHERE
     reportdate > TO_DATE('<date>', 'YYYY-MM-DD') 
 UNION ALL
- SELECT
+SELECT
     a.secucode,
     s2.SECUCODE AS stockcode,
     s2.SECUABBR AS stockname,
@@ -152,7 +152,7 @@ fund_associate = """
         JOIN JYDB.SECUMAIN s ON
             mc.INNERCODE = s.INNERCODE
         WHERE
-            CODEDEFINE = 24) a
+            CODEDEFINE IN (21, 24)) a
     JOIN JYDB.SECUMAIN s2 ON
         a.RELATEDINNERCODE = s2.INNERCODE
 """
