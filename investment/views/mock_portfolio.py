@@ -99,18 +99,18 @@ def mock(request):
         else:
             mock_holding[x.secucode] -= float(x.order_value)
             mock_holding['cny'] += float(x.fee)
-    funds = list(holding.keys())
+    funds = sorted(list(holding.keys()))
     h_values = [[x, y] for x, y in holding.items()]
-    h_values = sorted(h_values, key=lambda x: x[0])
+    h_values = list(sorted(h_values, key=lambda x: x[0]))
     h_values = [x[1] for x in h_values]
     mh_values = [[x, y] for x, y in mock_holding.items()]
-    mh_values = sorted(mh_values, key=lambda x: x[0])
+    mh_values = list(sorted(mh_values, key=lambda x: x[0]))
     mh_values = [x[1] for x in mh_values]
-    weight = np.array([h_values, mh_values])
-    nav = models.FundAdjPrice.objects.filter(secucode__in=funds, date__gte=date).values('secucode', 'date', 'adj_nav')
+    weight = pd.DataFrame([mh_values, h_values], columns=funds)
+    nav = models.FundAdjPrice.objects.filter(secucode__in=funds, date__gte=date).values('secucode', 'date', 'nav')
     nav = pd.DataFrame(nav)
-    nav.adj_nav = nav.adj_nav.astype('float')
-    nav = nav.pivot_table(index='date', columns='secucode', values=['adj_nav'])['adj_nav']
+    nav.nav = nav.nav.astype('float')
+    nav = nav.pivot_table(index='date', columns='secucode', values=['nav'])['nav']
     nav = nav.dropna(how='any')
     nav['cny'] = 1
     nav = nav.loc[:, funds]
