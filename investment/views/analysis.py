@@ -176,21 +176,25 @@ class FundHoldingView(APIView):
         """
         holding = FundHoldingView.fund_ratio(port_code, date)
         funds = list(holding.secucode)
+        relate = FundAssociate.objects.filter(relate__in=funds).order_by('define').all()
+        relate = {x.relate: x.secucode.secucode for x in relate}
         dates = FAA.objects.filter(secucode__in=funds).values('secucode').annotate(max_date=Max('date'))
         data = []
-        for x in dates:
-            secucode = x['secucode']
-            date = x['max_date']
-            d = FAA.objects.filter(secucode=secucode, date=date).values(
-                'secucode', 'stock', 'bond', 'fund', 'metals', 'monetary'
-            )[0]
-            # 处理联接基金及LOF
-            if d['fund'] > 0.9:
-                relate = FundAssociate.objects.filter(relate=secucode)[0].secucode.secucode
-                d = FAA.objects.filter(secucode=relate, date=date).values(
+        dates = {x['secucode']: x['max_date'] for x in dates}
+        for x in funds:
+            secucode = x
+            date = dates.get(secucode)
+            if not date:
+                # 处理联接基金及LOF
+                date = FAA.objects.filter(secucode=relate.get(x)).last().date
+                d = FAA.objects.filter(secucode=relate.get(secucode), date=date).values(
                     'secucode', 'stock', 'bond', 'fund', 'metals', 'monetary'
                 )[0]
                 d['secucode'] = secucode
+            else:
+                d = FAA.objects.filter(secucode=secucode, date=date).values(
+                    'secucode', 'stock', 'bond', 'fund', 'metals', 'monetary'
+                )[0]
             data.append(d)
         data = pd.DataFrame(data).set_index('secucode')
         data = data.merge(holding[['secucode', 'ratio']], left_index=True, right_on='secucode').set_index('secucode')

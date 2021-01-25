@@ -88,14 +88,6 @@ DATABASES = {
         'HOST': '10.170.129.129',
         'PORT': '3306'
     },
-    'slave': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'sma_management',
-            'USER': 'fof',
-            'PASSWORD': '123456',
-            'HOST': '10.170.139.10',
-            'PORT': '3306'
-        },
     'test': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'sma_management',

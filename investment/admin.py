@@ -200,6 +200,12 @@ class ClientPRAdmin(admin.ModelAdmin):
     )
 
 
+@admin.register(models.PortfolioAssetAllocate)
+class PortfolioAllocateAdmin(admin.ModelAdmin):
+    list_display = ('port_code', 'equity', 'fix_income', 'alter', 'money', 'date')
+    list_filter = ('port_code', 'date')
+
+
 # 回测部分
 @admin.register(models.AssetWeight)
 class AssetWeightAdmin(admin.ModelAdmin):

@@ -137,22 +137,56 @@ WHERE
 
 fund_holding_stock_detail_date = """SELECT max(REPORTDATE) as "date" FROM JYDB.MF_STOCKPORTFOLIODETAIL"""
 
+
+fund_holding_stock_hk = """
+    SELECT
+        s.secucode,
+        mq.ENDDATE AS "date",
+        mq.SECUTRADECODE AS stockcode,
+        mq.SERIALNUMBER AS serial,
+        '季报' AS publish,
+        mq.RATIOINNV as ratio
+    FROM
+        JYDB.MF_QDIIPORTFOLIODETAIL mq
+    JOIN JYDB.SECUMAIN s ON
+        mq.INNERCODE = s.INNERCODE
+    JOIN (
+        SELECT
+            *
+        FROM
+            (
+            SELECT
+                INNERCODE,
+                ENDDATE,
+                ROW_NUMBER() OVER(PARTITION BY INNERCODE ORDER BY mq.ENDDATE DESC) rn
+            FROM
+                JYDB.MF_QDIIPORTFOLIODETAIL mq) a
+        WHERE
+            a.rn = 1) b ON
+        s.INNERCODE = b.innercode
+        AND mq.ENDDATE = b.enddate
+    WHERE mq.INVESTTYPE = 1 AND mq.SECUMARKET IN (72, 83, 90)
+    ORDER BY s.SECUCODE, mq.SERIALNUMBER
+"""
+
 # 基金代码关联
 fund_associate = """
     SELECT
         a.secucode,
-        s2.secucode AS relate
+        s2.secucode AS relate,
+        a.CODEDEFINE AS define
     FROM
         (
         SELECT
             s.SECUCODE,
-            mc.RELATEDINNERCODE
+            mc.RELATEDINNERCODE,
+            mc.CODEDEFINE
         FROM
             JYDB.MF_CodeRelationshipNew mc
         JOIN JYDB.SECUMAIN s ON
             mc.INNERCODE = s.INNERCODE
         WHERE
-            CODEDEFINE IN (21, 24)) a
+            mc.CODEDEFINE IN (21, 24)) a
     JOIN JYDB.SECUMAIN s2 ON
         a.RELATEDINNERCODE = s2.INNERCODE
 """
@@ -185,6 +219,36 @@ fund_allocate = """
             ma.INNERCODE = s.INNERCODE ) a
     WHERE
         rn = 1
+"""
+
+fund_allocate_hk = """
+    SELECT
+        s.SECUCODE,
+        mq.ENDDATE,
+        mq.ASSETTYPE,
+        mq.ASSETNAME,
+        mq.RATIOINNV
+    FROM
+        JYDB.MF_QDIIASSETALLOCATION mq
+    JOIN jydb.SECUMAIN s ON
+        mq.INNERCODE = s.INNERCODE
+    JOIN (
+        SELECT
+            *
+        FROM
+            (
+            SELECT
+                INNERCODE,
+                ENDDATE,
+                ROW_NUMBER() OVER(PARTITION BY INNERCODE ORDER BY mq.ENDDATE DESC) rn
+            FROM
+                JYDB.MF_QDIIASSETALLOCATION mq)
+        WHERE
+            rn = 1) a ON
+        mq.INNERCODE = a.innercode
+        AND mq.ENDDATE = a.enddate
+    WHERE 
+    mq.ASSETTYPE IN (10, 30, 10015, 40, 10075, 10089)
 """
 
 

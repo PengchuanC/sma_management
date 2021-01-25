@@ -4,11 +4,13 @@ overview
 组合账户总览
 """
 
+from dateutil.relativedelta import relativedelta
 from django.db.models import F
 from django.forms.models import model_to_dict
 from django.http import JsonResponse
 from channels.db import database_sync_to_async
 from rest_framework.views import APIView, Response
+from pandas import DataFrame
 from investment import models
 from investment.views.analysis import FundHoldingView
 
@@ -40,6 +42,26 @@ class OverviewView(APIView):
             {'name': '固收', 'value': float(r['bond'])},
             {'name': '另类', 'value': float(r['metals'])},
             {'name': '货币', 'value': float(r['monetary'])}
+        ]
+        return JsonResponse({'data': ret})
+
+    @staticmethod
+    def avg_asset_allocate(request):
+        """穿透资产qujian配置"""
+        port_code: str = request.GET.get('portCode')
+        start = request.GET.get('start')
+        end = request.GET.get('end')
+        if not start or end:
+            end = models.Balance.objects.filter(port_code=port_code).last().date
+            start = end - relativedelta(days=30)
+        ret = models.PortfolioAssetAllocate.objects.filter(port_code=port_code, date__range=(start, end)).all()
+        ret = DataFrame([model_to_dict(x) for x in ret])
+        r = ret.mean()
+        ret = [
+            {'name': '权益', 'value': float(r['equity'])},
+            {'name': '固收', 'value': float(r['fix_income'])},
+            {'name': '另类', 'value': float(r['alter'])},
+            {'name': '货币', 'value': float(r['money'])}
         ]
         return JsonResponse({'data': ret})
 

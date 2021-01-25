@@ -31,7 +31,7 @@ class AuthRouter(object):
             obj1._meta.app_label in self.route_app_labels or
             obj2._meta.app_label in self.route_app_labels
         ):
-           return True
+            return True
         return None
 
     def allow_migrate(self, db, app_label, model_name=None, **hints):

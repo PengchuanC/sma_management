@@ -14,7 +14,7 @@ def fund_holding_stock(port_code: str, date: str or datetime.date):
     funds = models.Holding.objects.filter(port_code=port_code, date=date).values('secucode', 'mkt_cap')
     fund_codes = [x['secucode'] for x in funds]
     # 获取基金主代码
-    associate = models.FundAssociate.objects.filter(relate__in=fund_codes).values('secucode', 'relate')
+    associate = models.FundAssociate.objects.filter(relate__in=fund_codes).order_by('define').values('secucode', 'relate')
     associate = {x['relate']: x['secucode'] for x in associate}
     na = models.Balance.objects.get(port_code=port_code, date=date).net_asset
     funds = {associate.get(x['secucode'], x['secucode']): x['mkt_cap'] / na for x in funds}

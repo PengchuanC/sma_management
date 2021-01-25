@@ -32,8 +32,11 @@ def commit_stock():
     full = read_oracle(template.stock)
     full = full.to_dict(orient='records')
     length = len(full)
+    local = stock_code_in_local()
     with transaction.atomic():
         for i, stock in enumerate(full):
+            if stock['secucode'] in local:
+                continue
             models.Stock.objects.update_or_create(secucode=stock.pop('secucode'), defaults=stock)
             progressbar(i, length)
 
@@ -141,4 +144,4 @@ def commit_stock_capital_flow():
 
 
 if __name__ == '__main__':
-    commit_stock_expose()
+    commit_stock()

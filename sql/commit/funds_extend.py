@@ -90,5 +90,58 @@ def _commit_holding_stocks(publish: str, sql):
         models.FundHoldingStock.objects.bulk_create(data[i*10000: (i+1)*10000])
 
 
+def commit_asset_allocate_hk():
+    """sync qdii fund asset allocate
+
+    Returns:
+
+    """
+    data = read_oracle(funds.fund_allocate_hk)
+    date = dict(zip(data['secucode'], data['enddate']))
+    data['assettype'] = data['assettype'].astype('str')
+    ratio = data.pivot_table(index='secucode', columns='assettype', values='ratioinnv', aggfunc=sum)
+    ratio = ratio.fillna(0)
+    ratio.to_clipboard()
+    for col in ['10', '30', '10015', '40', '10075', '10089']:
+        if col not in ratio.columns:
+            ratio[col] = 0
+    ratio['stock'] = ratio['10'] / 100
+    ratio['bond'] = ratio['30']
+    ratio['metals'] = ratio['40'] / 100
+    ratio['fund'] = ratio['10015'] / 100
+    ratio['monetary'] = (ratio['10075'] + ratio['10089']) / 100
+    ratio = ratio[['stock', 'bond', 'fund', 'metals', 'monetary']]
+    ratio = ratio.reset_index()
+    ratio['date'] = ratio.secucode.apply(lambda x: date.get(x))
+    fund = models.Funds.objects.filter(secucode__in=list(ratio.secucode)).all()
+    fund = {x.secucode: x for x in fund}
+    ratio['secucode'] = ratio['secucode'].apply(lambda x: fund.get(x))
+    ratio = ratio.to_dict(orient='records')
+    for x in ratio:
+        models.FundAssetAllocate.objects.update_or_create(secucode=x['secucode'], date=x['date'], defaults=x)
+
+
+def commit_fund_holding_stock_hk():
+    data = read_oracle(funds.fund_holding_stock_hk)
+    data['ratio'] = data['ratio'] / 100
+    stocks = list(set(list(data.stockcode)))
+    stocks = models.Stock.objects.filter(secucode__in=stocks).all()
+    stocks = {x.secucode: x for x in stocks}
+    data['stockname'] = data.stockcode.apply(lambda x: stocks.get(x).secuname)
+    data.to_clipboard()
+    data['stockcode'] = data.stockcode.apply(lambda x: stocks.get(x))
+    fund = list(set(list(data.secucode)))
+    fund = models.Funds.objects.filter(secucode__in=fund).all()
+    fund = {x.secucode: x for x in fund}
+    data['secucode'] = data.secucode.apply(lambda x: fund.get(x))
+    data = data.to_dict(orient='records')
+    for x in data:
+        models.FundHoldingStock.objects.update_or_create(
+            secucode=x.pop('secucode'), date=x.pop('date'), stockcode=x.pop('stockcode'), defaults=x
+        )
+
+
 if __name__ == '__main__':
-    commit_fund_advisor()
+    commit_holding_stock_detail()
+    commit_holding_top_ten()
+    commit_fund_holding_stock_hk()

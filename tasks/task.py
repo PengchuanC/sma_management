@@ -1,4 +1,5 @@
 from tasks.prev_valuation import pre_valuation
+from tasks.asset_allocate import portfolio_asset_allocate
 from command import shu_commit, tools
 from crawl.stock_async import executor
 
@@ -23,3 +24,7 @@ def commit_capital():
     tools.commit_basic_info()
     tools.commit_index_gil()
     tools.commit_stock()
+
+
+def commit_portfolio_allocate():
+    portfolio_asset_allocate()

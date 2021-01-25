@@ -135,6 +135,7 @@ class FundPurchaseFee(models.Model):
 class FundAssociate(models.Model):
     secucode = models.ForeignKey(Funds, to_field='secucode', on_delete=models.CASCADE, verbose_name='基金代码')
     relate = models.CharField(verbose_name='关联基金代码', max_length=10, null=False)
+    define = models.IntegerField(verbose_name='codedefine', null=False)
 
     class Meta:
         db_table = 'sma_fund_associate'

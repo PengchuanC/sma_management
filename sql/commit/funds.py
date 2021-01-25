@@ -54,7 +54,7 @@ def commit_fund_associate():
         fund = models.Funds.objects.filter(secucode=row.secucode).first()
         if not fund:
             continue
-        models.FundAssociate.objects.update_or_create(relate=row.relate, secucode=fund)
+        models.FundAssociate.objects.update_or_create(relate=row.relate, secucode=fund, defaults={'define': row.define})
 
 
 def commit_fund_asset_allocate():

@@ -299,3 +299,21 @@ class ClientPR(models.Model):
     def __str__(self):
         return self.port_code.port_code
 
+
+# portfolio asset allocate
+class PortfolioAssetAllocate(models.Model):
+    port_code = models.ForeignKey(Portfolio, to_field='port_code', on_delete=models.CASCADE, verbose_name='组合代码')
+    equity = models.DecimalField(verbose_name='quanyi', max_digits=18, decimal_places=6, default=0)
+    fix_income = models.DecimalField(verbose_name='gushou', max_digits=18, decimal_places=6, default=0)
+    alter = models.DecimalField(verbose_name='quanyi', max_digits=18, decimal_places=6, default=0)
+    money = models.DecimalField(verbose_name='huobi', max_digits=18, decimal_places=6, default=0)
+    date = models.DateField(verbose_name='申购开放日', null=True, blank=True)
+
+    class Meta:
+        db_table = 'sma_portfolio_allocate'
+        verbose_name = '组合资产配置'
+        verbose_name_plural = verbose_name
+        get_latest_by = 'date'
+
+    def __str__(self):
+        return self.port_code.port_code
