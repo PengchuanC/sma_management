@@ -81,6 +81,7 @@ def _commit_holding_stocks(publish: str, sql):
     sql = render(sql, '<date>', max_date.strftime('%Y-%m-%d'))
     data = read_oracle(sql)
     data = data[data.secucode.isin(need)]
+    data = data[data.publish == publish]
     full = {x.secucode: x for x in full}
     data.secucode = data.secucode.apply(lambda x: full.get(x))
     data = data.to_dict(orient='records')
@@ -128,7 +129,6 @@ def commit_fund_holding_stock_hk():
     stocks = models.Stock.objects.filter(secucode__in=stocks).all()
     stocks = {x.secucode: x for x in stocks}
     data['stockname'] = data.stockcode.apply(lambda x: stocks.get(x).secuname)
-    data.to_clipboard()
     data['stockcode'] = data.stockcode.apply(lambda x: stocks.get(x))
     fund = list(set(list(data.secucode)))
     fund = models.Funds.objects.filter(secucode__in=fund).all()
@@ -143,5 +143,3 @@ def commit_fund_holding_stock_hk():
 
 if __name__ == '__main__':
     commit_holding_stock_detail()
-    commit_holding_top_ten()
-    commit_fund_holding_stock_hk()
