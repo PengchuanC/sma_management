@@ -35,7 +35,6 @@ class PerformanceView(APIView):
         b_nav = pd.DataFrame(b_nav).rename(columns={'unit_nav': 'b'})
         data = pd.merge(p_nav, b_nav, on='date', how='inner').set_index('date')
         data = data.astype('float')
-        print(data)
         ret = PerformanceView.calc_performance(data)
         ucr = capture_return(data.p, data.b, mode=1)
         dcr = capture_return(data.p, data.b, mode=0)
