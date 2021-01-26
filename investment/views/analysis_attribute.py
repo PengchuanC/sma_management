@@ -2,6 +2,7 @@
 投资分析模块-归因分析
 包含业绩归因、风格分析等内容
 """
+import datetime
 import pandas as pd
 import numpy as np
 from django.forms.models import model_to_dict
@@ -86,3 +87,24 @@ class BrinsonAnalysis(APIView):
         s = s.cumprod()
         return (s.iloc[-1] - 1)*100
 
+
+class MovingVolatility(APIView):
+    """滚动30日波动率
+
+    """
+
+    @staticmethod
+    def get(request):
+        params = request.query_params
+        port_code = params.get('portCode')
+        date: str = params.get('date')
+        if not date:
+            date = datetime.date.today().strftime('%Y-%m-%d')
+        nav = models.Balance.objects.filter(port_code=port_code, date__lte=date).values('acc_nav', 'date')
+        nav = pd.DataFrame(nav).set_index('date')
+        pct = nav.pct_change().dropna()
+        std = pct.rolling(30).std().dropna()
+        std = np.round(std * np.sqrt(250)*100, 2)
+        std = std.reset_index()
+        std = std.to_dict(orient='records')
+        return Response(std)

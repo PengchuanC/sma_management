@@ -47,7 +47,7 @@ class OverviewView(APIView):
 
     @staticmethod
     def avg_asset_allocate(request):
-        """穿透资产qujian配置"""
+        """穿透资产区间平均配置"""
         port_code: str = request.GET.get('portCode')
         start = request.GET.get('start')
         end = request.GET.get('end')
