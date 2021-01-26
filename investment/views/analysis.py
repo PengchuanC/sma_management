@@ -15,7 +15,7 @@ from investment.models import (
     Income, IncomeAsset, ValuationBenchmark as VB, Holding, Balance, FundAdjPrice as FAP, TradingDays,
     FundPurchaseAndRedeem as FAR, StockIndustrySW as SISW, FundAssetAllocate as FAA, FundAssociate
 )
-from investment.utils.calc import Formula
+from investment.utils.calc import Formula, capture_return
 from investment.utils import fund, period_change as pc
 from investment.utils.holding import fund_holding_stock
 
@@ -35,7 +35,11 @@ class PerformanceView(APIView):
         b_nav = pd.DataFrame(b_nav).rename(columns={'unit_nav': 'b'})
         data = pd.merge(p_nav, b_nav, on='date', how='inner').set_index('date')
         data = data.astype('float')
+        print(data)
         ret = PerformanceView.calc_performance(data)
+        ucr = capture_return(data.p, data.b, mode=1)
+        dcr = capture_return(data.p, data.b, mode=0)
+        ret.update({'ucr': {'p': ucr, 'b': None}, 'dcr': {'p': dcr, 'b': None}})
         return Response(ret)
 
     @staticmethod

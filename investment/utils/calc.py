@@ -193,3 +193,28 @@ def cvar(hist_change, days=None, alpha=0.05):
     p = np.percentile(hist_change, alpha * 100, interpolation="midpoint")
     data = [x for x in hist_change if x < p]
     return sum(data) / len(data)
+
+
+def capture_return(p: pd.Series, b: pd.Series, mode=1):
+    """ 计算上下行捕获率
+
+    Args:
+        p: 组合净值序列，索引为净值日期
+        b: 基准净值序列，索引为净值日期
+        mode: 1.上行捕获率 2.下行捕获率
+
+    Returns:
+
+    """
+    p.name = 'portfolio'
+    b.name = 'benchmark'
+    data = pd.concat([p, b], axis=1)
+    data = data.pct_change().dropna()
+    if mode == 1:
+        data = data[data.benchmark > 0]
+    else:
+        data = data[data.benchmark < 0]
+    data = data + 1
+    data = data.cumprod()
+    cr = data.iloc[-1, :] ** np.sqrt(1/len(data)) - 1
+    return cr.portfolio / cr.benchmark
