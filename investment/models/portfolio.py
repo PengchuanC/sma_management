@@ -303,11 +303,11 @@ class ClientPR(models.Model):
 # portfolio asset allocate
 class PortfolioAssetAllocate(models.Model):
     port_code = models.ForeignKey(Portfolio, to_field='port_code', on_delete=models.CASCADE, verbose_name='组合代码')
-    equity = models.DecimalField(verbose_name='quanyi', max_digits=18, decimal_places=6, default=0)
-    fix_income = models.DecimalField(verbose_name='gushou', max_digits=18, decimal_places=6, default=0)
-    alter = models.DecimalField(verbose_name='quanyi', max_digits=18, decimal_places=6, default=0)
-    money = models.DecimalField(verbose_name='huobi', max_digits=18, decimal_places=6, default=0)
-    date = models.DateField(verbose_name='申购开放日', null=True, blank=True)
+    equity = models.DecimalField(verbose_name='权益', max_digits=18, decimal_places=6, default=0)
+    fix_income = models.DecimalField(verbose_name='固收', max_digits=18, decimal_places=6, default=0)
+    alter = models.DecimalField(verbose_name='另类', max_digits=18, decimal_places=6, default=0)
+    money = models.DecimalField(verbose_name='货币', max_digits=18, decimal_places=6, default=0)
+    date = models.DateField(verbose_name='日期', null=True, blank=True)
 
     class Meta:
         db_table = 'sma_portfolio_allocate'

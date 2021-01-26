@@ -123,6 +123,7 @@ def commit_asset_allocate_hk():
 
 
 def commit_fund_holding_stock_hk():
+    """基金持仓股票-港股"""
     data = read_oracle(funds.fund_holding_stock_hk)
     data['ratio'] = data['ratio'] / 100
     stocks = list(set(list(data.stockcode)))
