@@ -51,7 +51,7 @@ class OverviewView(APIView):
         port_code: str = request.GET.get('portCode')
         start = request.GET.get('start')
         end = request.GET.get('end')
-        if not start or end:
+        if not start or not end:
             end = models.Balance.objects.filter(port_code=port_code).last().date
             start = end - relativedelta(days=30)
         ret = models.PortfolioAssetAllocate.objects.filter(port_code=port_code, date__range=(start, end)).all()
