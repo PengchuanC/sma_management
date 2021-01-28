@@ -247,7 +247,7 @@ label[auth] {
     position: relative;
     display: flex;
     background-color: white;
-    height: 60px;
+    height: 50px;
     width: 100%;
     flex-direction: column;
     justify-content: start;
