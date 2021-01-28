@@ -73,7 +73,7 @@ def _commit_holding_stocks(publish: str, sql):
     """
     exist = models.FundHoldingStock.objects.filter(publish=publish).aggregate(max_date=Max('date'))
     max_date = exist['max_date'] or datetime.date(2020, 1, 1)
-    existed = models.FundHoldingStock.objects.filter(publish=publish, date=max_date).values('secucode').distinct()
+    existed = models.FundHoldingStock.objects.filter(publish=publish, date__lte=max_date).values('secucode').distinct()
     existed = [x['secucode'] for x in existed]
 
     full = models.Funds.objects.all()
@@ -143,4 +143,6 @@ def commit_fund_holding_stock_hk():
 
 
 if __name__ == '__main__':
-    commit_holding_stock_detail()
+    # commit_holding_stock_detail()
+    # commit_fund_holding_stock_hk()
+    commit_holding_top_ten()

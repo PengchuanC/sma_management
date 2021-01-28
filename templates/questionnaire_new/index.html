@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="cn">
+<head>
+    <meta charset="UTF-8">
+    <title>野村东方国际证券SMA服务平台</title>
+    <link rel="stylesheet" type="text/css" href="/static/questionnaire/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/questionnaire/css/index.css">
+    <link rel="stylesheet" type="text/css" href="/static/questionnaire/css/iconfont.css">
+    <script src="/static/questionnaire/js/jquery-3.5.1.min.js"></script>
+    <script src="/static/questionnaire/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div>
+    {% include 'questionnaire_new/header.html' %}
+    <div>
+        {% block content %}
+            {% include 'questionnaire_new/welcome.html' %}
+        {% endblock %}
+    </div>
+    {% include 'questionnaire_new/footer.html' %}
+</div>
+</body>
+<script src="/static/questionnaire/js/index.js"></script>
+</html>

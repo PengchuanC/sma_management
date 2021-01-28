@@ -1,4 +1,7 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 
 
 # 问题
@@ -42,8 +45,9 @@ class Choices(models.Model):
 class Client(models.Model):
     name = models.CharField(verbose_name="客户名称", max_length=20)
     account = models.CharField(verbose_name="客户账号", max_length=30, unique=True)
-    associate_name = models.CharField(verbose_name="关联账户名称", max_length=20, null=True)
-    associate_account = models.CharField(verbose_name="关联账号", max_length=30, null=True)
+    associate_name = models.CharField(verbose_name="关联账户名称", max_length=20, null=True, blank=True)
+    associate_account = models.CharField(verbose_name="关联账号", max_length=30, null=True, blank=True)
+    mobile = models.CharField(verbose_name='手机号码', max_length=11, null=True, blank=True)
 
     class Meta:
         db_table = 'questionnaire_clients'

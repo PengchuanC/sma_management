@@ -1,0 +1,89 @@
+{% extends 'questionnaire_new/index.html' %}
+
+{% block content %}
+    <div class="q-toast">
+        <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true" data-delay="2000">
+            <div class="toast-header">
+                <strong class="mr-auto">警告</strong>
+                <small>now</small>
+                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="toast-body">
+                当前页面尚未选择一个有效的答案，请回答后再进行下一题。
+            </div>
+        </div>
+    </div>
+    <div class="q-toast">
+            <div id="resultToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true" data-delay="2000">
+                <div class="toast-header">
+                    <strong class="mr-auto">错误</strong>
+                    <small>now</small>
+                    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="toast-body">
+                    您尚未验证身份，请<a style="color: #a41515" href="{% url 'authenticate' %}"><b>验证</b></a>后再填写问卷！
+                </div>
+            </div>
+        </div>
+    <div class="container-fluid q-content-wrapper">
+        <div class="container q-content">
+            <div id="carouselControls" class="carousel slide" data-wrap='false' data-interval='false' style="width: 100%"
+                 data-ride="carousel">
+                <div class="carousel-inner">
+                    {% for x in data %}
+                        <div class="{% if forloop.counter != 1 %}{{ 'carousel-item' }}{% else %}{{ 'carousel-item active' }}{% endif %}">
+                            <div class="d-block w-100 q-question-wrapper">
+                                <div class='q-background-cover'>
+                                    <img src='{{ x.img }}'
+                                         class='q-background' alt=""/>
+                                </div>
+                                <div class='q-question-body'>
+                                    <h4 class='q-question-title'>{{ x.question }}</h4>
+                                    <div class='q-choices-wrapper' direction='{% if x.direction == "row" %}{{ "" }}{% else %}{{ "col" }}{% endif %}'>
+                                        {% for choice in x.choices %}
+                                            <div class='q-choice' direction='{% if x.direction == "row" %}{{ "" }}{% else %}{{ "col" }}{% endif %}'>
+                                                <p class='q-choice-item'>{{ choice }}</p>
+                                                <i class="checkbox iconfont icon-CheckboxUnchecked"></i>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class='q-stepper-wrapper'>
+                    <div class='q-stepper'>
+                        <div class="q-button">
+                            <button class="q-button  btn btn-outline-danger btn-sm"
+                                    href="#carouselControls"
+                               id="prev"
+                               style="display: none"
+                            >
+                                修改上一题
+                            </button>
+                        </div>
+                        <div class="q-button">
+                            <a class="q-button btn btn-outline-danger btn-sm"
+                               href="#carouselControls" role="button" data-slide="next"
+                               id="next"
+                            >
+                                回答下一题
+                              </a>
+                            <button id="submit" type="button" class="q-button btn btn-danger btn-sm"
+                                    style="display: none"
+                            >
+                                <span style="display: none" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                提交所选
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

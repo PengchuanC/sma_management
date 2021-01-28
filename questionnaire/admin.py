@@ -25,7 +25,7 @@ class ChoicesAdmin(admin.ModelAdmin):
 
 @admin.register(Client)
 class ClientAdmin(admin.ModelAdmin):
-    list_display = ('id', 'name', 'account', 'associate_name', 'associate_account')
+    list_display = ('id', 'name', 'account', 'associate_name', 'associate_account', 'mobile')
     list_display_links = ('name',)
 
 

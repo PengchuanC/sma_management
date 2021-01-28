@@ -1,0 +1,34 @@
+{% extends 'questionnaire_new/index.html' %}
+
+{% block content %}
+    <div class="container-fluid q-content-wrapper">
+        <div class="container q-content">
+                <img src='https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fdik.img.kttpdq.com%2Fpic%2F43%2F29954%2F85c8ddb281ae95bb.jpg&refer=http%3A%2F%2Fdik.img.kttpdq.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1614391576&t=f44f61e698c0bf3b2fe2b7571a4e4646'
+                             class='q-background' alt=""/>
+            <div class="q-welcome">
+                <h4 class='q-question-title'>投资者身份认证</h4>
+                <p welcome="">我们会使用您的真实姓名和您和销售联系时使用的手机号来验证您的身份</p>
+                <p welcome="">如您有任何疑问，可以联系您的对应销售人员。</p>
+                <br>
+                <form id="authenticate" method="post" action="{% url 'auth' %}">
+                  <fieldset>
+                    <p>
+                      <label auth for="name">用户姓名</label>
+                      <input class="q-input-auth" id="name" name="name" minlength="2" type="text" value="{{ name }}" required>
+                    </p>
+                    <p>
+                      <label auth for="mobile">手机号码</label>
+                      <input class="q-input-auth" id="mobile" type="text" name="mobile" value="{{ mobile }}" required>
+                    </p>
+                      <div class="alert alert-danger" role="alert" style='{% if not show %}{{ "display: none" }}{% endif %}'>
+                        验证失败，请确认您的姓名和手机准确无误或联系销售询问详情！
+                      </div>
+                    <p>
+                      <input id="authSub" role="button" class="btn btn-danger" type="submit" value="开始认证">
+                    </p>
+                  </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

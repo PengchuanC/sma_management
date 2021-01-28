@@ -40,7 +40,7 @@ def logout_user(request):
 
 
 def login_user(request):
-    if not 'username' in request.POST:
+    if 'username' not in request.POST:
         return render(request, 'questionnaire/login.html', {'status': -1})
     username = request.POST['username']
     password = request.POST['password']
