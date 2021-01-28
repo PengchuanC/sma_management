@@ -22,6 +22,7 @@ def get_questions():
     quest: models.Questions
     for quest in questions:
         q = {
+            'subject': quest.subject,
             'question': quest.text,
             'choices': [x.text for x in quest.choices],
             'img': choice(images)

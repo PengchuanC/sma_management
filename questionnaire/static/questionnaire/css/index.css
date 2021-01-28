@@ -212,6 +212,13 @@ label[auth] {
     display: none;
 }
 
+.q-question-subject{
+    position: absolute;
+    top: 30px;
+    right: 50px;
+    color: white;
+}
+
 .q-question-title {
     position: relative;
     color: white;

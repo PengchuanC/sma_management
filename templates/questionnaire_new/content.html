@@ -41,6 +41,7 @@
                                     <img src='{{ x.img }}'
                                          class='q-background' alt=""/>
                                 </div>
+                                <h3 class="q-question-subject">{{ x.subject }}</h3>
                                 <div class='q-question-body'>
                                     <h4 class='q-question-title'>{{ x.question }}</h4>
                                     <div class='q-choices-wrapper' direction='{% if x.direction == "row" %}{{ "" }}{% else %}{{ "col" }}{% endif %}'>
