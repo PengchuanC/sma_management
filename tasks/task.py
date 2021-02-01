@@ -1,7 +1,9 @@
 from tasks.prev_valuation import pre_valuation
 from tasks.asset_allocate import portfolio_asset_allocate
-from command import shu_commit, tools
+from command import shu_commit
+from sql import tools
 from crawl.stock_async import executor
+from typing import Dict, Optional
 
 
 def save_prev_valuation_nav():
@@ -23,8 +25,12 @@ def commit_capital():
     """同步行业资金流向数据"""
     tools.commit_basic_info()
     tools.commit_index_gil()
-    tools.commit_stock()
+    tools.commit_stock_capital_flow()
 
 
 def commit_portfolio_allocate():
     portfolio_asset_allocate()
+
+
+if __name__ == '__main__':
+    commit_capital()
