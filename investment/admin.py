@@ -96,6 +96,11 @@ class FundAdvisorAdmin(admin.ModelAdmin):
     list_display = ('secucode', 'advisorcode', 'advisorname')
 
 
+@admin.register(models.FundPosEstimate)
+class FundPosEstimateAdmin(admin.ModelAdmin):
+    list_display = ('normal_stock', 'mix_stock', 'mix_equal', 'mix_flexible', 'date')
+
+
 # 组合部分
 @admin.register(models.Portfolio)
 class PortfolioAdmin(admin.ModelAdmin):

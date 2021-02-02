@@ -1,9 +1,9 @@
 from tasks.prev_valuation import pre_valuation
 from tasks.asset_allocate import portfolio_asset_allocate
+from tasks import fund_position
 from command import shu_commit
 from sql import tools
 from crawl.stock_async import executor
-from typing import Dict, Optional
 
 
 def save_prev_valuation_nav():
@@ -30,6 +30,11 @@ def commit_capital():
 
 def commit_portfolio_allocate():
     portfolio_asset_allocate()
+
+
+def commit_fund_pos():
+    """基金仓位估算"""
+    fund_position.commit()
 
 
 if __name__ == '__main__':

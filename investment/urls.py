@@ -32,6 +32,7 @@ urlpatterns = [
     path('overview/', views.OverviewView.as_view()),
     path('overview/allocate/', views.OverviewView.asset_allocate),
     path('overview/allocate/avg/', views.OverviewView.avg_asset_allocate),
+    path('overview/pos/', views.fund_position),
     path('overview/questionnairy/', views.OverviewView.question),
 
     path('warehouse/portfolio/', views.SimpleEmuView.get_portfolio),

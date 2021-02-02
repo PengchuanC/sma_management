@@ -3,6 +3,7 @@ overview
 ~~~~~~~~
 组合账户总览
 """
+import datetime
 
 from dateutil.relativedelta import relativedelta
 from django.db.models import F
@@ -78,3 +79,13 @@ class OverviewView(APIView):
         port_code = request.GET.get('portCode')
         data = await database_sync_to_async(models.ClientQ.objects.get)(port_code=port_code)
         return JsonResponse({'data': model_to_dict(data)})
+
+
+def fund_position(request):
+    """基金平均仓位"""
+    last = models.FundPosEstimate.objects.last()
+    last = last.date
+    start = last - datetime.timedelta(days=30)
+    ret = models.FundPosEstimate.objects.filter(date__range=(start, last))
+    ret = [model_to_dict(x) for x in ret]
+    return JsonResponse({'data': ret})

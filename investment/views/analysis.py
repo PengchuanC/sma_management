@@ -245,4 +245,3 @@ class FundHoldingStockView(APIView):
         ind = ind.reset_index(drop=True)
         ind['key'] = ind.index + 1
         return ind
-

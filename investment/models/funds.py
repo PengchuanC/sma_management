@@ -195,3 +195,20 @@ class FundAdvisor(models.Model):
 
     def __str__(self):
         return self.secucode.secucode
+
+
+# 基金仓位估算值
+class FundPosEstimate(models.Model):
+    normal_stock = models.DecimalField(verbose_name='普通股票型', max_digits=6, decimal_places=4, default=0)
+    mix_stock = models.DecimalField(verbose_name='偏股混合型', max_digits=6, decimal_places=4, default=0)
+    mix_equal = models.DecimalField(verbose_name='平衡混合型', max_digits=6, decimal_places=4, default=0)
+    mix_flexible = models.DecimalField(verbose_name='灵活配置型', max_digits=6, decimal_places=4, default=0)
+    date = models.DateField(verbose_name='估算日期')
+
+    class Meta:
+        db_table = 'sma_fund_pos'
+        verbose_name = '基金仓位估算'
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.date
