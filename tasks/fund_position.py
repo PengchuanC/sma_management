@@ -142,12 +142,12 @@ def calc(date: datetime.date) -> Dict[str, Union[float, datetime.date]]:
 
 
 def commit() -> None:
-    date = models.FundPrice.objects.last().date
+    date: datetime.date = models.FundPrice.objects.last().date
     exist = models.FundPosEstimate.objects.last()
     if not exist:
         start = date_before_target(date, 30)
-        dates = models.TradingDays.objects.filter(date__range=(start, date)).all()
-        dates = [x.date for x in dates]
+        dates: List[models.TradingDays] = models.TradingDays.objects.filter(date__range=(start, date)).all()
+        dates: List[datetime.date] = [x.date for x in dates]
         for d in dates:
             ret = calc(d)
             m = models.FundPosEstimate(**ret)
