@@ -1,6 +1,6 @@
 import datetime
 from itertools import groupby
-from typing import Dict, List
+from typing import Dict, List, Union
 
 import pandas as pd
 import numpy as np
@@ -18,8 +18,15 @@ BOUNDS = {
     '灵活配置型基金': (0.05, 0.95)
 }
 
+MAPPER = {
+    '普通股票型基金': 'normal_stock',
+    '偏股混合型基金': 'mix_stock',
+    '平衡混合型基金': 'mix_equal',
+    '灵活配置型基金': 'mix_flexible'
+}
 
-def fund_style() -> Dict[str, List]:
+
+def fund_style() -> Dict[str, List[str]]:
     """基金类型
 
     Returns:
@@ -48,7 +55,7 @@ def date_before_target(day: datetime.date, days: int = 90) -> datetime.date:
     Returns:
         datetime.date
     """
-    start = day - datetime.timedelta(days=days*2)
+    start: datetime.date = day - datetime.timedelta(days=days*2)
     td = models.TradingDays.objects.filter(date__range=(start, day)).order_by('date')
     td = [x.date for x in td]
     start = td[-days]
@@ -110,7 +117,7 @@ def estimate(x: np.matrix, y: np.matrix):
     return coefficient
 
 
-def calc(date: datetime.date):
+def calc(date: datetime.date) -> Dict[str, Union[float, datetime.date]]:
     """计算各类基金估算仓位
 
     Returns:
@@ -118,12 +125,6 @@ def calc(date: datetime.date):
     """
     funds = fund_style()
     benchmark = '000905'
-    mapper = {
-        '普通股票型基金': 'normal_stock',
-        '偏股混合型基金': 'mix_stock',
-        '平衡混合型基金': 'mix_equal',
-        '灵活配置型基金': 'mix_flexible'
-    }
     ret = {'date': date}
     for name, fund in funds.items():
         nav = fund_nav(fund, date)
@@ -136,11 +137,11 @@ def calc(date: datetime.date):
         c = estimate(x, y)
         min_, max_ = BOUNDS[name]
         c = [x for x in c if all([x >= min_, x <= max_])][0]
-        ret[mapper[name]] = sum(c)/len(c)
+        ret[MAPPER[name]] = sum(c)/len(c)
     return ret
 
 
-def commit():
+def commit() -> None:
     date = models.FundPrice.objects.last().date
     exist = models.FundPosEstimate.objects.last()
     if not exist:
