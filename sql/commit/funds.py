@@ -65,7 +65,7 @@ def commit_fund_asset_allocate():
     codes = models.Funds.objects.filter(secucode__in=list(data.secucode)).all()
     codes = {x.secucode: x for x in codes}
     data = data.to_dict(orient='records')
-    executor = ThreadPoolExecutor(max_workers=16)
+    executor = ThreadPoolExecutor(max_workers=8)
 
     def target(r):
         if r['secucode'] in codes.keys():
@@ -104,9 +104,11 @@ class ExecuteCommit(object):
         if quote.empty:
             return
         data = []
+        funds = models.Funds.objects.all()
+        funds = {x.secucode: x for x in funds}
         for _, q in quote.iterrows():
             if 'secucode' in q.index:
-                q.secucode = models.Funds.objects.get(secucode=q.secucode)
+                q.secucode = funds.get(q.secucode)
             data.append(self.m(**q))
         self.m.objects.bulk_create(data)
 
@@ -156,7 +158,7 @@ class FundCommitFactory(object):
         return tasks
 
 
-def commit_in_threading(task: List[ExecuteCommit], thread=16):
+def commit_in_threading(task: List[ExecuteCommit], thread=8):
     """多线程同步数据"""
     threads = []
     lock = Lock()
