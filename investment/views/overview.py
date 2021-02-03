@@ -85,7 +85,7 @@ def fund_position(request):
     """基金平均仓位"""
     last = models.FundPosEstimate.objects.last()
     last = last.date
-    start = last - datetime.timedelta(days=30)
+    start = last - datetime.timedelta(days=90)
     ret = models.FundPosEstimate.objects.filter(date__range=(start, last))
     ret = [model_to_dict(x) for x in ret]
     return JsonResponse({'data': ret})

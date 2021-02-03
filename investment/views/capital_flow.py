@@ -14,7 +14,6 @@ from django.http import JsonResponse
 from dateutil.relativedelta import relativedelta
 from dateutil.parser import parse
 from rest_framework.views import APIView, Response
-from numpy import round as npround
 
 from investment.utils import capital_flow as cf
 from investment import models
@@ -42,7 +41,10 @@ class CapitalFlowView(APIView):
         ret = ret.drop(['netvalue', 'SIGMA5'], axis=1)
         max_ = ret.max()
         min_ = ret.min()
-        max_cf = max([max(max_[['MA3', 'MA5', 'MA10', 'MA5_HIGH', 'MA5_LOW']]), abs(min(min_[['MA3', 'MA5', 'MA10', 'MA5_HIGH', 'MA5_LOW']]))])
+        max_cf = max([max(
+            max_[['MA3', 'MA5', 'MA10', 'MA5_HIGH', 'MA5_LOW']]),
+            abs(min(min_[['MA3', 'MA5', 'MA10', 'MA5_HIGH', 'MA5_LOW']]))
+        ])
         max_chg = max([max_['change'], abs(min_['change'])])
         max_cf = math.ceil(max_cf/100)*100
         max_chg = math.ceil(max_chg)

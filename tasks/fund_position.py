@@ -12,9 +12,9 @@ from tasks import models
 
 # 基金仓位约束
 BOUNDS = {
-    '普通股票型基金': (0.8, 10),
-    '偏股混合型基金': (0.6, 10),
-    '平衡混合型基金': (0.4, 0.6),
+    '普通股票型基金': (0.8, 1),
+    '偏股混合型基金': (0.5, 0.95),
+    '平衡混合型基金': (0.2, 0.8),
     '灵活配置型基金': (0.05, 0.95)
 }
 
@@ -45,12 +45,12 @@ def fund_style() -> Dict[str, List[str]]:
     return funds
 
 
-def date_before_target(day: datetime.date, days: int = 90) -> datetime.date:
+def date_before_target(day: datetime.date, days: int = 40) -> datetime.date:
     """指定日期的n个交易日前的日期
 
     Args:
         day: 指定日期
-        days: 时间差
+        days: 时间差，按照经验，40日回归结果比较平稳
 
     Returns:
         datetime.date
@@ -74,7 +74,7 @@ def benchmark_close_price(secucode: str, date: datetime.date) -> pd.DataFrame:
     """
     start = date_before_target(date)
     cp = models.IndexQuote.objects.filter(secucode=secucode, date__range=(start, date)).values('date', 'close')
-    cp = pd.DataFrame(cp).set_index('date').rename(columns={'close': secucode})
+    cp = pd.DataFrame(cp).set_index('date').rename(columns={'close': secucode}).astype('float')
     return cp
 
 
@@ -136,7 +136,8 @@ def calc(date: datetime.date) -> Dict[str, Union[float, datetime.date]]:
         x = np.asmatrix(nav[benchmark]).T
         c = estimate(x, y)
         min_, max_ = BOUNDS[name]
-        c = [x for x in c if all([x >= min_, x <= max_])][0]
+        c = c.reshape(1, -1)[0]
+        c = [x for x in c if all([x >= min_, x <= max_])]
         ret[MAPPER[name]] = sum(c)/len(c)
     return ret
 
@@ -145,7 +146,7 @@ def commit() -> None:
     date: datetime.date = models.FundPrice.objects.last().date
     exist = models.FundPosEstimate.objects.last()
     if not exist:
-        start = date_before_target(date, 30)
+        start = date_before_target(date, 90)
         dates: List[models.TradingDays] = models.TradingDays.objects.filter(date__range=(start, date)).all()
         dates: List[datetime.date] = [x.date for x in dates]
         for d in dates:
