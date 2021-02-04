@@ -98,6 +98,8 @@ def chunk(array, size=1):
 class DataGetter(object):
     """数据获取
 
+    如果当日数据出现遗漏，需要在下次同步时补足数据，因此将本地每只基金的最新同步日期分组，
+    相同日期的分为一组，按组获取最新数据
     Attributes:
         model: 模型
 
@@ -141,6 +143,7 @@ class DataGetter(object):
 
         """
         codes = self.dates.get(date)
+        # oracle 单条in语句查询记录不允许超过1000条
         codes = chunk(codes, 999)
         data = []
         for code in codes:
