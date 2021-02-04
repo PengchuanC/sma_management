@@ -9,22 +9,17 @@ index
 import datetime
 
 from django.db.models import Max
-from threading import Thread, Lock
+from math import ceil
+from itertools import groupby
+import pandas as pd
 from concurrent.futures import ThreadPoolExecutor, wait, ALL_COMPLETED
-from typing import List, Union, Optional
+from typing import List, Dict
 from sql import models
 from sql.sql_templates import funds as template
 from sql.utils import read_oracle, render
-from sql.progress import progressbar
 
 
 __all__ = ('commit_funds', 'commit_fund_associate', 'commit_fund_data', 'commit_fund_asset_allocate')
-
-
-model_mapping = {
-    models.FundPrice: template.acc_nav,
-    models.FundAdjPrice: template.adj_nav
-}
 
 
 def get_funds():
@@ -87,98 +82,111 @@ def get_fund_last_update_date(model):
     return dates
 
 
-class ExecuteCommit(object):
-    def __init__(self, model, sql, fund, date: Optional[datetime.date] = None):
-        self.m = model
-        self.s = sql
-        self.f = fund
-        self.d = date
+def chunk(array, size=1):
+    """
+    Example:
 
-    def run(self):
-        if not self.d:
-            self.d = datetime.date(2010, 1, 1)
-        date = self.d.strftime('%Y-%m-%d')
-        sql = render(self.s, '<code>', self.f)
-        sql = render(sql, '<date>', date)
-        quote = read_oracle(sql)
-        if quote.empty:
-            return
+        >>> chunk([1, 2, 3, 4, 5], 2)
+        [[1, 2], [3, 4], [5]]
+
+    .. versionadded:: 1.1.0
+    """
+    chunks = int(ceil(len(array) / float(size)))
+    return [array[i * size:(i + 1) * size] for i in range(chunks)]
+
+
+class DataGetter(object):
+    """数据获取
+
+    Attributes:
+        model: 模型
+
+    """
+
+    model_mapping = {
+        models.FundPrice: template.acc_nav_multi,
+        models.FundAdjPrice: template.adj_nav_multi
+    }
+
+    dates: Dict[datetime.date, List[str]] = {}
+
+    def __init__(self, model):
+        self.m = model
+        self.max_date_group()
+
+    def max_date_group(self):
+        """每个最新同步日期下的基金列表
+
+        Returns:
+            {
+                '2005-7-14': ['000001',...],
+                ...,
+                '2021-02-04': ['110011',...]
+            }
+        """
+        max_dates = get_fund_last_update_date(self.m)
+        sorted_dates = [(secucode, date) for secucode, date in max_dates.items()]
+        sorted_dates = sorted(sorted_dates, key=lambda x: x[1], reverse=True)
+        group_dates = groupby(sorted_dates, key=lambda x: x[1])
+        group_dates = {x[0]: [y[0] for y in x[1]]for x in group_dates}
+        self.dates = group_dates
+
+    def get_data(self, date: datetime.date):
+        """从远程获取增量数据
+
+        Args:
+            date: 本地最新更新日期
+
+        Returns:
+
+        """
+        codes = self.dates.get(date)
+        codes = chunk(codes, 999)
         data = []
+        for code in codes:
+            codes_str = "','".join(code)
+            sql = self.model_mapping.get(self.m)
+            sql = render(sql, '<code>', codes_str)
+            sql = render(sql, '<date>', date.strftime('%Y-%m-%d'))
+            d = read_oracle(sql)
+            data.append(d)
+        data = pd.concat(data, axis=0)
+        return data
+
+    def commit(self):
+        """提交"""
+        dates = self.dates
         funds = models.Funds.objects.all()
         funds = {x.secucode: x for x in funds}
-        for _, q in quote.iterrows():
-            if 'secucode' in q.index:
-                q.secucode = funds.get(q.secucode)
-            data.append(self.m(**q))
-        self.m.objects.bulk_create(data)
-
-
-class Task(Thread):
-    def __init__(self, target: List[ExecuteCommit], lock: Lock):
-        super().__init__()
-        self.t = target
-        self.lk = lock
-        self.length = len(target)
-
-    def run(self):
-        while True:
-            self.lk.acquire()
-            if not self.t:
-                self.lk.release()
-                break
-            t = self.t.pop()
-            self.lk.release()
-            progressbar(self.length - len(self.t), self.length)
-            try:
-                t.run()
-            except Exception as e:
-                print(e)
-
-
-class FundCommitFactory(object):
-    """根据数据model创建任务"""
-    model_mapping = model_mapping
-    m = None
-    dates = {}
-
-    def __init__(self):
-        self.funds = get_funds()
-
-    def set_model(self, model: Union[models.FundPrice, models.FundAdjPrice, models.FundHoldingStock]):
-        self.m = model
-        self.dates = get_fund_last_update_date(model)
-
-    def generate_task(self):
-        tasks = []
-        for fund in self.funds:
-            date = self.dates.get(fund)
-            sql = self.model_mapping.get(self.m)
-            e = ExecuteCommit(self.m, sql, fund, date)
-            tasks.append(e)
-        return tasks
-
-
-def commit_in_threading(task: List[ExecuteCommit], thread=8):
-    """多线程同步数据"""
-    threads = []
-    lock = Lock()
-    for i in range(thread):
-        t = Task(task, lock)
-        t.start()
-        threads.append(t)
-    for t in threads:
-        t.join()
+        ret = []
+        for date in dates:
+            # 60日内无净值数据的，不视为净值遗漏，视为不再披露净值
+            if date < datetime.date.today() - datetime.timedelta(days=60):
+                continue
+            data = self.get_data(date)
+            data.secucode = data.secucode.apply(lambda x: funds.get(x))
+            data = data.fillna(0)
+            for idx, r in data.iterrows():
+                r = self.m(**r)
+                ret.append(r)
+        self.m.objects.bulk_create(ret)
 
 
 def commit_fund_data():
-    factory = FundCommitFactory()
-    m: Union[models.FundPrice, models.FundAdjPrice, models.FundHoldingStock]
-    for m in model_mapping.keys():
-        print(m)
-        factory.set_model(m)
-        tasks = factory.generate_task()
-        commit_in_threading(tasks)
+    """同步基金净值数据
+
+    2021.02.04修改为批量同步
+
+    Returns:
+
+    """
+    p = ThreadPoolExecutor(max_workers=2)
+    tasks = []
+    for m in (models.FundPrice, models.FundAdjPrice):
+        dg = DataGetter(m)
+        tasks.append(p.submit(dg.commit))
+    wait(tasks, return_when=ALL_COMPLETED)
 
 
 if __name__ == '__main__':
-    commit_fund_associate()
+    commit_fund_data()

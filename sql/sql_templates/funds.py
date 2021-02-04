@@ -24,6 +24,23 @@ acc_nav = """
         AND enddate > to_date('<date>', 'yyyy-MM-dd')
 """
 
+acc_nav_multi = """
+    SELECT
+        s.secucode AS secucode,
+        m.enddate AS "date",
+        m.nv,
+        m.unitnv AS nav,
+        m.accumulatedunitnv AS acc_nav,
+        m.dailyprofit
+    FROM
+        jydb.secumain s
+    JOIN jydb.mf_netvalue m ON
+        s.innercode = m.innercode
+    WHERE
+        s.secucode in ('<code>')
+        AND enddate > to_date('<date>', 'yyyy-MM-dd')
+"""
+
 
 # 基金复权净值数据
 adj_nav = """
@@ -38,6 +55,21 @@ adj_nav = """
         s.innercode = m.innercode
     WHERE
         s.secucode = '<code>'
+        AND m.tradingday > to_date('<date>', 'yyyy-MM-dd')
+"""
+
+adj_nav_multi = """
+    SELECT
+        s.secucode AS secucode,
+        m.tradingday AS "date",
+        m.unitnv AS nav,
+        m.UnitNVRestored AS adj_nav
+    FROM
+        jydb.secumain s
+    JOIN jydb.MF_FundNetValueRe m ON
+        s.innercode = m.innercode
+    WHERE
+        s.secucode in ('<code>')
         AND m.tradingday > to_date('<date>', 'yyyy-MM-dd')
 """
 
