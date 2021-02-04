@@ -185,7 +185,7 @@ def commit_fund_data():
     """
     p = ThreadPoolExecutor(max_workers=2)
     tasks = []
-    for m in (models.FundPrice, models.FundAdjPrice):
+    for m in DataGetter.model_mapping.keys():
         dg = DataGetter(m)
         tasks.append(p.submit(dg.commit))
     wait(tasks, return_when=ALL_COMPLETED)
