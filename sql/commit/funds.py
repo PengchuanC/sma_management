@@ -114,9 +114,9 @@ class DataGetter(object):
 
     def __init__(self, model):
         self.m = model
-        self.max_date_group()
+        self._max_date_group()
 
-    def max_date_group(self):
+    def _max_date_group(self):
         """每个最新同步日期下的基金列表
 
         Returns:
@@ -131,7 +131,26 @@ class DataGetter(object):
         sorted_dates = sorted(sorted_dates, key=lambda x: x[1], reverse=True)
         group_dates = groupby(sorted_dates, key=lambda x: x[1])
         group_dates = {x[0]: [y[0] for y in x[1]]for x in group_dates}
+        recent = self._recent_launched_funds()
+        date = datetime.date.today() - datetime.timedelta(days=30)
+        if date in group_dates.keys():
+            group_dates[date].extend(recent)
+        else:
+            group_dates[date] = recent
         self.dates = group_dates
+
+    def _recent_launched_funds(self) -> List[str]:
+        """部分新成立基金没有最大日期
+
+        Returns:
+            [001428, ...]
+        """
+        funds = models.Funds.objects.values('secucode').distinct()
+        funds = [x['secucode'] for x in funds]
+        funds2 = self.m.objects.values('secucode').distinct()
+        funds2 = [x['secucode'] for x in funds2]
+        funds = [x for x in funds if x not in funds2]
+        return funds
 
     def get_data(self, date: datetime.date):
         """从远程获取增量数据
