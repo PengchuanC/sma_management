@@ -60,6 +60,7 @@ class PreValuationConsumer(AsyncJsonWebsocketConsumer):
             'secucode', 'prev_close', 'price', 'time'
         )
         stocks = pd.DataFrame(stocks)
+        stocks = stocks[stocks['price'] != 0]
         stocks['change'] = stocks.price / stocks.prev_close - 1
         data = holding.merge(stocks, left_on='stockcode', right_on='secucode', how='inner')
         data['real_change'] = (data.ratio * data.change).astype('float')
@@ -91,6 +92,7 @@ class PreValuationConsumer(AsyncJsonWebsocketConsumer):
             secucode__in=stocks, time=last
         ).values('secucode', 'prev_close', 'price')
         stocks = pd.DataFrame(stocks)
+        stocks = stocks[stocks['price'] != 0]
         stocks['change'] = stocks.price / stocks.prev_close - 1
         data = holding.merge(stocks, left_on='stockcode', right_on='secucode', how='inner')
         data['real_change'] = data.ratio * data.change
