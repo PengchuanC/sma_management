@@ -38,7 +38,7 @@ class CapitalFlowView(APIView):
         pct = pd.DataFrame(pct)
         pct['change'] = round(pct['change'].astype('float'), 2)
         ret = ret.merge(pct, how='left', on='date')
-        ret = ret.drop(['netvalue', 'SIGMA5'], axis=1)
+        ret = ret.drop(['SIGMA5'], axis=1)
         max_ = ret.max()
         min_ = ret.min()
         max_cf = max([max(
