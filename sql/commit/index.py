@@ -141,6 +141,7 @@ def get_index_quote_wind(secucode):
     if err != 0 or data.empty or len(data) == 1:
         return []
     data = data.rename(columns={'PRE_CLOSE': 'pre_close', 'CLOSE': 'close', 'PCT_CHG': 'change'})
+    data = data.iloc[:-1, :]
     data = data.dropna(how='all')
     data['date'] = data.index
     data['secucode'] = secucode
