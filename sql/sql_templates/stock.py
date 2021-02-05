@@ -79,5 +79,5 @@ stock_capital_flow = """
     JOIN JYDB.SECUMAIN s ON
         s.INNERCODE = qt.INNERCODE
     WHERE
-        qt.TRADINGDATE >= TO_DATE('<date>', 'YYYY-MM-DD')
+        qt.TRADINGDATE > TO_DATE('<date>', 'YYYY-MM-DD')
 """

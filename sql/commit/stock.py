@@ -102,21 +102,7 @@ def commit_stock_daily_quote():
     根据最新交易日期从聚源查询全部股票大于该日期的忍度行情数据
     最终只会保留本地表单sma_stocks中收录的股票的行情数据
     """
-    exist = models.StockDailyQuote.objects.last()
-    if exist:
-        date = exist.date
-    else:
-        date = datetime.date(2020, 10, 1)
-    sql = render(template.stock_quote, '<date>', date.strftime('%Y-%m-%d'))
-    data = read_oracle(sql)
-    stocks = models.Stock.objects.all()
-    stocks = {x.secucode: x for x in stocks}
-    data.secucode = data.secucode.apply(lambda x: stocks.get(x))
-    data = data[data.secucode.notnull()]
-    ret = [models.StockDailyQuote(**x) for _, x in data.iterrows()]
-    ret = chunk(ret, 5000)
-    for r in ret:
-        models.StockDailyQuote.objects.bulk_create(r)
+    _commit_stock_data(models.StockDailyQuote, template.stock_quote)
 
 
 def commit_stock_capital_flow():
@@ -126,22 +112,35 @@ def commit_stock_capital_flow():
     根据最新交易日期从聚源查询全部股票大于该日期的资金流动数据
     最终只会保留本地表单sma_stocks中收录的股票的资金流动数据
     """
-    exist = models.CapitalFlow.objects.last()
+    _commit_stock_data(models.CapitalFlow, template.stock_capital_flow)
+
+
+def _commit_stock_data(model: models.StockDailyQuote or models.CapitalFlow, sql: str):
+    """同步股票行情或资金流向数据
+
+    Args:
+        model:
+        sql:
+
+    Returns:
+
+    """
+    exist = model.objects.last()
     if exist:
         date = exist.date
     else:
         date = datetime.date(2020, 1, 1)
-    sql = render(template.stock_capital_flow, '<date>', date.strftime('%Y-%m-%d'))
+    sql = render(sql, '<date>', date.strftime('%Y-%m-%d'))
     data = read_oracle(sql)
     stocks = models.Stock.objects.all()
     stocks = {x.secucode: x for x in stocks}
     data.secucode = data.secucode.apply(lambda x: stocks.get(x))
     data = data[data.secucode.notnull()]
-    ret = [models.CapitalFlow(**x) for _, x in data.iterrows()]
+    ret = [model(**x) for _, x in data.iterrows()]
     ret = chunk(ret, 5000)
     for r in ret:
-        models.CapitalFlow.objects.bulk_create(r)
+        model.objects.bulk_create(r)
 
 
 if __name__ == '__main__':
-    commit_stock()
+    commit_stock_capital_flow()
