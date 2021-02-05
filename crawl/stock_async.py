@@ -201,7 +201,7 @@ def schedule():
     scheduler.add_job(main, 'cron', day_of_week='0-4', hour='9', minute='30-59', second='*/10')
     scheduler.add_job(main, 'cron', day_of_week='0-4', hour='10,13,14', second='*/10')
     scheduler.add_job(main, 'cron', day_of_week='0-4', hour='11', minute='0-29', second='*/10')
-    scheduler.add_job(main, 'cron', day_of_week='0-4', hour='13', minute='0', second='10')
+    scheduler.add_job(main, 'cron', day_of_week='0-4', hour='15', minute='0', second='10')
     scheduler.add_job(clear, 'cron', day_of_week='0-4', hour='9', minute='0', second='0')
     scheduler.start()
 

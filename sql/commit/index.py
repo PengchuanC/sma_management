@@ -128,7 +128,7 @@ def get_index_quote_wind(secucode):
     """获取指数收盘价-wind"""
     try:
         from WindPy import w
-    except:
+    except ModuleNotFoundError:
         return
     last = models.IndexQuote.objects.filter(secucode=secucode).last()
     if last:

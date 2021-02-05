@@ -27,7 +27,9 @@ class HistoryView(APIView):
         total = ta.objects.filter(port_code=port_code, date__lte=date).aggregate(total=Sum('fee'))['total']
 
         # 最近调仓日期
-        last = ta.objects.filter(port_code=port_code, date__lte=date, operation__icontains='成交确认').aggregate(date=Max('date'))['date']
+        last = ta.objects.filter(
+            port_code=port_code, date__lte=date, operation__icontains='成交确认'
+        ).aggregate(date=Max('date'))['date']
         exact = ta.objects.filter(port_code=port_code, date=last).aggregate(total=Sum('fee'))['total']
         return Response({
             'total': {'fee': total, 'ratio': total / net_asset},
