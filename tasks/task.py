@@ -38,4 +38,4 @@ def commit_fund_pos():
 
 
 if __name__ == '__main__':
-    commit_capital()
+    commit_fund_pos()

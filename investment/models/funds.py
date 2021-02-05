@@ -38,7 +38,7 @@ class FundPrice(models.Model):
         verbose_name = '基金累计净值表'
         verbose_name_plural = verbose_name
         index_together = ['secucode', 'date']
-        get_latest_by = ['date']
+        get_latest_by = 'date'
 
     def __str__(self):
         return f'{self.secucode.secucode} {self.secucode.secuname}'
@@ -209,6 +209,7 @@ class FundPosEstimate(models.Model):
         db_table = 'sma_fund_pos'
         verbose_name = '基金仓位估算'
         verbose_name_plural = verbose_name
+        get_latest_by = 'date'
 
     def __str__(self):
         return self.date
