@@ -189,7 +189,7 @@ class FundHoldingView(APIView):
             date = dates.get(secucode)
             if not date:
                 # 处理联接基金及LOF
-                date = FAA.objects.filter(secucode=relate.get(x)).last().date
+                date = FAA.objects.filter(secucode=relate.get(x)).latest().date
                 d = FAA.objects.filter(secucode=relate.get(secucode), date=date).values(
                     'secucode', 'stock', 'bond', 'fund', 'metals', 'monetary'
                 )[0]

@@ -211,4 +211,4 @@ def commit_fund_data():
 
 
 if __name__ == '__main__':
-    commit_fund_data()
+    commit_fund_asset_allocate()

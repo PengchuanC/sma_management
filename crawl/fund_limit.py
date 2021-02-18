@@ -46,12 +46,14 @@ def get_limit(page: str):
 
 def commit_fund_limit():
     pages = get_info() + 1
+    funds = models.Funds.objects.all()
+    funds = {x.secucode: x for x in funds}
     for p in range(1, pages):
         p = str(p)
         try:
             data = get_limit(p)
             for row in data:
-                fund = models.Funds.objects.get(secucode=row.pop('secucode'))
+                fund = funds.get(row.pop('secucode'))
                 if fund:
                     models.FundPurchaseAndRedeem.objects.update_or_create(
                         secucode=fund, date=row.pop('date'), defaults=row

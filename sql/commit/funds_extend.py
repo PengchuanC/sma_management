@@ -102,7 +102,6 @@ def commit_asset_allocate_hk():
     data['assettype'] = data['assettype'].astype('str')
     ratio = data.pivot_table(index='secucode', columns='assettype', values='ratioinnv', aggfunc=sum)
     ratio = ratio.fillna(0)
-    ratio.to_clipboard()
     for col in ['10', '30', '10015', '40', '10075', '10089']:
         if col not in ratio.columns:
             ratio[col] = 0
@@ -145,4 +144,5 @@ def commit_fund_holding_stock_hk():
 if __name__ == '__main__':
     # commit_holding_stock_detail()
     # commit_fund_holding_stock_hk()
-    commit_holding_top_ten()
+    # commit_holding_top_ten()
+    commit_asset_allocate_hk()

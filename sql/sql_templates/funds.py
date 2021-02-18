@@ -228,22 +228,22 @@ fund_associate = """
 fund_allocate = """
     SELECT
         SECUCODE,
-        REPORTDATE    as "date",
-        RINOFSTOCK    as stock,
-        RINOFBOND     as bond,
-        RINOFFUND     as fund,
-        RINOFMETALS   as metals,
-        RINOfMonetary as monetary
+        REPORTDATE AS "date",
+        RINOFSTOCK AS stock,
+        RINOFBOND AS bond,
+        RINOFFUND AS fund,
+        RINOFMETALS AS metals,
+        RINOfMonetary AS monetary
     FROM
         (
         SELECT
             SECUCODE,
             ma.REPORTDATE,
             ma.RINOFSTOCK,
-            ma.RINOFBOND,
+            (nvl(ma.RINOFBOND, 0)+ nvl(ma.RINOfAssetBacked, 0)+ nvl(ma.RINOfReturnSale, 0)) AS RINOFBOND,
             ma.RINOFFUND,
-            ma.RINOFMETALS,
-            ma.RINOfMonetary,
+            (nvl(ma.RINOFMETALS, 0)+ nvl(ma.RINOfDeriva, 0)) AS RINOFMETALS,
+            (nvl(ma.RINOfMonetary, 0)+ nvl(ma.RINOfOtherI, 0)) AS RINOfMonetary,
             ROW_NUMBER() OVER(PARTITION BY secucode ORDER BY ma.REPORTDATE DESC) rn
         FROM
             JYDB.MF_AssetAllocationNew ma

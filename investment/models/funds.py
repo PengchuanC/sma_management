@@ -160,6 +160,7 @@ class FundAssetAllocate(models.Model):
         db_table = 'sma_fund_asset_allocate'
         verbose_name = '基金资产配置'
         verbose_name_plural = verbose_name
+        get_latest_by = 'date'
 
     def __str__(self):
         return self.secucode.secucode
