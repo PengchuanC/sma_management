@@ -31,7 +31,6 @@ def commit_portfolio(name):
 
 
 def commit_other(name):
-    print(name)
     table = tables.get(name)
     m = mapping.get(table)
     data = export(name)
