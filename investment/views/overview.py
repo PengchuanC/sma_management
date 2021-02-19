@@ -63,7 +63,8 @@ class OverviewView(APIView):
             {'name': '权益', 'value': float(r['equity'])},
             {'name': '固收', 'value': float(r['fix_income'])},
             {'name': '另类', 'value': float(r['alter'])},
-            {'name': '货币', 'value': float(r['money'])}
+            {'name': '货币', 'value': float(r['money'])},
+            {'name': '其他', 'value': float(r['other'])}
         ]
         return JsonResponse({'data': ret})
 
