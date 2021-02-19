@@ -307,6 +307,7 @@ class PortfolioAssetAllocate(models.Model):
     fix_income = models.DecimalField(verbose_name='固收', max_digits=18, decimal_places=6, default=0)
     alter = models.DecimalField(verbose_name='另类', max_digits=18, decimal_places=6, default=0)
     money = models.DecimalField(verbose_name='货币', max_digits=18, decimal_places=6, default=0)
+    other = models.DecimalField(verbose_name='其他', max_digits=18, decimal_places=6, default=0)
     date = models.DateField(verbose_name='日期', null=True, blank=True)
 
     class Meta:

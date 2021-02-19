@@ -154,6 +154,7 @@ class FundAssetAllocate(models.Model):
     fund = models.DecimalField(verbose_name='基金投资', max_digits=18, decimal_places=6, default=0)
     metals = models.DecimalField(verbose_name='贵金属投资', max_digits=18, decimal_places=6, default=0)
     monetary = models.DecimalField(verbose_name='货币投资', max_digits=18, decimal_places=6, default=0)
+    other = models.DecimalField(verbose_name='其他投资', max_digits=18, decimal_places=6, default=0)
     date = models.DateField(verbose_name='报告日期', null=False)
 
     class Meta:

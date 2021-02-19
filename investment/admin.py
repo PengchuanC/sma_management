@@ -83,7 +83,7 @@ class FundAssociateAdmin(admin.ModelAdmin):
 
 @admin.register(models.FundAssetAllocate)
 class FundAssetAllocateAdmin(admin.ModelAdmin):
-    list_display = ('secucode', 'stock', 'bond', 'fund', 'metals', 'monetary', 'date')
+    list_display = ('secucode', 'stock', 'bond', 'fund', 'metals', 'monetary', 'other', 'date')
 
 
 @admin.register(models.FundAnnouncement)
@@ -207,7 +207,7 @@ class ClientPRAdmin(admin.ModelAdmin):
 
 @admin.register(models.PortfolioAssetAllocate)
 class PortfolioAllocateAdmin(admin.ModelAdmin):
-    list_display = ('port_code', 'equity', 'fix_income', 'alter', 'money', 'date')
+    list_display = ('port_code', 'equity', 'fix_income', 'alter', 'money', 'other', 'date')
     list_filter = ('port_code', 'date')
 
 

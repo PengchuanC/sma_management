@@ -233,7 +233,8 @@ fund_allocate = """
         RINOFBOND AS bond,
         RINOFFUND AS fund,
         RINOFMETALS AS metals,
-        RINOfMonetary AS monetary
+        RINOfMonetary AS monetary,
+        OTHER AS other
     FROM
         (
         SELECT
@@ -243,7 +244,8 @@ fund_allocate = """
             (nvl(ma.RINOFBOND, 0)+ nvl(ma.RINOfAssetBacked, 0)+ nvl(ma.RINOfReturnSale, 0)) AS RINOFBOND,
             ma.RINOFFUND,
             (nvl(ma.RINOFMETALS, 0)+ nvl(ma.RINOfDeriva, 0)) AS RINOFMETALS,
-            (nvl(ma.RINOfMonetary, 0)+ nvl(ma.RINOfOtherI, 0)) AS RINOfMonetary,
+            nvl(ma.RINOfMonetary, 0) AS RINOfMonetary,
+            nvl(ma.RINOfOtherI, 0) AS OTHER,
             ROW_NUMBER() OVER(PARTITION BY secucode ORDER BY ma.REPORTDATE DESC) rn
         FROM
             JYDB.MF_AssetAllocationNew ma
@@ -280,7 +282,7 @@ fund_allocate_hk = """
         mq.INNERCODE = a.innercode
         AND mq.ENDDATE = a.enddate
     WHERE 
-    mq.ASSETTYPE IN (10, 30, 10015, 40, 10075, 10089)
+    mq.ASSETTYPE IN (10, 30, 10015, 40, 10075, 10089, 10090)
 """
 
 

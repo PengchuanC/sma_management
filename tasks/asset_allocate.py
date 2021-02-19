@@ -22,8 +22,8 @@ def _portfolio_asset_allocate(portfolio: models.Portfolio):
         try:
             allocate: dict = FundHoldingView.asset_allocate(portfolio.port_code, date=date)
             allocate.pop('fund')
-            names = ['equity', 'fix_income', 'alter', 'money']
-            for idx, attr in enumerate(['stock', 'bond', 'metals', 'monetary']):
+            names = ['equity', 'fix_income', 'alter', 'money', 'other']
+            for idx, attr in enumerate(['stock', 'bond', 'metals', 'monetary', 'other']):
                 allocate[names[idx]] = allocate.pop(attr)
             allocate.update({'port_code': portfolio, 'date': date})
             allocate: models.PortfolioAssetAllocate = models.PortfolioAssetAllocate(**allocate)

@@ -102,7 +102,7 @@ def commit_asset_allocate_hk():
     data['assettype'] = data['assettype'].astype('str')
     ratio = data.pivot_table(index='secucode', columns='assettype', values='ratioinnv', aggfunc=sum)
     ratio = ratio.fillna(0)
-    for col in ['10', '30', '10015', '40', '10075', '10089']:
+    for col in ['10', '30', '10015', '40', '10075', '10089', '10090']:
         if col not in ratio.columns:
             ratio[col] = 0
     ratio['stock'] = ratio['10'] / 100
@@ -110,7 +110,8 @@ def commit_asset_allocate_hk():
     ratio['metals'] = ratio['40'] / 100
     ratio['fund'] = ratio['10015'] / 100
     ratio['monetary'] = (ratio['10075'] + ratio['10089']) / 100
-    ratio = ratio[['stock', 'bond', 'fund', 'metals', 'monetary']]
+    ratio['other'] = ratio['10090'] / 100
+    ratio = ratio[['stock', 'bond', 'fund', 'metals', 'monetary', 'other']]
     ratio = ratio.reset_index()
     ratio['date'] = ratio.secucode.apply(lambda x: date.get(x))
     fund = models.Funds.objects.filter(secucode__in=list(ratio.secucode)).all()
