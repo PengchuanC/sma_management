@@ -191,17 +191,17 @@ class FundHoldingView(APIView):
                 # 处理联接基金及LOF
                 date = FAA.objects.filter(secucode=relate.get(x)).latest().date
                 d = FAA.objects.filter(secucode=relate.get(secucode), date=date).values(
-                    'secucode', 'stock', 'bond', 'fund', 'metals', 'monetary'
+                    'secucode', 'stock', 'bond', 'fund', 'metals', 'monetary', 'other'
                 )[0]
                 d['secucode'] = secucode
             else:
                 d = FAA.objects.filter(secucode=secucode, date=date).values(
-                    'secucode', 'stock', 'bond', 'fund', 'metals', 'monetary'
+                    'secucode', 'stock', 'bond', 'fund', 'metals', 'monetary', 'other'
                 )[0]
             data.append(d)
         data = pd.DataFrame(data).set_index('secucode')
         data = data.merge(holding[['secucode', 'ratio']], left_index=True, right_on='secucode').set_index('secucode')
-        columns = ['stock', 'bond', 'fund', 'metals', 'monetary']
+        columns = ['stock', 'bond', 'fund', 'metals', 'monetary', 'other']
         for col in columns:
             data[col] *= data['ratio']
         data = data[columns]
