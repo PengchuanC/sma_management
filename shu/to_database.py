@@ -5,12 +5,15 @@ to_database
 @date: 2020-09-08
 @desc:
 """
+from django.db.transaction import atomic
+from django.db.models import Max
+
 from shu.collect import export
 from shu.configs import tables, mapping
 from sql.progress import progressbar
 
 from shu.sma_export.parse_configs import special_table
-from investment.models import Funds
+from investment.models import Funds, Portfolio
 
 
 def commit_portfolio(name):
@@ -28,19 +31,26 @@ def commit_portfolio(name):
 
 
 def commit_other(name):
+    print(name)
     table = tables.get(name)
     m = mapping.get(table)
     data = export(name)
-    last = m.objects.last()
-    if last:
-        date = last.date
-        data = {x: y for x, y in data.items() if x > date}
-    for date, dat in data.items():
-        ret = []
-        for row in dat:
-            for r in row:
-                ret.append(m(**r))
-        m.objects.bulk_create(ret)
+    portfolios = Portfolio.objects.filter(valid=True).all()
+    portfolios = [x.port_code for x in portfolios]
+    portfolios = m.objects.filter(port_code__in=portfolios).values('port_code').annotate(mdate=Max('date'))
+    date_mapping = {x['port_code']: x['mdate'] for x in portfolios}
+    min_date = min(date_mapping.values())
+    with atomic():
+        data = {x: y for x, y in data.items() if x > min_date}
+        for date, dat in data.items():
+            ret = []
+            for row in dat:
+                for r in row:
+                    date = date_mapping.get(r['port_code_id'])
+                    if r['date'] <= date:
+                        continue
+                    ret.append(m(**r))
+            m.objects.bulk_create(ret)
 
 
 def run():
