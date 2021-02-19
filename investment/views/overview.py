@@ -45,7 +45,8 @@ class OverviewView(APIView):
             {'name': '货币', 'value': float(r['monetary'])},
             {'name': '其他', 'value': float(r['other'])}
         ]
-        return JsonResponse({'data': ret})
+        lever = round(sum([x['value'] for x in ret]), 2)
+        return JsonResponse({'data': ret, 'lever': lever})
 
     @staticmethod
     def avg_asset_allocate(request):
