@@ -94,6 +94,11 @@ class MovingVolatility(APIView):
     """
 
     @staticmethod
+    def return_bound(s: float, risk_free=0.015):
+        s = float(s) - risk_free/365
+        return min([0, s])
+
+    @staticmethod
     def get(request):
         params = request.query_params
         port_code = params.get('portCode')
@@ -105,6 +110,14 @@ class MovingVolatility(APIView):
         pct = nav.pct_change().dropna()
         std = pct.rolling(30).std().dropna()
         std = np.round(std * np.sqrt(250)*100, 2)
-        std = std.reset_index()
-        std = std.to_dict(orient='records')
-        return Response(std)
+        std = std.acc_nav
+        std.name = 'vol'
+
+        downside_pct = pct['acc_nav'].apply(MovingVolatility.return_bound)
+        downside_std = downside_pct.copy().rolling(30).std().dropna()
+        downside_std = np.round(downside_std * np.sqrt(250) * 100, 2)
+        downside_std.name = 'downside_vol'
+        downside_std = pd.concat([std, downside_std], axis=1)
+        downside_std = downside_std.reset_index()
+        downside_std = downside_std.to_dict(orient='records')
+        return Response(downside_std)
