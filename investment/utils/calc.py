@@ -84,7 +84,7 @@ class Formula(object):
         annualized_return = Formula.annualized_return_yield(data)
         drawback = Formula.max_drawback(data).loc["drawback", :]
         calmar = -annualized_return / drawback
-        calmar = calmar.astype("float")
+        calmar = calmar.astype("float").fillna(0)
         calmar = np.round(calmar, 2)
         return calmar
 
@@ -162,6 +162,7 @@ def max_drawback(data):
     start = drawback[0]
     end = drawback[1]
     back = round(drawback[2], 4)
+    back = back if back < 0 else None
     return start, end, back
 
 
