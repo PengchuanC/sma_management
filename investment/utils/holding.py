@@ -41,3 +41,32 @@ def fund_holding_stock(port_code: str, date: str or datetime.date):
     data = data.sort_values(by='ratio', ascending=False).reset_index(drop=True)
     data['key'] = data.index + 1
     return data
+
+
+def fund_holding_stock_by_fund(funds: list):
+    """
+    基金持股情况
+    Args:
+        funds: 基金列表
+
+    Returns:
+
+    """
+    associate = models.FundAssociate.objects.filter(
+        relate__in=funds).order_by('define').values('secucode', 'relate')
+    associate = {x['relate']: x['secucode'] for x in associate}
+    recent_report_date = models.FundHoldingStock.objects.values('secucode').annotate(recent=Max('date'))
+    recent = {x['secucode']: x['recent'] for x in recent_report_date}
+    query_set = []
+    for fund in funds:
+        relate = associate.get(fund, fund)
+        stocks = models.FundHoldingStock.objects.filter(
+            secucode=relate, date=recent.get(relate)
+        ).values('secucode', 'stockcode', 'ratio', 'publish')
+        publish = set([x['publish'] for x in stocks])
+        if '年报' in publish:
+            stocks = [x for x in stocks if x['publish'] == '年报']
+        query_set.extend(stocks)
+
+    data: pd.DataFrame = pd.DataFrame(query_set)
+    return data

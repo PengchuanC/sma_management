@@ -11,9 +11,10 @@ import datetime
 from asyncio import sleep
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from channels.db import database_sync_to_async
+from django.db.models import Max
 
 from investment import models
-from investment.utils.holding import fund_holding_stock
+from investment.utils.holding import fund_holding_stock, fund_holding_stock_by_fund
 from investment.views.analysis import FundHoldingView
 
 
@@ -98,3 +99,84 @@ class PreValuationConsumer(AsyncJsonWebsocketConsumer):
         data['real_change'] = data.ratio * data.change
         data['real_change'] = data['real_change'].astype('float') / equity
         return [{'name': last.strftime('%H:%M:%S'), 'value': data.real_change.sum()}]
+
+
+class BulkFundValuationConsumer(AsyncJsonWebsocketConsumer):
+    """批量返回基金的实时涨跌幅"""
+    connected = False
+    holding = None
+    names = None
+    equity = 0
+    time = datetime.datetime.now().time().strftime('%H:%M:%S')
+
+    async def connect(self):
+        self.connected = True
+        await self.fund_holding()
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        self.connected = False
+        await self.close(close_code)
+
+    async def receive(self, text_data=None, bytes_data=None, **kwargs):
+        ret = await self.calc()
+        await self.send(text_data=json.dumps(ret))
+
+        while True:
+            await sleep(30)
+            ret = await self.push()
+            if not ret:
+                break
+            await self.send(text_data=json.dumps(ret))
+
+    async def push(self):
+        if not isinstance(self.holding, pd.DataFrame):
+            return
+        if datetime.datetime.now().time() > datetime.time(15, 0, 20):
+            await self.disconnect(3000)
+            return
+        return self.calc()
+
+    async def calc(self):
+        holding = self.holding
+        stocks = list(set(list(holding.stockcode)))
+        changes = await self.stock_price(stocks)
+        data = pd.merge(holding, changes, on='stockcode', how='left')
+        data['change'] = data['ratio'] * data['change']
+        data['change'] = data['change'].astype('float')
+        data = data.groupby(['secucode'])['change'].sum()
+        data = data.reset_index()
+        data = pd.merge(self.names, data, on='secucode', how='outer')
+        data['key'] = data.index + 1
+        return data.to_dict(orient='records')
+
+    @database_sync_to_async
+    def fund_holding(self):
+        """获取基金持仓"""
+        # 最新持仓
+        last = models.Holding.objects.aggregate(mdate=Max('date'))['mdate']
+        funds = models.Holding.objects.filter(date=last).values('secucode').distinct()
+        funds = [x['secucode'] for x in funds]
+
+        holding = fund_holding_stock_by_fund(funds)
+        funds = list(set(list(holding.secucode)))
+        names = models.Funds.objects.filter(secucode__in=funds).values('secucode', 'secuname')
+        names = pd.DataFrame(names)
+        holding = names.merge(holding, on='secucode', how='outer')
+        self.holding = holding
+        names = holding[['secucode', 'secuname']].drop_duplicates()
+        names['hold'] = '是'
+        self.names = names
+
+    @database_sync_to_async
+    def stock_price(self, stocks: list):
+        last = models.StockRealtimePrice.objects.last().time
+        last = models.StockRealtimePrice.objects.filter(time__lt=last).last().time
+        stocks = models.StockRealtimePrice.objects.filter(
+            secucode__in=stocks, time=last
+        ).values('secucode', 'prev_close', 'price')
+        stocks = pd.DataFrame(stocks)
+        stocks = stocks.rename(columns={'secucode': 'stockcode'})
+        stocks = stocks[stocks['price'] != 0]
+        stocks['change'] = stocks.price / stocks.prev_close - 1
+        return stocks[['stockcode', 'change']]
