@@ -10,6 +10,10 @@ stock = """
 # 股票申万行业分类
 stock_sw = """
     SELECT
+        *
+    FROM
+        (
+        SELECT
             SecuCode,
             FirstIndustryName,
             SecondIndustryName
@@ -19,11 +23,25 @@ stock_sw = """
             s.CompanyCode = m.CompanyCode
         WHERE
             m.Standard = 24
-            AND m.IFPERFORMED=1
+            AND m.IFPERFORMED = 1
             AND s.SecuCategory = 1
             AND s.LISTEDSECTOR IN (1, 2, 6, 7)
-        ORDER BY 
-            s.secucode
+        ORDER BY
+            s.secucode)
+    UNION ALL
+    SELECT
+        s.SECUCODE,
+        ls.FIRSTINDUSTRYNAME ,
+        ls.SECONDINDUSTRYNAME
+    FROM
+        JYDB.LC_STIBExgIndustry ls
+    JOIN JYDB.SECUMAIN s ON
+        ls.COMPANYCODE = s.COMPANYCODE
+    WHERE
+        ls.STANDARD = 24
+        AND ls.IFEXECUTED = 1
+        AND s.SecuCategory = 1
+        AND s.LISTEDSECTOR IN (1, 2, 6, 7)
 """
 
 
