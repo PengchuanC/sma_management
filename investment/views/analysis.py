@@ -239,7 +239,7 @@ class FundHoldingStockView(APIView):
         ind = pd.merge(ind, data, left_on='secucode', right_on='stockcode', how='outer')
         ind.firstindustryname = ind.firstindustryname.fillna('港股')
         ind = ind.groupby(['firstindustryname'])['ratio'].sum()
-        ind = ind.reset_index()
+        ind: pd.DataFrame = ind.reset_index()
         ind = ind.sort_values(['ratio'], ascending=False)
         ind['ratioinequity'] = ind['ratio'] / ind['ratio'].sum()
         ind = ind.reset_index(drop=True)

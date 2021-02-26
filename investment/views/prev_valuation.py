@@ -108,6 +108,8 @@ class BulkFundValuationConsumer(AsyncJsonWebsocketConsumer):
     names = None
     equity = 0
     time = datetime.datetime.now().time().strftime('%H:%M:%S')
+    # 持仓基金
+    holding_fund = []
 
     async def connect(self):
         self.connected = True
@@ -159,7 +161,11 @@ class BulkFundValuationConsumer(AsyncJsonWebsocketConsumer):
         last = models.Holding.objects.aggregate(mdate=Max('date'))['mdate']
         funds = models.Holding.objects.filter(date=last).values('secucode').distinct()
         funds = [x['secucode'] for x in funds]
-        return funds
+
+        observe = models.ObservePool.objects.values('secucode').distinct()
+        observe = [x['secucode'] for x in observe]
+        self.holding_fund = funds
+        return funds + observe
 
     @database_sync_to_async
     def fund_holding(self, funds):
@@ -172,7 +178,7 @@ class BulkFundValuationConsumer(AsyncJsonWebsocketConsumer):
         holding = names.merge(holding, on='secucode', how='outer')
         self.holding = holding
         names = holding[['secucode', 'secuname']].drop_duplicates()
-        names['hold'] = '是'
+        names['hold'] = names['secucode'].apply(lambda x: '是' if x in self.holding_fund else '否')
         self.names = names
 
     @database_sync_to_async

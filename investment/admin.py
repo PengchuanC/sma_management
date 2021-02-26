@@ -248,3 +248,8 @@ class StockDailyQuoteAdmin(admin.ModelAdmin):
 @admin.register(models.CapitalFlow)
 class CapitalFlowAdmin(admin.ModelAdmin):
     list_display = ('secucode', 'date', 'buyvalue', 'sellvalue', 'netvalue')
+
+
+@admin.register(models.ObservePool)
+class ObservePoolAdmin(admin.ModelAdmin):
+    list_display = ('secucode', )

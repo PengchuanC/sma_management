@@ -8,6 +8,8 @@ Portfolio
 
 from django.db import models
 
+from .funds import Funds
+
 
 # 组合基础信息表
 class Portfolio(models.Model):
@@ -318,3 +320,13 @@ class PortfolioAssetAllocate(models.Model):
 
     def __str__(self):
         return self.port_code.port_code
+
+
+# 基金备投池
+class ObservePool(models.Model):
+    secucode = models.ForeignKey(Funds, to_field='secucode', on_delete=models.CASCADE, verbose_name='基金代码')
+
+    class Meta:
+        db_table = 'sma_observe_pool'
+        verbose_name = '基金备投池'
+        verbose_name_plural = verbose_name
