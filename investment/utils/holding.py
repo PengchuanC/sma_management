@@ -124,6 +124,8 @@ def fund_top_ten_scale(fund_code: str):
         associate = models.FundAssociate.objects.get(relate=fund_code).secucode
     except models.FundAssociate.DoesNotExist:
         associate = fund_code
+    except models.FundAssociate.MultipleObjectsReturned:
+        associate = models.FundAssociate.objects.get(relate=fund_code, define=24).secucode
     latest = models.FundHoldingStock.objects.filter(secucode=associate).aggregate(mdate=Max('date'))['mdate']
     holding = models.FundHoldingStock.objects.filter(
         secucode=associate, date=latest).values('secucode', 'stockcode', 'ratio')
