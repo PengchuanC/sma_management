@@ -226,7 +226,7 @@ class FundHoldingStockView(APIView):
         ind['ratio'] = ind['ratio'].astype('float')
         ind['ratioinequity'] = ind['ratio'] / equity
         ind = ind.merge(index, on='firstindustryname', how='outer').fillna(0)
-        ind = ind.sort_values(['ratio'], ascending=False)
+        ind = ind.sort_values(['ratio'], ascending=False).reset_index(drop=True)
         ind['key'] = ind.index + 1
         ret['ofnv'] = ret['ratio'] / ret['ratio'].sum()
         ret['cumsum'] = ret['ratio'].cumsum()
