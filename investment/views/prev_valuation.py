@@ -111,7 +111,8 @@ class BulkFundValuationConsumer(AsyncJsonWebsocketConsumer):
 
     async def connect(self):
         self.connected = True
-        await self.fund_holding()
+        funds = await self.target_funds()
+        await self.fund_holding(funds)
         await self.accept()
 
     async def disconnect(self, close_code):
@@ -135,7 +136,7 @@ class BulkFundValuationConsumer(AsyncJsonWebsocketConsumer):
         if datetime.datetime.now().time() > datetime.time(15, 0, 20):
             await self.disconnect(3000)
             return
-        return self.calc()
+        return await self.calc()
 
     async def calc(self):
         holding = self.holding
@@ -144,20 +145,26 @@ class BulkFundValuationConsumer(AsyncJsonWebsocketConsumer):
         data = pd.merge(holding, changes, on='stockcode', how='left')
         data['change'] = data['ratio'] * data['change']
         data['change'] = data['change'].astype('float')
-        data = data.groupby(['secucode'])['change'].sum()
+        data = data.groupby(['time', 'secucode'])['change'].sum()
         data = data.reset_index()
         data = pd.merge(self.names, data, on='secucode', how='outer')
         data['key'] = data.index + 1
+        data = data.rename(columns={'time': 'name', 'change': 'value'})
+        data['name'] = data['name'].fillna(method='pad')
+        data['value'] = data['value'].fillna(0)
         return data.to_dict(orient='records')
 
     @database_sync_to_async
-    def fund_holding(self):
-        """获取基金持仓"""
-        # 最新持仓
+    def target_funds(self):
         last = models.Holding.objects.aggregate(mdate=Max('date'))['mdate']
         funds = models.Holding.objects.filter(date=last).values('secucode').distinct()
         funds = [x['secucode'] for x in funds]
+        return funds
 
+    @database_sync_to_async
+    def fund_holding(self, funds):
+        """获取基金持仓"""
+        # 最新持仓
         holding = fund_holding_stock_by_fund(funds)
         funds = list(set(list(holding.secucode)))
         names = models.Funds.objects.filter(secucode__in=funds).values('secucode', 'secuname')
@@ -169,14 +176,62 @@ class BulkFundValuationConsumer(AsyncJsonWebsocketConsumer):
         self.names = names
 
     @database_sync_to_async
-    def stock_price(self, stocks: list):
+    def stock_price(self, stocks: list, tick=True):
         last = models.StockRealtimePrice.objects.last().time
         last = models.StockRealtimePrice.objects.filter(time__lt=last).last().time
-        stocks = models.StockRealtimePrice.objects.filter(
-            secucode__in=stocks, time=last
-        ).values('secucode', 'prev_close', 'price')
+        if tick:
+            stocks = models.StockRealtimePrice.objects.filter(
+                secucode__in=stocks, time=last
+            ).values('secucode', 'prev_close', 'price', 'time')
+        else:
+            stocks = models.StockRealtimePrice.objects.filter(
+                secucode__in=stocks, time__lte=last
+            ).values('secucode', 'prev_close', 'price', 'time')
         stocks = pd.DataFrame(stocks)
         stocks = stocks.rename(columns={'secucode': 'stockcode'})
         stocks = stocks[stocks['price'] != 0]
+        stocks['time'] = stocks['time'].apply(lambda x: x.strftime('%H:%M:%S'))
         stocks['change'] = stocks.price / stocks.prev_close - 1
-        return stocks[['stockcode', 'change']]
+        return stocks[['stockcode', 'change', 'time']]
+
+
+class FundValuationConsumer(BulkFundValuationConsumer):
+
+    secucode = ''
+
+    async def connect(self):
+        self.connected = True
+        await self.accept()
+
+    async def receive(self, text_data=None, bytes_data=None, **kwargs):
+        fund = text_data
+        if fund != self.secucode:
+            self.secucode = fund
+            await self.fund_holding([fund])
+            ret = await self.on_receive()
+            await self.send(text_data=json.dumps(ret))
+        while True:
+            await sleep(15)
+            ret = await self.push()
+            if not ret:
+                break
+            ret = ret
+            await self.send(text_data=json.dumps(ret))
+
+    async def on_receive(self):
+        """连接时一次性返回的数据"""
+        if datetime.datetime.now().time() < datetime.time(9, 30, 0):
+            return
+        holding = self.holding
+        stocks = list(set(list(holding.stockcode)))
+        changes = await self.stock_price(stocks, tick=False)
+        data = pd.merge(holding, changes, on='stockcode', how='left')
+        data['change'] = data['ratio'] * data['change']
+        data['change'] = data['change'].astype('float')
+        data = data.groupby(['secucode', 'time'])['change'].sum()
+        data = data.reset_index()
+        data = pd.merge(self.names, data, on='secucode', how='outer')
+        data['key'] = data.index + 1
+        data = data[['time', 'change']]
+        data = data.rename(columns={'time': 'name', 'change': 'value'})
+        return data.to_dict(orient='records')
