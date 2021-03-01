@@ -87,7 +87,7 @@ async def stocks_in_portfolio() -> list:
     funds = [x[0] for x in funds]
 
     query = sa.select([Observe.columns.secucode_id])
-    observe = await database.fetch_all(query)s
+    observe = await database.fetch_all(query)
     funds = funds + [x[0] for x in observe]
     funds = list(set(funds))
     query = sa.select([Stock]).where(
