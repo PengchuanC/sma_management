@@ -52,23 +52,13 @@ def fund_holding_stock_by_fund(funds: list):
     Returns:
 
     """
-    associate = models.FundAssociate.objects.filter(
-        relate__in=funds).order_by('define').values('secucode', 'relate')
-    associate = {x['relate']: x['secucode'] for x in associate}
-    recent_report_date = models.FundHoldingStock.objects.values('secucode').annotate(recent=Max('date'))
-    recent = {x['secucode']: x['recent'] for x in recent_report_date}
     query_set = []
     for fund in funds:
-        relate = associate.get(fund, fund)
-        stocks = models.FundHoldingStock.objects.filter(
-            secucode=relate, date=recent.get(relate)
-        ).values('secucode', 'stockcode', 'ratio', 'publish')
-        publish = set([x['publish'] for x in stocks])
-        if '年报' in publish:
-            stocks = [x for x in stocks if x['publish'] == '年报']
-        query_set.extend(stocks)
-
-    data: pd.DataFrame = pd.DataFrame(query_set)
+        stocks = fund_top_ten_scale(fund, scale=False)
+        if stocks is None:
+            continue
+        query_set.append(stocks)
+    data: pd.DataFrame = pd.concat(query_set, axis=0)
     return data
 
 
@@ -99,12 +89,13 @@ def index_holding_sw(index_code: str) -> pd.DataFrame:
     return data
 
 
-def fund_top_ten_scale(fund_code: str):
+def fund_top_ten_scale(fund_code: str, scale=True):
     """基金前十大持仓占比100%化
 
     将基金前十大持仓再分配为100%，非主基金需要获取关联代码转为主基金
     Args:
         fund_code: 基金代码
+        scale: 是否百分化，默认是
 
     Returns:
           secucode stockcode                            ratio
@@ -132,6 +123,7 @@ def fund_top_ten_scale(fund_code: str):
     if not holding:
         return
     holding = pd.DataFrame(holding)
-    holding['ratio'] = holding['ratio'] / holding['ratio'].sum()
+    if scale:
+        holding['ratio'] = holding['ratio'] / holding['ratio'].sum()
     holding['secucode'] = fund_code
     return holding
