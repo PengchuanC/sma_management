@@ -65,6 +65,12 @@ Price = sa.Table(
     sa.Column('time', sa.TIME())
 )
 
+Observe = sa.Table(
+    'sma_observe_pool',
+    metadata,
+    sa.Column('secucode_id', sa.String(12))
+)
+
 
 async def stocks_in_portfolio() -> list:
     """获取基金组合中的全部股票
@@ -79,6 +85,11 @@ async def stocks_in_portfolio() -> list:
     )
     funds = await database.fetch_all(query)
     funds = [x[0] for x in funds]
+
+    query = sa.select([Observe.columns.secucode_id])
+    observe = await database.fetch_all(query)s
+    funds = funds + [x[0] for x in observe]
+    funds = list(set(funds))
     query = sa.select([Stock]).where(
         Stock.columns.secucode_id.in_(funds)
     )
