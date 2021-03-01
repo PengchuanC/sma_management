@@ -1,5 +1,7 @@
 """
 组合持股相关
+
+@modify: 2021-03-01
 """
 
 import datetime
@@ -12,25 +14,10 @@ from .. import models
 def fund_holding_stock(port_code: str, date: str or datetime.date):
     """获取组合在给定日期的持股情况"""
     funds = models.Holding.objects.filter(port_code=port_code, date=date).values('secucode', 'mkt_cap')
-    fund_codes = [x['secucode'] for x in funds]
-    # 获取基金主代码
-    associate = models.FundAssociate.objects.filter(relate__in=fund_codes).order_by('define').values('secucode', 'relate')
-    associate = {x['relate']: x['secucode'] for x in associate}
     na = models.Balance.objects.get(port_code=port_code, date=date).net_asset
-    funds = {associate.get(x['secucode'], x['secucode']): x['mkt_cap'] / na for x in funds}
-    recent_report_date = models.FundHoldingStock.objects.values('secucode').annotate(recent=Max('date'))
-    recent = {x['secucode']: x['recent'] for x in recent_report_date}
-    query_set = []
-    for fund in funds:
-        stocks = models.FundHoldingStock.objects.filter(
-            secucode=fund, date=recent.get(fund)
-        ).values('secucode', 'stockcode', 'stockname', 'ratio', 'publish')
-        publish = set([x['publish'] for x in stocks])
-        if '年报' in publish:
-            stocks = [x for x in stocks if x['publish'] == '年报']
-        query_set.extend(stocks)
+    funds = {x['secucode']: x['mkt_cap'] / na for x in funds}
+    data = fund_holding_stock_by_fund(list(funds.keys()))
 
-    data: pd.DataFrame = pd.DataFrame(query_set)
     if data.empty:
         return None
     data['ratio'] = data.aggregate(func=lambda x: x['ratio']*funds.get(x['secucode']), axis=1)
@@ -119,7 +106,7 @@ def fund_top_ten_scale(fund_code: str, scale=True):
         associate = models.FundAssociate.objects.get(relate=fund_code, define=24).secucode
     latest = models.FundHoldingStock.objects.filter(secucode=associate).aggregate(mdate=Max('date'))['mdate']
     holding = models.FundHoldingStock.objects.filter(
-        secucode=associate, date=latest).values('secucode', 'stockcode', 'ratio')
+        secucode=associate, date=latest).values('secucode', 'stockcode', 'stockname', 'ratio')
     if not holding:
         return
     holding = pd.DataFrame(holding)
