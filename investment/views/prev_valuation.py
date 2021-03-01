@@ -165,7 +165,10 @@ class BulkFundValuationConsumer(AsyncJsonWebsocketConsumer):
         observe = models.ObservePool.objects.values('secucode').distinct()
         observe = [x['secucode'] for x in observe]
         self.holding_fund = funds
-        return funds + observe
+
+        funds += observe
+        funds = list(set(funds))
+        return funds
 
     @database_sync_to_async
     def fund_holding(self, funds):
