@@ -14,12 +14,15 @@ from .. import models
 def fund_holding_stock(port_code: str, date: str or datetime.date):
     """获取组合在给定日期的持股情况"""
     funds = models.Holding.objects.filter(port_code=port_code, date=date).values('secucode', 'mkt_cap')
+    funds = [x for x in funds]
+    if not funds:
+        return
     na = models.Balance.objects.get(port_code=port_code, date=date).net_asset
     funds = {x['secucode']: x['mkt_cap'] / na for x in funds}
     data = fund_holding_stock_by_fund(list(funds.keys()))
 
     if data.empty:
-        return None
+        return
     data['ratio'] = data.aggregate(func=lambda x: x['ratio']*funds.get(x['secucode']), axis=1)
     names = dict(zip(data['stockcode'], data['stockname']))
     data = data.groupby(['stockcode'])['ratio'].sum()
@@ -45,6 +48,8 @@ def fund_holding_stock_by_fund(funds: list):
         if stocks is None:
             continue
         query_set.append(stocks)
+    if not query_set:
+        return
     data: pd.DataFrame = pd.concat(query_set, axis=0)
     return data
 

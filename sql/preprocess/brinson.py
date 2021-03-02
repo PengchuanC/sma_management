@@ -3,8 +3,7 @@ brinson
 ~~~~~~~
 组合brinson归因
 @date: 2020-12-03
-
-brinson归因按照日频生成
+@desc: brinson归因按照日频生成
 """
 
 import abc
@@ -240,6 +239,7 @@ def commit_brinson():
         max_ = models.PortfolioBrinson.objects.filter(port_code=p).aggregate(m=Max('date'))['m']
         if max_:
             dates = [x for x in dates if x > max_]
+        dates = set(dates)
         for date in dates:
             model = Model(p, index, date)
             data = []
@@ -257,3 +257,7 @@ def commit_brinson():
                 print(date, e)
             except Exception as e:
                 raise e
+
+
+if __name__ == '__main__':
+    commit_brinson()
