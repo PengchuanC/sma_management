@@ -8,6 +8,7 @@ import json
 import pandas as pd
 import datetime
 
+from copy import deepcopy
 from asyncio import sleep
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 from channels.db import database_sync_to_async
@@ -164,7 +165,7 @@ class BulkFundValuationConsumer(AsyncJsonWebsocketConsumer):
 
         observe = models.ObservePool.objects.values('secucode').distinct()
         observe = [x['secucode'] for x in observe]
-        self.holding_fund = funds
+        self.holding_fund = deepcopy(funds)
 
         funds += observe
         funds = list(set(funds))
