@@ -84,6 +84,17 @@ class OverviewView(APIView):
         data = await database_sync_to_async(models.ClientQ.objects.get)(port_code=port_code)
         return JsonResponse({'data': model_to_dict(data)})
 
+    @staticmethod
+    def pre_valuation_compare_real(request):
+        port_code = request.GET.get('portCode')
+        pre = models.PreValuedNav.objects.filter(port_code=port_code).values('date', 'value')
+        income = models.Income.objects.filter(port_code=port_code).values('date', 'change_pct')
+        pre = DataFrame(pre)
+        income = DataFrame(income)
+        data = pre.merge(income, on='date', how='left').dropna(how='any')
+        data = data.to_dict(orient='records')
+        return JsonResponse({'data': data})
+
 
 def fund_position(request):
     """基金平均仓位"""

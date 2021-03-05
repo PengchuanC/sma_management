@@ -34,6 +34,7 @@ urlpatterns = [
     path('overview/allocate/avg/', views.OverviewView.avg_asset_allocate),
     path('overview/pos/', views.fund_position),
     path('overview/questionnairy/', views.OverviewView.question),
+    path('overview/compare/', views.OverviewView.pre_valuation_compare_real),
 
     path('warehouse/portfolio/', views.SimpleEmuView.get_portfolio),
     path('warehouse/portfolio/cash/', views.SimpleEmuView.get_portfolio_cash),
