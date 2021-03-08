@@ -8,6 +8,7 @@ from crawl.stock_async import executor
 
 def save_prev_valuation_nav():
     """保存组合预估净值到数据库"""
+    tools.commit_stock_daily_quote()
     pre_valuation()
 
 
