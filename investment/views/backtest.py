@@ -133,7 +133,7 @@ class BackTestView(APIView):
 
 class BacktestWeightView(APIView):
     def get(self, request):
-        w = cache.get_or_set('backtest_weight', self.process(request))
+        w = self.process(request)
         return Response(w)
 
     @staticmethod
