@@ -43,7 +43,8 @@ class ExposureAnalysis(APIView):
             date = models.Balance.objects.filter(port_code=port_code).last().date
         hold = fund_holding_stock(port_code, date.strftime('%Y-%m-%d'))
         stocks = list(hold.stockcode)
-        expose = models.StockExpose.objects.filter(secucode__in=stocks, date=date).all()
+        expose_last = models.StockExpose.objects.filter(date__lte=date).last().date
+        expose = models.StockExpose.objects.filter(secucode__in=stocks, date=expose_last).all()
         expose = pd.DataFrame([model_to_dict(x) for x in expose])
         data = pd.merge(hold, expose, left_on='stockcode', right_on='secucode', how='left')
         data = data.dropna(how='any')
