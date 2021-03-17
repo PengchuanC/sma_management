@@ -132,7 +132,7 @@ class PortfolioAllocate(Allocate):
         holding = self._stock_weight().copy()
         holding.change = holding.change * holding.weight
         holding = holding[['industry', 'change', 'weight']].groupby('industry').sum()
-        holding.change = holding.change / holding.weight
+        holding.change = holding.agg(lambda x: x.change / x.weight if x.weight != 0 else 0, axis=1)
         data = holding.change
         data = self.format_weight_change(data)
         return data.change

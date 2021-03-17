@@ -62,6 +62,12 @@ def date_before_target(day: datetime.date, days: int = 40) -> datetime.date:
     return start
 
 
+def tradingday_between_dates(start, end):
+    dates = models.TradingDays.objects.filter(date__gt=start, date__lte=end).all()
+    dates = [x.date for x in dates]
+    return dates
+
+
 def benchmark_close_price(secucode: str, date: datetime.date) -> pd.DataFrame:
     """基准指数收盘价
 
@@ -143,23 +149,19 @@ def calc(date: datetime.date) -> Dict[str, Union[float, datetime.date]]:
 
 
 def commit() -> None:
-    date: datetime.date = models.FundPrice.objects.latest().date
+    date: datetime.date = models.FundPrice.objects.latest('date').date
     exist = models.FundPosEstimate.objects.latest()
     if not exist:
         start = date_before_target(date, 90)
-        dates: List[models.TradingDays] = models.TradingDays.objects.filter(date__range=(start, date)).all()
-        dates: List[datetime.date] = [x.date for x in dates]
-        for d in dates:
-            ret = calc(d)
-            m = models.FundPosEstimate(**ret)
-            m.save()
+    else:
+        start = exist.date
+    if date == start:
         return
-    e_date = exist.date
-    if date == e_date:
-        return
-    ret = calc(date)
-    m = models.FundPosEstimate(**ret)
-    m.save()
+    dates = tradingday_between_dates(start, date)
+    for d in dates:
+        ret = calc(d)
+        m = models.FundPosEstimate(**ret)
+        m.save()
 
 
 if __name__ == '__main__':

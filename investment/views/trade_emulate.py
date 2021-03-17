@@ -168,7 +168,6 @@ class SimpleEmuView(APIView):
         return JsonResponse({'data': ret_})
 
     @staticmethod
-    @lru_cache()
     def get_fund_available(port_code: str, secucode: str):
         """获取基金在不同费率档下可用数量"""
         data = models.Holding.objects.filter(port_code=port_code, secucode=secucode).order_by('date').all()
