@@ -134,6 +134,7 @@ class Holding(models.Model):
     total_profit = models.DecimalField(verbose_name="总盈亏", max_digits=18, decimal_places=4)
     dividend = models.DecimalField(verbose_name="当日分红", max_digits=18, decimal_places=4)
     total_dividend = models.DecimalField(verbose_name="累计分红", max_digits=18, decimal_places=4)
+    category = models.CharField(verbose_name='证券类型', max_length=20, default='开放式基金')
     date = models.DateField(null=False, verbose_name="交易日")
 
     class Meta:
