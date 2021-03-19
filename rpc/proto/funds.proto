@@ -1,0 +1,19 @@
+syntax = 'proto3';
+
+package rpc;
+
+// 基金对应行业-请求
+message FundCategoryRequest {
+  repeated string fund = 1;
+}
+
+// 基金对应行业-响应
+message  FundCategoryResponse {
+  int64 status_code = 1;
+  repeated FundCategory data = 2;
+}
+
+message FundCategory {
+  string secucode = 1;
+  string category = 2;
+}

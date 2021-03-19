@@ -1,0 +1,9 @@
+syntax = 'proto3';
+
+package rpc;
+
+import 'funds.proto';
+
+service RpcService {
+  rpc FundCategoryHandler(FundCategoryRequest) returns (FundCategoryResponse);
+}

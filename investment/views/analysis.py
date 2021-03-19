@@ -18,6 +18,7 @@ from investment.models import (
 from investment.utils.calc import Formula, capture_return
 from investment.utils import fund, period_change as pc
 from investment.utils.holding import fund_holding_stock, index_holding_sw, fund_top_ten_scale
+from rpc.client import Client
 
 
 class PerformanceView(APIView):
@@ -118,6 +119,12 @@ class FundHoldingView(APIView):
         funds = list(set(list(holding.secucode)))
         names = fund.fund_names(funds)
 
+        try:
+            category = self.fund_category(funds)
+            holding = holding.merge(category, on='secucode', how='left')
+        except Exception:
+            holding['category'] = [None] * len(holding)
+
         perf = FundHoldingView.period_return(funds, date)
         holding['secuname'] = holding.secucode.apply(lambda x: names.get(x))
         holding = pd.merge(holding, perf, on='secucode', how='left')
@@ -171,6 +178,13 @@ class FundHoldingView(APIView):
         )
         limit = pd.DataFrame(limit)
         return limit
+
+    @staticmethod
+    def fund_category(funds):
+        """获取基金分类"""
+        category = Client.simple('fund_category', funds)
+        category = pd.DataFrame(category)
+        return category
 
     @staticmethod
     def asset_allocate(port_code: str, date: datetime.date):

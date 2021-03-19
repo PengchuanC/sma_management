@@ -1,30 +1,24 @@
-
 import grpc
 
-from rpc.compiled import command_pb2, command_pb2_grpc
+import rpc.services.server_pb2 as pb
+import rpc.services.server_pb2_grpc as pbg
+
+from typing import List
+
+from rpc.config import HOST, PORT
 
 
-class RpcInstance(object):
-    stub: command_pb2_grpc.CommandToolStub = None
+class Client(object):
+    stub: pbg.RpcServiceStub = None
 
-    def __init__(self, port=50051):
-        self.channel = grpc.insecure_channel(f'127.0.0.1:{port}')
+    def __init__(self):
+        self.channel = grpc.insecure_channel(f'{HOST}:{PORT}')
 
     def connect(self):
-        self.stub = command_pb2_grpc.CommandToolStub(self.channel)
+        self.stub = pbg.RpcServiceStub(self.channel)
 
     def close(self):
         self.channel.close()
-
-    def commit_index_gil(self, name: str):
-        r = command_pb2.Request(name=name)
-        response = self.stub.CommitIndexGil(r)
-        return response
-
-    def commit_fund(self, name: str):
-        r = command_pb2.Request(name=name)
-        response = self.stub.CommitFund(r)
-        return response
 
     def __enter__(self):
         self.connect()
@@ -33,8 +27,27 @@ class RpcInstance(object):
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.close()
 
+    def fund_category(self, funds: List[str]):
+        r = pb.funds__pb2.FundCategoryRequest(fund=funds)
+        response: pb.funds__pb2.FundCategoryResponse = self.stub.FundCategoryHandler(r)
+        status_code = response.status_code
+        if status_code != 0:
+            return {}
+        data = response.data
+        data = [{'secucode': x.secucode, 'category': x.category} for x in data]
+        return data
+
+    @staticmethod
+    def simple(attr, *args):
+        with Client() as client:
+            ret = getattr(client, attr)(*args)
+        return ret
+
+
+def example():
+    r = Client.simple('fund_category', ['000001', '110011'])
+    print(r)
+
 
 if __name__ == '__main__':
-    with RpcInstance() as ri:
-        resp = ri.commit_fund('test')
-    print(resp)
+    example()
