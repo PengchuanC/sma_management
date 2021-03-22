@@ -9,6 +9,8 @@ from shu import models
 from pathlib import Path
 
 
+TEST = True
+
 # 文件存放地址
 target = str(Path(__file__).parent / 'sma_export' / 'data')
 
@@ -28,3 +30,11 @@ mapping = {
     'sma_transactions': models.Transactions, 'sma_detail_fee': models.DetailFee,
     'sma_evaluate_benchmark': models.ValuationBenchmark, 'sma_fund_style': models.FundStyle
 }
+
+
+if TEST:
+    home = Path('p:/code/sma/data')
+else:
+    home = Path('/home/data')
+
+local_files_path = home / 'management'

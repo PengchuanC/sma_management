@@ -8,8 +8,11 @@ run
 
 from shu.sma_export.run import execute
 from shu.to_database import run
+from shu.local_files import transaction
 
 
 def shu_commit():
     execute()
     run()
+    transaction.commit_transaction()
+    transaction.commit_holding()

@@ -1,6 +1,7 @@
 import time
 import re
 import pandas as pd
+import traceback
 
 from crawl import models
 from sql.progress import progressbar
@@ -71,10 +72,10 @@ def judge_sell_days(word: str):
             elif '年' in second:
                 num = int(PATTERN.findall(second)[0]) * 365
                 ret.append(num)
-    if all({"大于等于" in word, "小于" in word}):
+    if all({"大于" in word, "小于" in word}):
         return ret[0], ret[1]
 
-    elif "大于等于" in word:
+    elif "大于" in word:
         return ret[0], None
 
     elif "小于" in word:
@@ -130,7 +131,7 @@ class CrawlFee(object):
 
 
 def _commit(funds: list or set, retry=0):
-    if retry > 3 or not list:
+    if retry > 3 or not funds:
         return
     failed = []
     for i, fund in enumerate(funds):

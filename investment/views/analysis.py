@@ -9,12 +9,16 @@ import pandas as pd
 from dateutil.relativedelta import relativedelta
 from dateutil.parser import parse
 from django.db.models import Max
+from django.http.response import JsonResponse
 from rest_framework.views import APIView, Response
 
 from investment.models import (
     Income, IncomeAsset, ValuationBenchmark as VB, Holding, Balance, FundAdjPrice as FAP, TradingDays,
     FundPurchaseAndRedeem as FAR, StockIndustrySW as SISW, FundAssetAllocate as FAA, FundAssociate
 )
+
+from investment import models
+
 from investment.utils.calc import Formula, capture_return
 from investment.utils import fund, period_change as pc
 from investment.utils.holding import fund_holding_stock, index_holding_sw, fund_top_ten_scale
@@ -107,11 +111,7 @@ class FundHoldingView(APIView):
     """
 
     def get(self, request):
-        date = request.query_params.get('date')
-        port_code = request.query_params.get('portCode')
-        if not date:
-            date = datetime.date.today().strftime('%Y-%m-%d')
-        date = Holding.objects.filter(port_code=port_code, date__lte=date).aggregate(mdate=Max('date'))['mdate']
+        port_code, date = self.parse_request(request)
 
         holding = self.fund_ratio(port_code, date)
         holding['key'] = holding.index + 1
@@ -119,6 +119,7 @@ class FundHoldingView(APIView):
         funds = list(set(list(holding.secucode)))
         names = fund.fund_names(funds)
 
+        # rpc获取基金分类
         try:
             category = self.fund_category(funds)
             holding = holding.merge(category, on='secucode', how='left')
@@ -135,6 +136,15 @@ class FundHoldingView(APIView):
 
         holding = holding.to_dict(orient='records')
         return Response(holding)
+
+    @staticmethod
+    def parse_request(request):
+        date = request.query_params.get('date')
+        port_code = request.query_params.get('portCode')
+        if not date:
+            date = datetime.date.today().strftime('%Y-%m-%d')
+        date = Holding.objects.filter(port_code=port_code, date__lte=date).aggregate(mdate=Max('date'))['mdate']
+        return port_code, date
 
     @staticmethod
     def fund_ratio(port_code: str, date: datetime.date):
@@ -221,6 +231,35 @@ class FundHoldingView(APIView):
             data[col] *= data['ratio']
         data = data[columns]
         return data.sum().to_dict()
+
+    @staticmethod
+    def holding_yx(request):
+        """宜信普泽份额"""
+        port_code = request.GET.get('portCode')
+        date = request.GET.get('date')
+        if not date:
+            date = datetime.date.today().strftime('%Y-%m-%d')
+        date = Holding.objects.filter(port_code=port_code, date__lte=date).aggregate(mdate=Max('date'))['mdate']
+        holding = models.Holding.objects.filter(
+            port_code=port_code, date=date).values('secucode', 'mkt_cap', 'holding_value')
+        holding = pd.DataFrame(holding)
+        holding = holding[holding['holding_value'] != 0]
+        holding_yx = models.HoldingYX.objects.filter(port_code=port_code, date=date).values('secucode', 'shares')
+        holding_yx = pd.DataFrame(holding_yx)
+        if holding_yx.empty:
+            holding['shares'] = 0
+            data = holding
+        else:
+            data = holding.merge(holding_yx, how='left', on='secucode')
+            data['shares'] = data['shares'].fillna(0)
+        data['ratio'] = data['shares'] / data['holding_value']
+        funds = list(set(list(data.secucode)))
+        names = fund.fund_names(funds)
+        data['secuname'] = data.secucode.apply(lambda x: names.get(x))
+        data = data.sort_values('ratio', ascending=False).reset_index(drop=True)
+        data['key'] = data.index + 1
+        ret = data.to_dict(orient='records')
+        return JsonResponse({'data': ret})
 
 
 class FundHoldingStockView(APIView):

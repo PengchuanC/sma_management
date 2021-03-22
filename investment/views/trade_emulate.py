@@ -125,12 +125,14 @@ class SimpleEmuView(APIView):
         port_code: str = request.GET.get('portCode')
         if not port_code:
             return JsonResponse({'data': []})
+        last = models.Holding.objects.filter(port_code=port_code).latest().date
         if not keyword:
-            data = models.Holding.objects.filter(port_code=port_code).values('secucode').distinct()
+            data = models.Holding.objects.filter(
+                port_code=port_code, date=last).values('secucode').distinct().exclude(holding_value=0)
         else:
             data = models.Holding.objects.filter(
-                secucode__istartswith=keyword, port_code=port_code
-            ).values('secucode').distinct()
+                secucode__istartswith=keyword, port_code=port_code, date=last
+            ).exclude(holding_value=Decimal(0)).values('secucode').distinct()
         secucode = [x['secucode'] for x in data]
         data = models.Funds.objects.filter(secucode__in=secucode).values('secucode', 'secuname')
         data = [x for x in data]
@@ -143,10 +145,16 @@ class SimpleEmuView(APIView):
         nav, date = SimpleEmuView._get_fund_nav(secucode)
         port_code: str = request.GET.get('portCode')
         available = 0
+        yx_available = 0
         if port_code and secucode:
             last = models.Holding.objects.filter(port_code=port_code, secucode=secucode).last()
             available = last.holding_value if last else available
-        return JsonResponse({'fund': secucode, 'nav': nav, 'date': date, 'available': available})
+            yx = models.HoldingYX.objects.filter(port_code=port_code, secucode=secucode)
+            if yx.exists():
+                yx_available = yx.latest().shares
+        return JsonResponse(
+            {'fund': secucode, 'nav': nav, 'date': date, 'available': available, 'yx_available': yx_available}
+        )
 
     @staticmethod
     def _get_fund_nav(secucode: str):
@@ -164,17 +172,25 @@ class SimpleEmuView(APIView):
             return JsonResponse({'data': []})
 
         ret_ = SimpleEmuView.get_fund_available(port_code, secucode)
+        ret_yx = SimpleEmuView.get_fund_available_yx(port_code, secucode)
 
-        return JsonResponse({'data': ret_})
+        return JsonResponse({'data': ret_, 'yx': ret_yx})
 
     @staticmethod
     def get_fund_available(port_code: str, secucode: str):
         """获取基金在不同费率档下可用数量"""
-        data = models.Holding.objects.filter(port_code=port_code, secucode=secucode).order_by('date').all()
+        ret = SimpleEmuView._get_fund_available(port_code, secucode, models.Holding)
+        return ret
+
+    @staticmethod
+    def _get_fund_available(port_code: str, secucode: str, model):
+        """获取基金在不同费率档下可用数量"""
+        data = model.objects.filter(port_code=port_code, secucode=secucode).order_by('date').all()
         ret = []
         prev = 0
         ransom = 0
         rf = RansomFee(secucode)
+        # 根据交易记录获取累计份额
         for i, d in enumerate(data):
             buy_amount = round(float(d.holding_value) - prev, 2)
             if buy_amount == 0:
@@ -183,6 +199,40 @@ class SimpleEmuView(APIView):
                 ransom += buy_amount
             prev = float(d.holding_value)
             r = {'key': i, 'date': d.date, 'buy_amount': buy_amount, 'amount': prev, 'fee': rf.calc_fee_ratio(d.date)}
+            ret.append(r)
+
+        ret_ = []
+        for x in ret:
+            if x['buy_amount'] < 0:
+                x['available'] = 0
+            else:
+                available = x['buy_amount'] + ransom
+                if available >= 0:
+                    ransom = 0
+                    x['available'] = available
+                else:
+                    ransom = available
+                    x['available'] = available
+            ret_.append(x)
+        return ret_
+
+    @staticmethod
+    def get_fund_available_yx(port_code: str, secucode: str):
+        """获取基金在不同费率档下可用数量"""
+        data = models.HoldingYX.objects.filter(port_code=port_code, secucode=secucode).order_by('date').order_by('date')
+        ret = []
+        ransom = 0
+        rf = RansomFee(secucode)
+        # 根据交易记录获取累计份额
+        for i, d in enumerate(data):
+            buy_amount = round(d.shares_change, 2)
+            if buy_amount == 0:
+                continue
+            elif buy_amount < 0:
+                ransom += buy_amount
+            r = {
+                'key': i, 'date': d.date, 'buy_amount': buy_amount, 'amount': d.shares, 'fee': rf.calc_fee_ratio(d.date)
+            }
             ret.append(r)
 
         ret_ = []

@@ -24,6 +24,7 @@ urlpatterns = [
     path('analysis/attribute/', views.AttributeChartView.as_view()),
     path('analysis/fundholding/', views.FundHoldingView.as_view()),
     path('analysis/fundholding/stock/', views.FundHoldingStockView.as_view()),
+    path('analysis/fundholding/yx/', views.FundHoldingView.holding_yx),
     path('analysis/style/', views.StyleAnalysis.as_view()),
     path('analysis/expose/', views.ExposureAnalysis.as_view()),
     path('analysis/brinson/', views.BrinsonAnalysis.as_view()),
