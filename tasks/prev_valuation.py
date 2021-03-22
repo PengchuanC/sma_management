@@ -61,3 +61,7 @@ def _pre_valuation_gil(port_code: str, date: datetime.date):
     data = holding.merge(price, left_on='stockcode', right_on='secucode', how='left')
     change = float((data['ratio'] * data['change']).sum()) / equity
     return {'date': date, 'value': change}
+
+
+if __name__ == '__main__':
+    pre_valuation()

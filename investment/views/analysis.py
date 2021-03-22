@@ -139,7 +139,8 @@ class FundHoldingView(APIView):
     @staticmethod
     def fund_ratio(port_code: str, date: datetime.date):
         """组合持有基金的比例"""
-        holding = Holding.objects.filter(port_code=port_code, date=date).values('secucode', 'mkt_cap')
+        holding = Holding.objects.filter(
+            port_code=port_code, date=date, category='开放式基金').values('secucode', 'mkt_cap')
         na = Balance.objects.get(port_code=port_code, date=date).net_asset
         holding = pd.DataFrame(holding)
 
