@@ -62,7 +62,10 @@ def format_ransom_info(data: List[pd.DataFrame]):
 
 
 def _format_period(compiler, word, fee):
-    ratio = float(fee[:-1]) / 100
+    if '元' in fee:
+        ratio = int(fee[:-1])
+    else:
+        ratio = float(fee[:-1]) / 100
     if word == '不限':
         return 0, None, ratio
     period = re.findall(compiler, word)
