@@ -4,6 +4,7 @@ from tasks import fund_position
 from command import shu_commit
 from sql import tools
 from crawl.stock_async import executor
+from crawl.fund_fee_howbuy import commit_fund_fee
 
 
 def save_prev_valuation_nav():

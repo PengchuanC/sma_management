@@ -9,7 +9,7 @@ from shu import models
 from pathlib import Path
 
 
-TEST = True
+TEST = False
 
 # 文件存放地址
 target = str(Path(__file__).parent / 'sma_export' / 'data')
