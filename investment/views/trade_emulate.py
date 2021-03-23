@@ -497,8 +497,14 @@ class ComplexEmuBulkView(ComplexEmuView):
                     information.loc[idx, 'available'] = 0
                 t = deepcopy(instruct_template)
                 if shares != 0:
-                    r = RansomFee(sell_code)
-                    r_fee = r.calc_fee_ratio(date) * shares * nav
+                    monetary = fund_util.fund_is_monetary(sell_code)
+                    if monetary:
+                        fee_ratio = 0
+                    else:
+                        r = RansomFee(sell_code)
+                        fee_ratio = r.calc_fee_ratio(date)
+                    print(sell_code)
+                    r_fee = fee_ratio * shares * nav
                     records.append(
                         {'secucode': sell_code, 'secuname': src_name[sell_code], 'operate': '转出', 'amount': shares,
                          'fee': r_fee, 'key': count})

@@ -124,10 +124,10 @@ def test():
     loop.run_until_complete(fund_fee('010696'))
 
 
-def commit_fund_fee():
+def commit_fund_fee_hb():
     loop = asyncio.get_event_loop()
     loop.run_until_complete(run())
 
 
 if __name__ == '__main__':
-    commit_fund_fee()
+    commit_fund_fee_hb()

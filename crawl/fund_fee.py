@@ -14,6 +14,9 @@ DAY = re.compile('(\d+天)|(\d+年)|(\d+个月)')
 def target_funds():
     funds = models.Holding.objects.values('secucode').distinct()
     funds = {x['secucode'] for x in funds}
+    exists = models.FundPurchaseFee.objects.values('secucode').distinct()
+    exists = {x['secucode'] for x in exists}
+    funds = [x for x in funds if x not in exists]
     return funds
 
 
@@ -146,10 +149,10 @@ def _commit(funds: list or set, retry=0):
     _commit(failed, retry+1)
 
 
-def commit_fund_fee():
+def commit_fund_fee_em():
     funds = target_funds()
     _commit(funds)
 
 
 if __name__ == '__main__':
-    commit_fund_fee()
+    commit_fund_fee_em()

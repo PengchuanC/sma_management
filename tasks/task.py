@@ -4,7 +4,8 @@ from tasks import fund_position
 from command import shu_commit
 from sql import tools
 from crawl.stock_async import executor
-from crawl.fund_fee_howbuy import commit_fund_fee
+from crawl.fund_fee_howbuy import commit_fund_fee_hb
+from crawl.fund_fee import commit_fund_fee_em
 
 
 def save_prev_valuation_nav():
@@ -37,6 +38,11 @@ def commit_portfolio_allocate():
 def commit_fund_pos():
     """基金仓位估算"""
     fund_position.commit()
+
+
+def commit_fund_fee():
+    commit_fund_fee_hb()
+    commit_fund_fee_em()
 
 
 if __name__ == '__main__':
