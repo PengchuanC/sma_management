@@ -250,6 +250,18 @@ class SimpleEmuView(APIView):
             ret_.append(x)
         return ret_
 
+    @classmethod
+    def transfer_available(cls, port_code, secucode):
+        """转换可用份额"""
+        total = cls.get_fund_available(port_code, secucode)
+        yx = cls.get_fund_available_yx(port_code, secucode)
+        yx = {x['date']: x['available'] for x in yx}
+        ret = []
+        for t in total:
+            t['available'] = t['available'] - float(yx.get(t['date'], 0))
+            ret.append(t)
+        return total
+
     @staticmethod
     def get_ransom_fee(request):
         """计算赎回费用"""
@@ -333,7 +345,7 @@ class ComplexEmuView(APIView):
             t.update(update)
             template.append(t)
             rf = RansomFee(secucode)
-            r_fee = rf.calc_fee_ratio(date)
+            r_fee = rf.calc_fee_ratio(date) or 0
             records.append({
                 'secucode': secucode, 'operate': '转出', 'amount': share,
                 'fee': round(r_fee * nav * share, 2), 'key': count, 'secuname': src_['secuname']
@@ -341,7 +353,11 @@ class ComplexEmuView(APIView):
             count += 1
         amount = round(float(amount), 2)
         p = PurchaseFee(dst)
-        p_fee, _ = p.calc_purchase_fee(amount)
+        monetary = fund_util.fund_is_monetary(dst)
+        if monetary:
+            p_fee = 0
+        else:
+            p_fee, _ = p.calc_purchase_fee(amount)
         name = models.Funds.objects.get(secucode=dst).secuname
         records.append({
             'secucode': dst, 'secuname': name, 'operate': '转入', 'amount': amount, 'fee': round(p_fee, 2), 'key': count
@@ -375,14 +391,25 @@ class ComplexEmuView(APIView):
         """将基金持仓以JsonResponse返回"""
         port_code: str = request.GET.get('portCode')
         date = models.Holding.objects.filter(port_code=port_code).last().date
-        hold = models.Holding.objects.filter(port_code=port_code, date=date).values('secucode', 'mkt_cap')
+        holding_yx = models.HoldingYX.objects.filter(
+            port_code=port_code, date=date).values('secucode', 'shares').exclude(shares=0)
+        need_yx = False
+        if holding_yx.exists():
+            need_yx = True
+        holing_yx = {x['secucode']: x['shares'] for x in holding_yx}
+        hold = models.Holding.objects.filter(
+            port_code=port_code, date=date).values('secucode', 'mkt_cap', 'holding_value').exclude(holding_value=0)
         funds = [x['secucode'] for x in hold]
         names = models.Funds.objects.filter(secucode__in=funds).all()
         names = {x.secucode: x.secuname for x in names}
         asset = models.Balance.objects.filter(port_code=port_code).last().net_asset
-        ret = [{'secucode': x['secucode'], 'secuname': names.get(x['secucode']), 'ratio': x['mkt_cap'] / asset}
-               for x in hold]
-        return JsonResponse({'data': ret})
+        holding = pd.DataFrame(hold)
+        holding['secuname'] = holding.secucode.apply(lambda x: names.get(x))
+        holding['ratio'] = holding['mkt_cap'] / asset
+        holding['unavailable'] = holding.agg(lambda x: holing_yx.get(x.secucode, 0) / x.holding_value * x.ratio, axis=1)
+        holding = holding[['secucode', 'secuname', 'ratio', 'unavailable']]
+        ret = holding.to_dict(orient='records')
+        return JsonResponse({'data': ret, 'yx': need_yx})
 
     @staticmethod
     def generate_instruct(data: pd.DataFrame):
@@ -431,7 +458,7 @@ class ComplexEmuBulkView(ComplexEmuView):
         information = []
         for src_ in src:
             secucode = src_['secucode']
-            info = SimpleEmuView.get_fund_available(port_code, secucode)
+            info = SimpleEmuView.transfer_available(port_code, secucode)
             for inf in info:
                 inf.update({'secucode': secucode})
                 information.append(inf)
@@ -481,8 +508,13 @@ class ComplexEmuBulkView(ComplexEmuView):
                     t.update(update)
                     template.append(t)
                     count += 1
-            p = PurchaseFee(secucode)
-            p_amount, _ = p.calc_purchase_fee(float(average))
+
+            monetary = fund_util.fund_is_monetary(secucode)
+            if monetary:
+                p_amount = 0
+            else:
+                p = PurchaseFee(secucode)
+                p_amount, _ = p.calc_purchase_fee(float(average))
             records.append({'secucode': secucode, 'secuname': dst_['secuname'], 'operate': '转入', 'amount': average,
                             'fee': p_amount, 'key': count})
             count += 1
