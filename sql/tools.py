@@ -18,7 +18,7 @@ from sql.commit.stock import (
 )
 from sql.commit import commit_style
 from sql.commit import commit_brinson
-from crawl.fund_fee import commit_fund_fee
+from tasks.task import commit_fund_fee
 from crawl.fund_limit import commit_fund_limit
 
 
@@ -85,4 +85,5 @@ def commit_preprocess():
 
 __all__ = (
     'commit_index', 'commit_index_gil', 'commit_index_wind', 'commit_fund', 'commit_trading_day', 'commit_stocks',
+    'commit_preprocess'
 )
