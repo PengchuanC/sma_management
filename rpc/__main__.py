@@ -1,4 +1,5 @@
+import asyncio
 from rpc import server
 
 
-server.Server.serve()
+asyncio.run(server.Server.serve())

@@ -1,3 +1,4 @@
+import asyncio
 import grpc
 
 import rpc.services.server_pb2 as pb
@@ -8,17 +9,24 @@ from typing import List
 from rpc.config import HOST, PORT
 
 
+loop = asyncio.get_event_loop()
+
+
 class Client(object):
     stub: pbg.RpcServiceStub = None
 
     def __init__(self):
-        self.channel = grpc.insecure_channel(f'{HOST}:{PORT}')
+        self.channel = grpc.aio.insecure_channel(f'{HOST}:{PORT}')
 
-    def connect(self):
+    async def connect(self):
         self.stub = pbg.RpcServiceStub(self.channel)
 
-    def close(self):
-        self.channel.close()
+    async def close(self):
+        await self.channel.close()
+
+    async def __aenter__(self):
+        await self.connect()
+        return self
 
     def __enter__(self):
         self.connect()
@@ -27,9 +35,12 @@ class Client(object):
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.close()
 
-    def fund_category(self, funds: List[str]):
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        await self.close()
+
+    async def fund_category(self, funds: List[str]):
         r = pb.funds__pb2.FundCategoryRequest(fund=funds)
-        response: pb.funds__pb2.FundCategoryResponse = self.stub.FundCategoryHandler(r)
+        response: pb.funds__pb2.FundCategoryResponse = await self.stub.FundCategoryHandler(r)
         status_code = response.status_code
         if status_code != 0:
             return {}
@@ -38,9 +49,14 @@ class Client(object):
         return data
 
     @staticmethod
-    def simple(attr, *args):
-        with Client() as client:
-            ret = getattr(client, attr)(*args)
+    async def async_simple(attr, *args):
+        async with Client() as client:
+            ret = await getattr(client, attr)(*args)
+        return ret
+
+    @classmethod
+    def simple(cls, attr, *args):
+        ret = loop.run_until_complete(cls.async_simple(attr, *args))
         return ret
 
 
