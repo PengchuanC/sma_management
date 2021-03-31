@@ -38,8 +38,8 @@ class Client(object):
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         await self.close()
 
-    async def fund_category(self, funds: List[str]):
-        r = pb.funds__pb2.FundCategoryRequest(fund=funds)
+    async def fund_category(self, funds: List[str], kind: int):
+        r = pb.funds__pb2.FundCategoryRequest(fund=funds, kind=kind)
         response: pb.funds__pb2.FundCategoryResponse = await self.stub.FundCategoryHandler(r)
         status_code = response.status_code
         if status_code != 0:
@@ -61,7 +61,7 @@ class Client(object):
 
 
 def example():
-    r = Client.simple('fund_category', ['000001', '110011'])
+    r = Client.simple('fund_category', ['000001', '110011'], '1')
     print(r)
 
 

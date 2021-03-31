@@ -11,6 +11,7 @@ from dateutil.parser import parse
 from django.db.models import Max
 from django.http.response import JsonResponse
 from rest_framework.views import APIView, Response
+from asgiref.sync import sync_to_async
 
 from investment.models import (
     Income, IncomeAsset, ValuationBenchmark as VB, Holding, Balance, FundAdjPrice as FAP, TradingDays,
@@ -191,9 +192,9 @@ class FundHoldingView(APIView):
         return limit
 
     @staticmethod
-    def fund_category(funds):
+    def fund_category(funds, kind='2'):
         """获取基金分类"""
-        category = Client.simple('fund_category', funds)
+        category = Client.simple('fund_category', funds, kind)
         category = pd.DataFrame(category)
         return category
 
@@ -278,7 +279,7 @@ class FundHoldingStockView(APIView):
         index = FundHoldingStockView.industry_index_top_ten(port_code)
         equity = ratio.get('stock')
         ind['ratio'] = ind['ratio'].astype('float')
-        ind['ratioinequity'] = ind['ratio'] / equity
+        ind['ratioinequity'] = ind['ratio'] / float(equity)
         ind = ind.merge(index, on='firstindustryname', how='outer').fillna(0)
         ind = ind.sort_values(['ratio'], ascending=False).reset_index(drop=True)
         ind['key'] = ind.index + 1
@@ -350,3 +351,44 @@ class FundHoldingStockView(APIView):
         data = data.fillna(0)
         data = data.rename(columns={'ratio': 'scaled_ratio'})
         return data
+
+
+class FundHoldingNomuraOIView(object):
+    """根据野村东方分类对基金类型进行汇总"""
+    @staticmethod
+    def holding_by_NOI_classify(request):
+        date = request.GET.get('date')
+        port_code = request.GET.get('portCode')
+        if not date:
+            date = Balance.objects.filter(port_code=port_code)
+        else:
+            date = Balance.objects.filter(port_code=port_code, date__lte=date)
+        date = date.latest('date').date
+        data = FundHoldingView.fund_ratio(port_code, date)
+        data.mkt_cap = data.mkt_cap.astype('float')
+        data.ratio = data.ratio.astype('float')
+        funds = list(data.secucode)
+        category = FundHoldingView.fund_category(funds, kind='1')
+        data = data.merge(category, how='left', on='secucode')
+
+        names = models.Funds.objects.filter(secucode__in=funds).values('secucode', 'secuname')
+        names = {x['secucode']: x['secuname'] for x in names}
+        data['secuname'] = data['secucode'].apply(lambda x: names.get(x))
+        ret = []
+        allocate = []
+        key = 1
+        for category in ['股票型', '债券型', '另类', 'QDII型', '货币型']:
+            d = data[data.category == category]
+            allocate.append({'name': category, 'mkt_cap': d.mkt_cap.sum(), 'ratio': d.ratio.sum()})
+            d = d.sort_values('ratio', ascending=False)
+            children = []
+            for _, r in d.iterrows():
+                children.append(
+                    {'key': key, 'secucode': r.secucode, 'secuname': r.secuname, 'mkt_cap': r.mkt_cap, 'ratio': r.ratio}
+                )
+                key += 1
+            ret.append({'key': key, 'secucode': None, 'secuname': category, 'mkt_cap': d.mkt_cap.sum(),
+                        'ratio': d.ratio.sum(), 'children': children})
+            key += 1
+
+        return JsonResponse({'holding': ret, 'allocate': allocate})

@@ -7,7 +7,6 @@ from google.protobuf import message as _message
 from google.protobuf import reflection as _reflection
 from google.protobuf import symbol_database as _symbol_database
 # @@protoc_insertion_point(imports)
-
 _sym_db = _symbol_database.Default()
 
 
@@ -19,7 +18,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0b\x66unds.proto\x12\x03rpc\"#\n\x13\x46undCategoryRequest\x12\x0c\n\x04\x66und\x18\x01 \x03(\t\"L\n\x14\x46undCategoryResponse\x12\x13\n\x0bstatus_code\x18\x01 \x01(\x03\x12\x1f\n\x04\x64\x61ta\x18\x02 \x03(\x0b\x32\x11.rpc.FundCategory\"2\n\x0c\x46undCategory\x12\x10\n\x08secucode\x18\x01 \x01(\t\x12\x10\n\x08\x63\x61tegory\x18\x02 \x01(\tb\x06proto3'
+  serialized_pb=b'\n\x0b\x66unds.proto\x12\x03rpc\"1\n\x13\x46undCategoryRequest\x12\x0c\n\x04\x66und\x18\x01 \x03(\t\x12\x0c\n\x04kind\x18\x02 \x01(\t\"L\n\x14\x46undCategoryResponse\x12\x13\n\x0bstatus_code\x18\x01 \x01(\x03\x12\x1f\n\x04\x64\x61ta\x18\x02 \x03(\x0b\x32\x11.rpc.FundCategory\"2\n\x0c\x46undCategory\x12\x10\n\x08secucode\x18\x01 \x01(\t\x12\x10\n\x08\x63\x61tegory\x18\x02 \x01(\tb\x06proto3'
 )
 
 
@@ -40,6 +39,13 @@ _FUNDCATEGORYREQUEST = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='kind', full_name='rpc.FundCategoryRequest.kind', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -53,7 +59,7 @@ _FUNDCATEGORYREQUEST = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=20,
-  serialized_end=55,
+  serialized_end=69,
 )
 
 
@@ -91,8 +97,8 @@ _FUNDCATEGORYRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=57,
-  serialized_end=133,
+  serialized_start=71,
+  serialized_end=147,
 )
 
 
@@ -130,8 +136,8 @@ _FUNDCATEGORY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=135,
-  serialized_end=185,
+  serialized_start=149,
+  serialized_end=199,
 )
 
 _FUNDCATEGORYRESPONSE.fields_by_name['data'].message_type = _FUNDCATEGORY
