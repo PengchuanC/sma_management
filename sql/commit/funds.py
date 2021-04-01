@@ -187,7 +187,7 @@ class DataGetter(object):
                 continue
             data = self.get_data(date)
             data.secucode = data.secucode.apply(lambda x: funds.get(x))
-            data = data.fillna(0)
+            data = data.where(data.notnull(), None)
             for idx, r in data.iterrows():
                 r = self.m(**r)
                 ret.append(r)

@@ -129,8 +129,9 @@ def commit_fund_holding_stock_hk():
     stocks = list(set(list(data.stockcode)))
     stocks = models.Stock.objects.filter(secucode__in=stocks).all()
     stocks = {x.secucode: x for x in stocks}
-    data['stockname'] = data.stockcode.apply(lambda x: stocks.get(x).secuname)
-    data['stockcode'] = data.stockcode.apply(lambda x: stocks.get(x))
+    data['stockname'] = data.stockcode.apply(lambda x: stocks.get(x).secuname if stocks.get(x) else None)
+    data['stockcode'] = data.stockcode.apply(lambda x: stocks.get(x) if stocks.get(x) else None)
+    data = data[data['stockcode'].notnull()]
     fund = list(set(list(data.secucode)))
     fund = models.Funds.objects.filter(secucode__in=fund).all()
     fund = {x.secucode: x for x in fund}
