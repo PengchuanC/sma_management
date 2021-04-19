@@ -46,7 +46,7 @@ def commit_other(name):
             for row in dat:
                 for r in row:
                     date = date_mapping.get(r['port_code_id'])
-                    if r['date'] <= date:
+                    if date is not None and r['date'] <= date:
                         continue
                     ret.append(m(**r))
             m.objects.bulk_create(ret)
