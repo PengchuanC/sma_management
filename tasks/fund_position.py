@@ -158,10 +158,12 @@ def commit() -> None:
     if date == start:
         return
     dates = tradingday_between_dates(start, date)
+    fps = []
     for d in dates:
         ret = calc(d)
         m = models.FundPosEstimate(**ret)
-        m.save()
+        fps.append(m)
+    models.FundPosEstimate.objects.bulk_create(fps)
 
 
 if __name__ == '__main__':

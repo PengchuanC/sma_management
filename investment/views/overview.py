@@ -5,6 +5,7 @@ overview
 """
 import datetime
 
+import pandas as pd
 from dateutil.relativedelta import relativedelta
 from django.db.models import F
 from django.forms.models import model_to_dict
@@ -98,9 +99,17 @@ class OverviewView(APIView):
 
 def fund_position(request):
     """基金平均仓位"""
+    port_code = request.GET.get('port_code')
     last = models.FundPosEstimate.objects.last()
     last = last.date
     start = last - datetime.timedelta(days=90)
     ret = models.FundPosEstimate.objects.filter(date__range=(start, last))
+    port = models.PortfolioAssetAllocate.objects.filter(
+        port_code=port_code, date__range=(start, last)).values('date', 'equity')
     ret = [model_to_dict(x) for x in ret]
+    ret = pd.DataFrame(ret)
+    port = pd.DataFrame(port).rename(columns={'equity': port_code})
+    ret = ret.merge(port, on='date', how='left')
+    ret = ret.where(ret.notnull(), None)
+    ret = ret.to_dict(orient='records')
     return JsonResponse({'data': ret})
