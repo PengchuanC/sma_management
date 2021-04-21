@@ -99,7 +99,7 @@ class OverviewView(APIView):
 
 def fund_position(request):
     """基金平均仓位"""
-    port_code = request.GET.get('port_code')
+    port_code = request.GET.get('portCode')
     last = models.FundPosEstimate.objects.last()
     last = last.date
     start = last - datetime.timedelta(days=90)
