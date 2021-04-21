@@ -11,7 +11,7 @@ from google.protobuf import symbol_database as _symbol_database
 _sym_db = _symbol_database.Default()
 
 
-from rpc.services import funds_pb2 as funds__pb2
+import rpc.services.funds_pb2 as funds__pb2
 
 
 DESCRIPTOR = _descriptor.FileDescriptor(
@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0cserver.proto\x12\x03rpc\x1a\x0b\x66unds.proto2X\n\nRpcService\x12J\n\x13\x46undCategoryHandler\x12\x18.rpc.FundCategoryRequest\x1a\x19.rpc.FundCategoryResponseb\x06proto3'
+  serialized_pb=b'\n\x0cserver.proto\x12\x03rpc\x1a\x0b\x66unds.proto2\xa7\x01\n\nRpcService\x12J\n\x13\x46undCategoryHandler\x12\x18.rpc.FundCategoryRequest\x1a\x19.rpc.FundCategoryResponse\x12M\n\x14\x46undBasicInfoHandler\x12\x19.rpc.FundBasicInfoRequest\x1a\x1a.rpc.FundBasicInfoResponseb\x06proto3'
   ,
   dependencies=[funds__pb2.DESCRIPTOR,])
 
@@ -37,8 +37,8 @@ _RPCSERVICE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=34,
-  serialized_end=122,
+  serialized_start=35,
+  serialized_end=202,
   methods=[
   _descriptor.MethodDescriptor(
     name='FundCategoryHandler',
@@ -47,6 +47,16 @@ _RPCSERVICE = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=funds__pb2._FUNDCATEGORYREQUEST,
     output_type=funds__pb2._FUNDCATEGORYRESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='FundBasicInfoHandler',
+    full_name='rpc.RpcService.FundBasicInfoHandler',
+    index=1,
+    containing_service=None,
+    input_type=funds__pb2._FUNDBASICINFOREQUEST,
+    output_type=funds__pb2._FUNDBASICINFORESPONSE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),

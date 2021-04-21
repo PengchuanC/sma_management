@@ -1,4 +1,6 @@
 import sqlalchemy as sa
+import datetime
+from dateutil.relativedelta import relativedelta
 from databases import Database
 from functools import wraps
 
@@ -16,14 +18,26 @@ uri = get_uri()
 database = Database(uri)
 metadata = sa.MetaData()
 engine = sa.create_engine(uri)
+time_record = datetime.datetime.now()
 
 
 def async_database(func):
     @wraps(func)
     async def inner(*args, **kwargs):
+        now = datetime.datetime.now()
+        global time_record
+        delta = relativedelta(now, time_record)
         status = database.is_connected
+        if delta.hours >= 2:
+            if status:
+                print('重启数据库连接')
+                await database.disconnect()
+                await database.connect()
+                time_record = now
         if not status:
+            print('数据库连接已断开')
             await database.connect()
+            time_record = now
         ret = await func(*args, **kwargs)
         return ret
     return inner

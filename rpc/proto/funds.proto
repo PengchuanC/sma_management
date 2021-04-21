@@ -5,6 +5,7 @@ package rpc;
 // 基金对应行业-请求
 message FundCategoryRequest {
   repeated string fund = 1;
+  string kind = 2;
 }
 
 // 基金对应行业-响应
@@ -16,4 +17,22 @@ message  FundCategoryResponse {
 message FundCategory {
   string secucode = 1;
   string category = 2;
+}
+
+
+// 基金基础信息
+// 数据
+message BasicInfo {
+  string secucode = 1;
+  string launch_date = 2;
+}
+
+// 请求
+message FundBasicInfoRequest {
+
+}
+
+// 响应
+message FundBasicInfoResponse {
+  repeated BasicInfo data = 1;
 }

@@ -8,22 +8,25 @@ from sklearn.linear_model import Lasso
 from sklearn import preprocessing
 
 from tasks import models
+from rpc.client import Client
 
 
 # 基金仓位约束
 BOUNDS = {
-    '普通股票型基金': (0.8, 1),
-    '偏股混合型基金': (0.5, 0.95),
-    '平衡混合型基金': (0.2, 0.8),
-    '灵活配置型基金': (0.05, 0.95)
+    '标准股票型': (0.8, 1),
+    '混合偏股型': (0.5, 0.95),
+    '股债平衡型': (0.2, 0.8),
+    '灵活配置型': (0.05, 0.95)
 }
 
 MAPPER = {
-    '普通股票型基金': 'normal_stock',
-    '偏股混合型基金': 'mix_stock',
-    '平衡混合型基金': 'mix_equal',
-    '灵活配置型基金': 'mix_flexible'
+    '标准股票型': 'normal_stock',
+    '混合偏股型': 'mix_stock',
+    '股债平衡型': 'mix_equal',
+    '灵活配置型': 'mix_flexible'
 }
+
+LAUNCH = Client.simple('fund_basic_info')
 
 
 def fund_style() -> Dict[str, List[str]]:
@@ -31,16 +34,16 @@ def fund_style() -> Dict[str, List[str]]:
 
     Returns:
         {
-            '普通股票型基金': [],
+            '标准股票型基金': [],
             '偏股混合型基金': [],
             '平衡混合型基金': [],
             '灵活配置型基金': []
         }
     """
-    funds = models.FundStyle.objects.filter(
-        fundstyle__in=(BOUNDS.keys())
-    ).values('secucode', 'fundstyle').order_by('fundstyle')
-    funds = groupby(funds, key=lambda x: x['fundstyle'])
+    funds = Client.simple('fund_category', [], '2')
+    funds = [x for x in funds if x['category'] in MAPPER.keys()]
+    funds = sorted(funds, key=lambda x: x['category'])
+    funds = groupby(funds, key=lambda x: x['category'])
     funds = {x[0]: [y['secucode'] for y in x[1]] for x in funds}
     return funds
 
@@ -95,6 +98,8 @@ def fund_nav(funds: List[str], date: datetime.date) -> pd.DataFrame:
 
     """
     start = date_before_target(date)
+    before = (start - datetime.timedelta(days=90)).strftime('%Y-%m-%d')
+    funds = [x for x in funds if LAUNCH.get(x) <= before]
     nav = models.FundPrice.objects.filter(
         secucode__in=funds, date__range=(start, date)
     ).values('secucode', 'date', 'nav')
@@ -166,5 +171,19 @@ def commit() -> None:
     models.FundPosEstimate.objects.bulk_create(fps)
 
 
+def commit_bulk():
+    """初始化时使用"""
+    date: datetime.date = models.FundPrice.objects.latest('date').date
+    start = datetime.date(2020, 1, 1)
+    dates = tradingday_between_dates(start, date)
+    fps = []
+    for d in dates:
+        print(d)
+        ret = calc(d)
+        fps.append(ret)
+    fps = pd.DataFrame(fps)
+    fps.to_excel('c:/users/chuanchao.peng/desktop/基金仓位估算.xlsx', index=False)
+
+
 if __name__ == '__main__':
-    commit()
+    commit_bulk()

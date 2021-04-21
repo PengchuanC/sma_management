@@ -48,6 +48,12 @@ class Client(object):
         data = [{'secucode': x.secucode, 'category': x.category} for x in data]
         return data
 
+    async def fund_basic_info(self):
+        r = pb.funds__pb2.FundBasicInfoRequest()
+        response = await self.stub.FundBasicInfoHandler(r)
+        resp = {x.secucode: x.launch_date for x in response.data}
+        return resp
+
     @staticmethod
     async def async_simple(attr, *args):
         async with Client() as client:
@@ -62,6 +68,8 @@ class Client(object):
 
 def example():
     r = Client.simple('fund_category', ['000001', '110011'], '1')
+    print(r)
+    r = Client.simple('fund_basic_info')
     print(r)
 
 

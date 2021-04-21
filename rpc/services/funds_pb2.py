@@ -7,6 +7,7 @@ from google.protobuf import message as _message
 from google.protobuf import reflection as _reflection
 from google.protobuf import symbol_database as _symbol_database
 # @@protoc_insertion_point(imports)
+
 _sym_db = _symbol_database.Default()
 
 
@@ -18,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0b\x66unds.proto\x12\x03rpc\"1\n\x13\x46undCategoryRequest\x12\x0c\n\x04\x66und\x18\x01 \x03(\t\x12\x0c\n\x04kind\x18\x02 \x01(\t\"L\n\x14\x46undCategoryResponse\x12\x13\n\x0bstatus_code\x18\x01 \x01(\x03\x12\x1f\n\x04\x64\x61ta\x18\x02 \x03(\x0b\x32\x11.rpc.FundCategory\"2\n\x0c\x46undCategory\x12\x10\n\x08secucode\x18\x01 \x01(\t\x12\x10\n\x08\x63\x61tegory\x18\x02 \x01(\tb\x06proto3'
+  serialized_pb=b'\n\x0b\x66unds.proto\x12\x03rpc\"1\n\x13\x46undCategoryRequest\x12\x0c\n\x04\x66und\x18\x01 \x03(\t\x12\x0c\n\x04kind\x18\x02 \x01(\t\"L\n\x14\x46undCategoryResponse\x12\x13\n\x0bstatus_code\x18\x01 \x01(\x03\x12\x1f\n\x04\x64\x61ta\x18\x02 \x03(\x0b\x32\x11.rpc.FundCategory\"2\n\x0c\x46undCategory\x12\x10\n\x08secucode\x18\x01 \x01(\t\x12\x10\n\x08\x63\x61tegory\x18\x02 \x01(\t\"2\n\tBasicInfo\x12\x10\n\x08secucode\x18\x01 \x01(\t\x12\x13\n\x0blaunch_date\x18\x02 \x01(\t\"\x16\n\x14\x46undBasicInfoRequest\"5\n\x15\x46undBasicInfoResponse\x12\x1c\n\x04\x64\x61ta\x18\x01 \x03(\x0b\x32\x0e.rpc.BasicInfob\x06proto3'
 )
 
 
@@ -140,10 +141,110 @@ _FUNDCATEGORY = _descriptor.Descriptor(
   serialized_end=199,
 )
 
+
+_BASICINFO = _descriptor.Descriptor(
+  name='BasicInfo',
+  full_name='rpc.BasicInfo',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='secucode', full_name='rpc.BasicInfo.secucode', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='launch_date', full_name='rpc.BasicInfo.launch_date', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=201,
+  serialized_end=251,
+)
+
+
+_FUNDBASICINFOREQUEST = _descriptor.Descriptor(
+  name='FundBasicInfoRequest',
+  full_name='rpc.FundBasicInfoRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=253,
+  serialized_end=275,
+)
+
+
+_FUNDBASICINFORESPONSE = _descriptor.Descriptor(
+  name='FundBasicInfoResponse',
+  full_name='rpc.FundBasicInfoResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='data', full_name='rpc.FundBasicInfoResponse.data', index=0,
+      number=1, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=277,
+  serialized_end=330,
+)
+
 _FUNDCATEGORYRESPONSE.fields_by_name['data'].message_type = _FUNDCATEGORY
+_FUNDBASICINFORESPONSE.fields_by_name['data'].message_type = _BASICINFO
 DESCRIPTOR.message_types_by_name['FundCategoryRequest'] = _FUNDCATEGORYREQUEST
 DESCRIPTOR.message_types_by_name['FundCategoryResponse'] = _FUNDCATEGORYRESPONSE
 DESCRIPTOR.message_types_by_name['FundCategory'] = _FUNDCATEGORY
+DESCRIPTOR.message_types_by_name['BasicInfo'] = _BASICINFO
+DESCRIPTOR.message_types_by_name['FundBasicInfoRequest'] = _FUNDBASICINFOREQUEST
+DESCRIPTOR.message_types_by_name['FundBasicInfoResponse'] = _FUNDBASICINFORESPONSE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 FundCategoryRequest = _reflection.GeneratedProtocolMessageType('FundCategoryRequest', (_message.Message,), {
@@ -166,6 +267,27 @@ FundCategory = _reflection.GeneratedProtocolMessageType('FundCategory', (_messag
   # @@protoc_insertion_point(class_scope:rpc.FundCategory)
   })
 _sym_db.RegisterMessage(FundCategory)
+
+BasicInfo = _reflection.GeneratedProtocolMessageType('BasicInfo', (_message.Message,), {
+  'DESCRIPTOR' : _BASICINFO,
+  '__module__' : 'funds_pb2'
+  # @@protoc_insertion_point(class_scope:rpc.BasicInfo)
+  })
+_sym_db.RegisterMessage(BasicInfo)
+
+FundBasicInfoRequest = _reflection.GeneratedProtocolMessageType('FundBasicInfoRequest', (_message.Message,), {
+  'DESCRIPTOR' : _FUNDBASICINFOREQUEST,
+  '__module__' : 'funds_pb2'
+  # @@protoc_insertion_point(class_scope:rpc.FundBasicInfoRequest)
+  })
+_sym_db.RegisterMessage(FundBasicInfoRequest)
+
+FundBasicInfoResponse = _reflection.GeneratedProtocolMessageType('FundBasicInfoResponse', (_message.Message,), {
+  'DESCRIPTOR' : _FUNDBASICINFORESPONSE,
+  '__module__' : 'funds_pb2'
+  # @@protoc_insertion_point(class_scope:rpc.FundBasicInfoResponse)
+  })
+_sym_db.RegisterMessage(FundBasicInfoResponse)
 
 
 # @@protoc_insertion_point(module_scope)

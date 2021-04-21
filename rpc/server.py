@@ -8,7 +8,7 @@ from django.db.utils import OperationalError
 import rpc.services.server_pb2 as pb
 import rpc.services.server_pb2_grpc as pbg
 
-from rpc.funds.category import fund_category_new
+from rpc.funds import category
 from rpc.config import PORT
 
 
@@ -16,8 +16,13 @@ class Server(pbg.RpcServiceServicer):
 
     async def FundCategoryHandler(self, request, context):
         """获取基金分类"""
-        ret = await fund_category_new(request, context)
-        return ret
+        resp = await category.fund_category_new(request, context)
+        return resp
+
+    async def FundBasicInfoHandler(self, request, context):
+        """获取基金基础信息"""
+        resp = await category.fund_basic_info(request, context)
+        return resp
 
     @staticmethod
     async def serve():
