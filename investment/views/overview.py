@@ -110,6 +110,7 @@ def fund_position(request):
     ret = pd.DataFrame(ret)
     port = pd.DataFrame(port).rename(columns={'equity': 'portfolio'})
     ret = ret.merge(port, on='date', how='left')
+    ret = ret.fillna(method='pad')
     ret = ret.where(ret.notnull(), None)
     ret = ret.to_dict(orient='records')
     return JsonResponse({'data': ret})
