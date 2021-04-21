@@ -108,7 +108,7 @@ def fund_position(request):
         port_code=port_code, date__range=(start, last)).values('date', 'equity')
     ret = [model_to_dict(x) for x in ret]
     ret = pd.DataFrame(ret)
-    port = pd.DataFrame(port).rename(columns={'equity': port_code})
+    port = pd.DataFrame(port).rename(columns={'equity': 'portfolio'})
     ret = ret.merge(port, on='date', how='left')
     ret = ret.where(ret.notnull(), None)
     ret = ret.to_dict(orient='records')
