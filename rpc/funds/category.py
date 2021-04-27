@@ -28,3 +28,16 @@ async def fund_basic_info(request: pb.FundBasicInfoRequest, context):
     query = await models.database.fetch_all(sql)
     ret = [pb.BasicInfo(secucode=x[0], launch_date=x[1].strftime('%Y-%m-%d')) for x in query]
     return pb.FundBasicInfoResponse(data=ret)
+
+
+@models.async_database
+async def portfolio_core(request, context):
+    """获取筛选系统核心池"""
+    m = models.PortfolioExpand
+    max_date = models.sa.select([models.sa.func.max(m.c.update_date)])
+    sql = models.sa.select(
+        [m.c.secucode]).where(m.c.update_date == max_date).where(m.c.port_type.in_([2, 3, 4])).distinct()
+    funds = await models.database.fetch_all(sql)
+    funds = [f[0] for f in funds]
+    resp = pb.FundsResponse(funds=funds)
+    return resp

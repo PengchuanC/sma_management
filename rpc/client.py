@@ -6,7 +6,7 @@ import rpc.services.server_pb2_grpc as pbg
 
 from typing import List
 
-from rpc.config import HOST, PORT
+from rpc.register import consul_app
 
 
 loop = asyncio.get_event_loop()
@@ -15,8 +15,19 @@ loop = asyncio.get_event_loop()
 class Client(object):
     stub: pbg.RpcServiceStub = None
 
-    def __init__(self):
-        self.channel = grpc.aio.insecure_channel(f'{HOST}:{PORT}')
+    def __init__(self, service_name):
+        host, port = self.get_server(service_name)
+        self.channel = grpc.aio.insecure_channel(f'{host}:{port}')
+
+    @staticmethod
+    def get_server(service_name):
+        """获取微服务地址"""
+        server, err = consul_app.find(service_name)
+        if err:
+            raise RuntimeError(f'cannot find service [{service_name}]!')
+        host = server['Address']
+        port = server['Port']
+        return host, port
 
     async def connect(self):
         self.stub = pbg.RpcServiceStub(self.channel)
@@ -54,9 +65,17 @@ class Client(object):
         resp = {x.secucode: x.launch_date for x in response.data}
         return resp
 
+    async def portfolio_core(self):
+        """核心池中基金列表"""
+        r = pb.funds__pb2.NullRequest()
+        response = await self.stub.PortfolioCoreHandler(r)
+        resp = response.funds
+        return resp
+
     @staticmethod
     async def async_simple(attr, *args):
-        async with Client() as client:
+        name = 'fund_filter_django'
+        async with Client(name) as client:
             ret = await getattr(client, attr)(*args)
         return ret
 
@@ -69,7 +88,7 @@ class Client(object):
 def example():
     r = Client.simple('fund_category', ['000001', '110011'], '1')
     print(r)
-    r = Client.simple('fund_basic_info')
+    r = Client.simple('portfolio_core')
     print(r)
 
 

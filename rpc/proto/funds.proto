@@ -2,6 +2,11 @@ syntax = 'proto3';
 
 package rpc;
 
+
+// 空请求
+message NullRequest {}
+
+
 // 基金对应行业-请求
 message FundCategoryRequest {
   repeated string fund = 1;
@@ -35,4 +40,10 @@ message FundBasicInfoRequest {
 // 响应
 message FundBasicInfoResponse {
   repeated BasicInfo data = 1;
+}
+
+// 基金列表
+// 响应
+message FundsResponse {
+  repeated string funds = 1;
 }

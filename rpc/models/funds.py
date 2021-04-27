@@ -29,3 +29,23 @@ BasicInfo = sa.Table(
     sa.Column('benchmark', sa.String(255)),
     sa.Column('company', sa.String(12))
 )
+
+
+Portfolio = sa.Table(
+    't_ff_portfolio',
+    metadata,
+    sa.Column('port_id', sa.Integer, primary_key=True),
+    sa.Column('port_name', sa.String(12)),
+    sa.Column('port_type', sa.Integer)
+)
+
+
+PortfolioExpand = sa.Table(
+    't_ff_portfolio_expand',
+    metadata,
+    sa.Column('port_id_id', sa.ForeignKey('t_ff_portfolio.port_id')),
+    sa.Column('secucode', sa.String(12)),
+    sa.Column('port_type', sa.Integer),
+    sa.Column('update_date', sa.Date)
+)
+

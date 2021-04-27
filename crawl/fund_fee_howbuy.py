@@ -1,15 +1,14 @@
-import re
 import asyncio
-import time
+import re
+from itertools import chain
+from typing import List
 
 import aiohttp
 import pandas as pd
-
-from itertools import chain
-from typing import List
 from lxml.etree import ParserError
 
-from crawl.stock_async import database, metadata, sa, Holding
+from crawl.stock_async import database, Holding, metadata, sa
+from rpc.client import Client
 
 # 爬虫地址
 Basic = 'https://www.howbuy.com/fund/ajax/gmfund/fundrate.htm'
@@ -20,6 +19,13 @@ CRAWL_STOP_TIME = 10
 # 正则模板
 purchase = re.compile(r'\d+')
 ransom = re.compile(r'\d+')
+
+Funds = sa.Table(
+    'sma_funds',
+    metadata,
+    sa.Column('secucode', sa.String(12)),
+    sa.Column('secuname', sa.String(50))
+)
 
 FundFee = sa.Table(
     'sma_fund_purchase_fee',
@@ -37,7 +43,10 @@ async def request(fund: str):
     url = Basic
     async with aiohttp.request('GET', url, params={'jjdm': fund}) as r:
         content = await r.text()
-    content = pd.read_html(content)
+    try:
+        content = pd.read_html(content)
+    except ValueError:
+        content = None
     return content
 
 
@@ -91,6 +100,8 @@ async def holding_funds():
 async def fund_fee(fund: str):
     """获取基金费用信息的model"""
     data = await request(fund)
+    if data is None:
+        return
     p = format_purchase_info(data)
     r = format_ransom_info(data)
     ret = []
@@ -102,12 +113,18 @@ async def fund_fee(fund: str):
 async def run():
     await database.connect()
 
-    funds = await holding_funds()
+    # funds = await holding_funds()
+
+    funds = await Client.async_simple('portfolio_core')
+
     ret = []
     for fund in funds:
         try:
             r = await fund_fee(fund)
+            if r is None:
+                continue
             ret.append(r)
+            await asyncio.sleep(1)
         except ParserError:
             pass
 

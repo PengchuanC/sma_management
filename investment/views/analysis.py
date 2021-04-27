@@ -124,7 +124,7 @@ class FundHoldingView(APIView):
         try:
             category = self.fund_category(funds)
             holding = holding.merge(category, on='secucode', how='left')
-        except Exception:
+        except Exception as e:
             holding['category'] = [None] * len(holding)
 
         perf = FundHoldingView.period_return(funds, date)
@@ -151,7 +151,7 @@ class FundHoldingView(APIView):
     def fund_ratio(port_code: str, date: datetime.date):
         """组合持有基金的比例"""
         holding = Holding.objects.filter(
-            port_code=port_code, date=date, category='开放式基金').values('secucode', 'mkt_cap')
+            port_code=port_code, date=date, category='开放式基金').values('secucode', 'mkt_cap', 'total_profit')
         na = Balance.objects.get(port_code=port_code, date=date).net_asset
         holding = pd.DataFrame(holding)
 

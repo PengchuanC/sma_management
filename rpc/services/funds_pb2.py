@@ -19,10 +19,35 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0b\x66unds.proto\x12\x03rpc\"1\n\x13\x46undCategoryRequest\x12\x0c\n\x04\x66und\x18\x01 \x03(\t\x12\x0c\n\x04kind\x18\x02 \x01(\t\"L\n\x14\x46undCategoryResponse\x12\x13\n\x0bstatus_code\x18\x01 \x01(\x03\x12\x1f\n\x04\x64\x61ta\x18\x02 \x03(\x0b\x32\x11.rpc.FundCategory\"2\n\x0c\x46undCategory\x12\x10\n\x08secucode\x18\x01 \x01(\t\x12\x10\n\x08\x63\x61tegory\x18\x02 \x01(\t\"2\n\tBasicInfo\x12\x10\n\x08secucode\x18\x01 \x01(\t\x12\x13\n\x0blaunch_date\x18\x02 \x01(\t\"\x16\n\x14\x46undBasicInfoRequest\"5\n\x15\x46undBasicInfoResponse\x12\x1c\n\x04\x64\x61ta\x18\x01 \x03(\x0b\x32\x0e.rpc.BasicInfob\x06proto3'
+  serialized_pb=b'\n\x0b\x66unds.proto\x12\x03rpc\"\r\n\x0bNullRequest\"1\n\x13\x46undCategoryRequest\x12\x0c\n\x04\x66und\x18\x01 \x03(\t\x12\x0c\n\x04kind\x18\x02 \x01(\t\"L\n\x14\x46undCategoryResponse\x12\x13\n\x0bstatus_code\x18\x01 \x01(\x03\x12\x1f\n\x04\x64\x61ta\x18\x02 \x03(\x0b\x32\x11.rpc.FundCategory\"2\n\x0c\x46undCategory\x12\x10\n\x08secucode\x18\x01 \x01(\t\x12\x10\n\x08\x63\x61tegory\x18\x02 \x01(\t\"2\n\tBasicInfo\x12\x10\n\x08secucode\x18\x01 \x01(\t\x12\x13\n\x0blaunch_date\x18\x02 \x01(\t\"\x16\n\x14\x46undBasicInfoRequest\"5\n\x15\x46undBasicInfoResponse\x12\x1c\n\x04\x64\x61ta\x18\x01 \x03(\x0b\x32\x0e.rpc.BasicInfo\"\x1e\n\rFundsResponse\x12\r\n\x05\x66unds\x18\x01 \x03(\tb\x06proto3'
 )
 
 
+
+
+_NULLREQUEST = _descriptor.Descriptor(
+  name='NullRequest',
+  full_name='rpc.NullRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=20,
+  serialized_end=33,
+)
 
 
 _FUNDCATEGORYREQUEST = _descriptor.Descriptor(
@@ -59,8 +84,8 @@ _FUNDCATEGORYREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=20,
-  serialized_end=69,
+  serialized_start=35,
+  serialized_end=84,
 )
 
 
@@ -98,8 +123,8 @@ _FUNDCATEGORYRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=71,
-  serialized_end=147,
+  serialized_start=86,
+  serialized_end=162,
 )
 
 
@@ -137,8 +162,8 @@ _FUNDCATEGORY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=149,
-  serialized_end=199,
+  serialized_start=164,
+  serialized_end=214,
 )
 
 
@@ -176,8 +201,8 @@ _BASICINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=201,
-  serialized_end=251,
+  serialized_start=216,
+  serialized_end=266,
 )
 
 
@@ -201,8 +226,8 @@ _FUNDBASICINFOREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=253,
-  serialized_end=275,
+  serialized_start=268,
+  serialized_end=290,
 )
 
 
@@ -233,19 +258,60 @@ _FUNDBASICINFORESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=277,
-  serialized_end=330,
+  serialized_start=292,
+  serialized_end=345,
+)
+
+
+_FUNDSRESPONSE = _descriptor.Descriptor(
+  name='FundsResponse',
+  full_name='rpc.FundsResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='funds', full_name='rpc.FundsResponse.funds', index=0,
+      number=1, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=347,
+  serialized_end=377,
 )
 
 _FUNDCATEGORYRESPONSE.fields_by_name['data'].message_type = _FUNDCATEGORY
 _FUNDBASICINFORESPONSE.fields_by_name['data'].message_type = _BASICINFO
+DESCRIPTOR.message_types_by_name['NullRequest'] = _NULLREQUEST
 DESCRIPTOR.message_types_by_name['FundCategoryRequest'] = _FUNDCATEGORYREQUEST
 DESCRIPTOR.message_types_by_name['FundCategoryResponse'] = _FUNDCATEGORYRESPONSE
 DESCRIPTOR.message_types_by_name['FundCategory'] = _FUNDCATEGORY
 DESCRIPTOR.message_types_by_name['BasicInfo'] = _BASICINFO
 DESCRIPTOR.message_types_by_name['FundBasicInfoRequest'] = _FUNDBASICINFOREQUEST
 DESCRIPTOR.message_types_by_name['FundBasicInfoResponse'] = _FUNDBASICINFORESPONSE
+DESCRIPTOR.message_types_by_name['FundsResponse'] = _FUNDSRESPONSE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
+
+NullRequest = _reflection.GeneratedProtocolMessageType('NullRequest', (_message.Message,), {
+  'DESCRIPTOR' : _NULLREQUEST,
+  '__module__' : 'funds_pb2'
+  # @@protoc_insertion_point(class_scope:rpc.NullRequest)
+  })
+_sym_db.RegisterMessage(NullRequest)
 
 FundCategoryRequest = _reflection.GeneratedProtocolMessageType('FundCategoryRequest', (_message.Message,), {
   'DESCRIPTOR' : _FUNDCATEGORYREQUEST,
@@ -288,6 +354,13 @@ FundBasicInfoResponse = _reflection.GeneratedProtocolMessageType('FundBasicInfoR
   # @@protoc_insertion_point(class_scope:rpc.FundBasicInfoResponse)
   })
 _sym_db.RegisterMessage(FundBasicInfoResponse)
+
+FundsResponse = _reflection.GeneratedProtocolMessageType('FundsResponse', (_message.Message,), {
+  'DESCRIPTOR' : _FUNDSRESPONSE,
+  '__module__' : 'funds_pb2'
+  # @@protoc_insertion_point(class_scope:rpc.FundsResponse)
+  })
+_sym_db.RegisterMessage(FundsResponse)
 
 
 # @@protoc_insertion_point(module_scope)

@@ -186,4 +186,4 @@ def commit_bulk():
 
 
 if __name__ == '__main__':
-    commit_bulk()
+    commit()

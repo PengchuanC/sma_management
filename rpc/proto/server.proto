@@ -10,4 +10,7 @@ service RpcService {
 
   // 获取基金基础信息
   rpc FundBasicInfoHandler(FundBasicInfoRequest) returns (FundBasicInfoResponse);
+
+  // 获取核心池中基金列表
+  rpc PortfolioCoreHandler(NullRequest) returns (FundsResponse);
 }

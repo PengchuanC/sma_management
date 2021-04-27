@@ -24,6 +24,11 @@ class RpcServiceStub(object):
                 request_serializer=funds__pb2.FundBasicInfoRequest.SerializeToString,
                 response_deserializer=funds__pb2.FundBasicInfoResponse.FromString,
                 )
+        self.PortfolioCoreHandler = channel.unary_unary(
+                '/rpc.RpcService/PortfolioCoreHandler',
+                request_serializer=funds__pb2.NullRequest.SerializeToString,
+                response_deserializer=funds__pb2.FundsResponse.FromString,
+                )
 
 
 class RpcServiceServicer(object):
@@ -43,6 +48,13 @@ class RpcServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def PortfolioCoreHandler(self, request, context):
+        """获取核心池中基金列表
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_RpcServiceServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -55,6 +67,11 @@ def add_RpcServiceServicer_to_server(servicer, server):
                     servicer.FundBasicInfoHandler,
                     request_deserializer=funds__pb2.FundBasicInfoRequest.FromString,
                     response_serializer=funds__pb2.FundBasicInfoResponse.SerializeToString,
+            ),
+            'PortfolioCoreHandler': grpc.unary_unary_rpc_method_handler(
+                    servicer.PortfolioCoreHandler,
+                    request_deserializer=funds__pb2.NullRequest.FromString,
+                    response_serializer=funds__pb2.FundsResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -97,5 +114,22 @@ class RpcService(object):
         return grpc.experimental.unary_unary(request, target, '/rpc.RpcService/FundBasicInfoHandler',
             funds__pb2.FundBasicInfoRequest.SerializeToString,
             funds__pb2.FundBasicInfoResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def PortfolioCoreHandler(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/rpc.RpcService/PortfolioCoreHandler',
+            funds__pb2.NullRequest.SerializeToString,
+            funds__pb2.FundsResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

@@ -27,6 +27,7 @@ import pandas as pd
 
 from collections import OrderedDict
 from functools import lru_cache
+from enum import Enum
 from django.db.models import Sum
 from django.http import Http404, HttpResponse, JsonResponse
 from decimal import Decimal
@@ -38,11 +39,18 @@ from investment.utils import fund as fund_util
 # 投资指令模板
 from investment.utils.download import file_dir
 
+
 instruct_template = OrderedDict({
     '基金代码': '', '组合编号': '', '投资类型': '1', '证券代码': '', '委托方向': 'E', '指令金额': 0, '指令数量': 0, '分红方式': 2,
     '巨额赎回标志': 1, '开始日期': None, '结束日期': None, '转入组合编号': '', '转入投资类型': '1', '转入证券代码': '',
     '基金名称': '', '组合名称': '', '转入组合名称': None, '销售渠道': None
 })
+
+
+class TradeType(Enum):
+    p = '申购'
+    q = '赎回'
+    E = '开基转换'
 
 
 class RansomFee(object):
@@ -302,6 +310,7 @@ class ComplexEmuView(APIView):
     """
 
     def post(self, request):
+        print(request.data)
         ret = self.case_one(request)
         return Response(ret)
 
@@ -409,6 +418,9 @@ class ComplexEmuView(APIView):
         holding['unavailable'] = holding.agg(lambda x: holing_yx.get(x.secucode, 0) / x.holding_value * x.ratio, axis=1)
         holding = holding[['secucode', 'secuname', 'ratio', 'unavailable']]
         ret = holding.to_dict(orient='records')
+        all_funds = models.Funds.objects.values('secucode', 'secuname')
+        all_funds = [{**x, 'ratio': 0, 'not': True} for x in all_funds if x['secucode'] not in funds]
+        ret += all_funds
         return JsonResponse({'data': ret, 'yx': need_yx})
 
     @staticmethod
