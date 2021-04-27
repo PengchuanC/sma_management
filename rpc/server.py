@@ -19,7 +19,11 @@ class Server(pbg.RpcServiceServicer):
     async def FundCategoryHandler(self, request, context):
         """获取基金分类"""
         resp = await category.fund_category_new(request, context)
-        await category.portfolio_core(request, context)
+        return resp
+
+    async def FundCategoryFullHandler(self, request, context):
+        """获取基金完整分类"""
+        resp = await category.fund_classify_full(request, context)
         return resp
 
     async def FundBasicInfoHandler(self, request, context):

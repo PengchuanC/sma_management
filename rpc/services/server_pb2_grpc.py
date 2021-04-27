@@ -19,6 +19,11 @@ class RpcServiceStub(object):
                 request_serializer=funds__pb2.FundCategoryRequest.SerializeToString,
                 response_deserializer=funds__pb2.FundCategoryResponse.FromString,
                 )
+        self.FundCategoryFullHandler = channel.unary_unary(
+                '/rpc.RpcService/FundCategoryFullHandler',
+                request_serializer=funds__pb2.FundCategoryRequest.SerializeToString,
+                response_deserializer=funds__pb2.FundCategoryFullResponse.FromString,
+                )
         self.FundBasicInfoHandler = channel.unary_unary(
                 '/rpc.RpcService/FundBasicInfoHandler',
                 request_serializer=funds__pb2.FundBasicInfoRequest.SerializeToString,
@@ -36,6 +41,13 @@ class RpcServiceServicer(object):
 
     def FundCategoryHandler(self, request, context):
         """获取基金类型
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def FundCategoryFullHandler(self, request, context):
+        """获取基金完整类型
         """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -62,6 +74,11 @@ def add_RpcServiceServicer_to_server(servicer, server):
                     servicer.FundCategoryHandler,
                     request_deserializer=funds__pb2.FundCategoryRequest.FromString,
                     response_serializer=funds__pb2.FundCategoryResponse.SerializeToString,
+            ),
+            'FundCategoryFullHandler': grpc.unary_unary_rpc_method_handler(
+                    servicer.FundCategoryFullHandler,
+                    request_deserializer=funds__pb2.FundCategoryRequest.FromString,
+                    response_serializer=funds__pb2.FundCategoryFullResponse.SerializeToString,
             ),
             'FundBasicInfoHandler': grpc.unary_unary_rpc_method_handler(
                     servicer.FundBasicInfoHandler,
@@ -97,6 +114,23 @@ class RpcService(object):
         return grpc.experimental.unary_unary(request, target, '/rpc.RpcService/FundCategoryHandler',
             funds__pb2.FundCategoryRequest.SerializeToString,
             funds__pb2.FundCategoryResponse.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def FundCategoryFullHandler(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/rpc.RpcService/FundCategoryFullHandler',
+            funds__pb2.FundCategoryRequest.SerializeToString,
+            funds__pb2.FundCategoryFullResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

@@ -59,6 +59,13 @@ class Client(object):
         data = [{'secucode': x.secucode, 'category': x.category} for x in data]
         return data
 
+    async def fund_category_full(self, funds: List[str]):
+        r = pb.funds__pb2.FundCategoryRequest(fund=funds, kind=None)
+        response: pb.funds__pb2.FundCategoryFullResponse = await self.stub.FundCategoryFullHandler(r)
+        data = response.data
+        data = [{'secucode': x.secucode, 'branch': x.branch, 'classify': x.classify} for x in data]
+        return data
+
     async def fund_basic_info(self):
         r = pb.funds__pb2.FundBasicInfoRequest()
         response = await self.stub.FundBasicInfoHandler(r)
@@ -88,7 +95,7 @@ class Client(object):
 def example():
     r = Client.simple('fund_category', ['000001', '110011'], '1')
     print(r)
-    r = Client.simple('portfolio_core')
+    r = Client.simple('fund_category_full', ['000001', '110011'])
     print(r)
 
 

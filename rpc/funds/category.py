@@ -22,6 +22,21 @@ async def fund_category_new(request: pb.FundCategoryRequest, context):
 
 
 @models.async_database
+async def fund_classify_full(request, context):
+    """获取基金一、二级分类"""
+    funds = request.fund
+    c = models.Classify
+    sql = models.sa.select([c.c.secucode_id, c.c.branch, c.c.classify])
+    if funds:
+        sql = sql.where(c.c.secucode_id.in_(funds))
+    sql = sql.distinct()
+    data = await models.database.fetch_all(sql)
+    resp = [pb.FundCategoryFullResponse.FundCategoryFull(secucode=x[0], branch=x[1], classify=x[2]) for x in data]
+    resp = pb.FundCategoryFullResponse(data=resp)
+    return resp
+
+
+@models.async_database
 async def fund_basic_info(request: pb.FundBasicInfoRequest, context):
     bi = models.BasicInfo
     sql = models.sa.select([bi.c.secucode_id, bi.c.launch_date]).distinct()

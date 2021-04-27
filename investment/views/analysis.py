@@ -192,9 +192,9 @@ class FundHoldingView(APIView):
         return limit
 
     @staticmethod
-    def fund_category(funds, kind='2'):
+    def fund_category(funds):
         """获取基金分类"""
-        category = Client.simple('fund_category', funds, kind)
+        category = Client.simple('fund_category_full', funds)
         category = pd.DataFrame(category)
         return category
 
@@ -368,7 +368,7 @@ class FundHoldingNomuraOIView(object):
         data.mkt_cap = data.mkt_cap.astype('float')
         data.ratio = data.ratio.astype('float')
         funds = list(data.secucode)
-        category = FundHoldingView.fund_category(funds, kind='1')
+        category = FundHoldingView.fund_category(funds)
         data = data.merge(category, how='left', on='secucode')
 
         names = models.Funds.objects.filter(secucode__in=funds).values('secucode', 'secuname')
@@ -378,7 +378,7 @@ class FundHoldingNomuraOIView(object):
         allocate = []
         key = 1
         for category in ['股票型', '债券型', '另类', 'QDII型', '货币型']:
-            d = data[data.category == category]
+            d = data[data.branch == category]
             allocate.append({'name': category, 'mkt_cap': d.mkt_cap.sum(), 'ratio': d.ratio.sum()})
             d = d.sort_values('ratio', ascending=False)
             children = []

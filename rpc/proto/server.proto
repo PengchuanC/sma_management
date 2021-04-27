@@ -8,6 +8,9 @@ service RpcService {
   // 获取基金类型
   rpc FundCategoryHandler(FundCategoryRequest) returns (FundCategoryResponse);
 
+  // 获取基金完整类型
+  rpc FundCategoryFullHandler(FundCategoryRequest) returns (FundCategoryFullResponse);
+
   // 获取基金基础信息
   rpc FundBasicInfoHandler(FundBasicInfoRequest) returns (FundBasicInfoResponse);
 

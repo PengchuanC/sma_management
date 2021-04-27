@@ -25,6 +25,18 @@ message FundCategory {
 }
 
 
+// 基金完整行业
+// 请求
+message FundCategoryFullResponse {
+  message FundCategoryFull {
+    string secucode = 1;
+    string branch = 2;
+    string classify = 3;
+  }
+  repeated FundCategoryFull data = 1;
+}
+
+
 // 基金基础信息
 // 数据
 message BasicInfo {
