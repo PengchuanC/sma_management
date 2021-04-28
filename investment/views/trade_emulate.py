@@ -41,10 +41,12 @@ from investment.utils.download import file_dir
 
 
 instruct_template = OrderedDict({
-    '基金代码': '', '组合编号': '', '投资类型': '1', '证券代码': '', '委托方向': 'E', '指令金额': 0, '指令数量': 0, '分红方式': 2,
-    '巨额赎回标志': 1, '开始日期': None, '结束日期': None, '转入组合编号': '', '转入投资类型': '1', '转入证券代码': '',
+    '基金代码': '', '组合编号': '', '投资类型': '1', '证券代码': '', '委托方向': 'E', '指令金额': None, '指令数量': None,
+    '分红方式': 2, '巨额赎回标志': 1, '开始日期': None, '结束日期': None, '转入组合编号': '', '转入投资类型': '1', '转入证券代码': '',
     '基金名称': '', '组合名称': '', '转入组合名称': None, '销售渠道': None
 })
+
+Instruct = []
 
 
 class TradeType(Enum):
@@ -278,20 +280,26 @@ class SimpleEmuView(APIView):
         shares = request.GET.get('shares')
         if any({not shares, not secucode, not port_code}):
             return JsonResponse({'fee': None})
+        fee = SimpleEmuView.calc_redeem_fee(port_code, secucode, shares)
+        return JsonResponse({'fee': fee})
+
+    @staticmethod
+    def calc_redeem_fee(port_code, secucode, shares):
+        """计算赎回费"""
         available = SimpleEmuView.get_fund_available(port_code, secucode)
         nav, _ = SimpleEmuView._get_fund_nav(secucode)
         shares = float(shares)
         fee = 0
         for r in available:
             ava = r['available']
-            ratio = r['fee']
+            ratio = r['fee'] or 0
             if shares < ava:
                 fee += shares * float(nav) * float(ratio)
                 break
             else:
                 fee += ava * float(nav) * float(ratio)
                 shares -= ava
-        return JsonResponse({'fee': fee})
+        return fee
 
     @staticmethod
     def get_purchase_fee(request):
@@ -310,11 +318,91 @@ class ComplexEmuView(APIView):
     """
 
     def post(self, request):
-        print(request.data)
-        ret = self.case_one(request)
-        return Response(ret)
+        return self.process(request, self.case_one)
 
-    def case_one(self, request):
+    def process(self, request, func):
+        """func: case_one | case_two"""
+        global Instruct
+        Instruct = []
+        resp = self.purchase(request)
+        ret = func(request)
+        resp.extend(ret)
+        ret = self.redeem(request)
+        resp.extend(ret)
+        resp_ = []
+        count = 1
+        for r in resp:
+            s = r['secucode']
+            info = models.Funds.objects.get(secucode=s)
+            r.update({'key': count, 'secuname': info.secuname})
+            resp_.append(r)
+            count += 1
+        instruct = pd.DataFrame(Instruct)
+        self.generate_instruct(instruct)
+        return Response(resp_)
+
+    @staticmethod
+    def purchase(request):
+        """处理申购模拟"""
+        purchase = request.data['purchase']
+        if not purchase:
+            return []
+        port_code = request.data['portCode']
+        ret = []
+        template = []
+        cash = models.Balance.objects.filter(port_code=port_code).latest('date').savings
+        cash = float(cash)
+        for p in purchase:
+            t = float(p['target'])
+            s = p['secucode']
+            monetary = fund_util.fund_is_monetary(s)
+            if monetary:
+                ret.append({'secucode': s, 'secuname': '', 'operate': '申购', 'amount': t, 'fee': 0})
+                continue
+            calc = PurchaseFee(s)
+            r = calc.calc_purchase_fee(t)
+            if not r:
+                raise ValueError(f'没有收录基金{s}的费用信息')
+            fee, ratio = r
+            cash -= t
+            if cash < 0:
+                raise ValueError('没有足够的现金用于申购')
+            ret.append({'secucode': s, 'secuname': '', 'operate': '申购', 'amount': t, 'fee': fee})
+            tmpl = deepcopy(instruct_template)
+            update = OrderedDict({'基金代码': port_code, '证券代码': s, '指令金额': t, '委托方向': 'q'})
+            tmpl.update(update)
+            template.append(tmpl)
+
+        Instruct.extend(template)
+        return ret
+
+    @staticmethod
+    def redeem(request):
+        """处理赎回请求"""
+        redeem = request.data['redeem']
+        if not redeem:
+            return []
+
+        port_code = request.data['portCode']
+        ret = []
+        template = []
+        for r in redeem:
+            s = r['secucode']
+            t = float(r['target'])
+            fee = SimpleEmuView.calc_redeem_fee(port_code, s, t)
+            ret.append({
+                'secucode': s, 'secuname': '', 'operate': '赎回', 'amount': t, 'fee': fee
+            })
+            tmpl = deepcopy(instruct_template)
+            update = OrderedDict({'基金代码': port_code, '证券代码': s, '委托方向': 'q', '指令数量': t})
+            tmpl.update(update)
+            template.append(tmpl)
+
+        Instruct.extend(template)
+        return ret
+
+    @staticmethod
+    def case_one(request):
         """第一种情况
 
         多支基金转换为同一支基金，先赎回后申购，利用赎回金额的90%来申购新基金
@@ -328,6 +416,8 @@ class ComplexEmuView(APIView):
         data = request.data
         dst = data.get('dst')
         src = data.get('src')
+        if not dst or not src:
+            return []
         port_code = data.get('portCode')
 
         # 根据赎回百分比计算赎回基金的赎回份额和合计赎回金额
@@ -371,8 +461,7 @@ class ComplexEmuView(APIView):
         records.append({
             'secucode': dst, 'secuname': name, 'operate': '转入', 'amount': amount, 'fee': round(p_fee, 2), 'key': count
         })
-        template = pd.DataFrame(template)
-        self.generate_instruct(template)
+        Instruct.extend(template)
         return records
 
     @staticmethod
@@ -416,7 +505,9 @@ class ComplexEmuView(APIView):
         holding['secuname'] = holding.secucode.apply(lambda x: names.get(x))
         holding['ratio'] = holding['mkt_cap'] / asset
         holding['unavailable'] = holding.agg(lambda x: holing_yx.get(x.secucode, 0) / x.holding_value * x.ratio, axis=1)
-        holding = holding[['secucode', 'secuname', 'ratio', 'unavailable']]
+        holding = holding[['secucode', 'secuname', 'ratio', 'unavailable', 'holding_value']].rename(columns={
+            'holding_value': 'shares'
+        })
         ret = holding.to_dict(orient='records')
         all_funds = models.Funds.objects.values('secucode', 'secuname')
         all_funds = [{**x, 'ratio': 0, 'not': True} for x in all_funds if x['secucode'] not in funds]
@@ -449,8 +540,7 @@ class ComplexEmuBulkView(ComplexEmuView):
     """批量转换模式"""
 
     def post(self, request):
-        ret = self.case_two(request)
-        return Response(ret)
+        return self.process(request, self.case_two)
 
     def case_two(self, request):
         """第二种转换模式
@@ -460,6 +550,8 @@ class ComplexEmuBulkView(ComplexEmuView):
         data = request.data
         dst = data.get('dst')
         src = data.get('src')
+        if not dst or not src:
+            return []
         port_code = data.get('portCode')
         rise = data.get('rise') / 100
         date = datetime.date.today()

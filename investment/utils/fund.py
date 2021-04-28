@@ -2,7 +2,8 @@
 单只基金相关的功能
 """
 
-from investment.models import Funds, FundStyle
+from investment.models import Funds
+from rpc.client import Client
 
 
 def fund_names(funds):
@@ -21,5 +22,6 @@ def fund_is_monetary(fund: str) -> bool:
     Returns:
         bool: 是否是货币基金
     """
-    fund_type = FundStyle.objects.filter(secucode=fund).last().fundtype
-    return fund_type == '货币市场型基金'
+    fund_type = Client.simple('fund_category_full', [fund])
+    fund_type = fund_type[0]['branch']
+    return fund_type == '货币型'
