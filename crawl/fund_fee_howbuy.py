@@ -1,4 +1,5 @@
 import asyncio
+import datetime
 import re
 from itertools import chain
 from typing import List
@@ -97,6 +98,14 @@ async def holding_funds():
     return funds
 
 
+async def all_funds():
+    """全部基金"""
+    query = sa.select([Funds.c.secucode])
+    funds = await database.fetch_all(query)
+    funds = {x[0] for x in funds}
+    return funds
+
+
 async def fund_fee(fund: str):
     """获取基金费用信息的model"""
     data = await request(fund)
@@ -115,8 +124,9 @@ async def run():
 
     # funds = await holding_funds()
 
-    funds = await Client.async_simple('portfolio_core')
+    # funds = await Client.async_simple('portfolio_core')
 
+    funds = await all_funds()
     ret = []
     for fund in funds:
         try:
@@ -142,6 +152,9 @@ def test():
 
 
 def commit_fund_fee_hb():
+    today = datetime.date.today()
+    if today.weekday() != 4:
+        return
     loop = asyncio.get_event_loop()
     loop.run_until_complete(run())
 

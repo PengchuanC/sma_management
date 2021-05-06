@@ -72,6 +72,23 @@ class OverviewView(APIView):
         return JsonResponse({'data': ret, 'lever': lever})
 
     @staticmethod
+    def history_asset_allocate(request):
+        """基金成立以来持仓配置情况
+
+        Args:
+            request:
+
+        Returns:
+
+        """
+        port_code: str = request.GET.get('portCode')
+        ret = models.PortfolioAssetAllocate.objects.filter(port_code=port_code).values(
+            'date', 'equity', 'fix_income', 'alter', 'money', 'other'
+        )
+        ret = [x for x in ret]
+        return JsonResponse({'data': ret})
+
+    @staticmethod
     async def question(request):
         """客户评测
 
