@@ -115,7 +115,9 @@ class OverviewView(APIView):
 
 
 def fund_position(request):
-    """基金平均仓位"""
+    """基金平均仓位
+        modify date: 2021-05-08 加入沪深300收盘价
+    """
     port_code = request.GET.get('portCode')
     last = models.FundPosEstimate.objects.last()
     last = last.date
@@ -126,7 +128,10 @@ def fund_position(request):
     ret = [model_to_dict(x) for x in ret]
     ret = pd.DataFrame(ret)
     port = pd.DataFrame(port).rename(columns={'equity': 'portfolio'})
+    hs300 = models.IndexQuote.objects.filter(secucode='000300', date__range=(start, last)).values('date', 'close')
+    hs300 = pd.DataFrame(hs300)
     ret = ret.merge(port, on='date', how='left')
+    ret = ret.merge(hs300, on='date', how='left')
     ret = ret.fillna(method='pad')
     ret = ret.where(ret.notnull(), None)
     ret = ret.to_dict(orient='records')
