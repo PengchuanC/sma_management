@@ -47,7 +47,7 @@ def _pre_valuation_gil(port_code: str, date: datetime.date):
     stock = ratio['stock']
     holding = fund_holding_stock(port_code, date)
     # 计算前十大在权益持仓中的占比
-    equity = float(holding.ratio.sum()) / stock
+    equity = float(holding.ratio.sum()) / float(stock)
 
     # 获取股票涨跌幅
     stocks = list(holding.stockcode)

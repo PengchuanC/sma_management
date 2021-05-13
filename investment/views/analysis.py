@@ -88,15 +88,19 @@ class AttributeChartView(APIView):
             'money': round(cp*float(d.money/a)*100, 2)
         }
         # 周度区间
-        ltw = AttributeChartView.last_trading_day_of_last_week(date)
-        sd: IncomeAsset = IncomeAsset.objects.get(port_code=port_code, date=ltw)
-        scp = float(Income.objects.filter(port_code=port_code, date=ltw).last().unit_nav)
-        scp = cp + 1 - scp
-        a = d.total_profit - sd.total_profit
-        week = {}
-        for attr in ['total_profit', 'equity', 'bond', 'alter', 'money']:
-            week[attr] = round(scp * float((getattr(d, attr) - getattr(sd, attr)) / a) * 100, 2)
-        return Response({'data': data, 'week': week})
+        week = AttributeChartView.last_trading_day_of_last_week(date)
+        month = AttributeChartView.last_trading_day_of_last_month(date)
+        ret = []
+        for ltw in [week, month]:
+            sd: IncomeAsset = IncomeAsset.objects.get(port_code=port_code, date=ltw)
+            scp = float(Income.objects.filter(port_code=port_code, date=ltw).last().unit_nav)
+            scp = cp + 1 - scp
+            a = d.total_profit - sd.total_profit
+            change = {}
+            for attr in ['total_profit', 'equity', 'bond', 'alter', 'money']:
+                change[attr] = round(scp * float((getattr(d, attr) - getattr(sd, attr)) / a) * 100, 2)
+            ret.append(change)
+        return Response({'data': data, 'week': ret[0], 'month': ret[1]})
 
     @staticmethod
     def last_trading_day_of_last_week(date: str):
@@ -104,6 +108,14 @@ class AttributeChartView(APIView):
         date = parse(date).date()
         sunday = date - datetime.timedelta(days=date.weekday()+1)
         prev = Balance.objects.filter(date__lt=sunday).last().date
+        return prev
+
+    @staticmethod
+    def last_trading_day_of_last_month(date: str):
+        """上周最后一个交易日"""
+        date = parse(date).date()
+        begin = datetime.date(date.year, date.month, 1) - datetime.timedelta(days=1)
+        prev = Balance.objects.filter(date__lt=begin).last().date
         return prev
 
 
