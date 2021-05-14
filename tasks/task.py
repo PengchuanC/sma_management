@@ -1,7 +1,7 @@
 from tasks.prev_valuation import pre_valuation
 from tasks.asset_allocate import portfolio_asset_allocate
 from tasks import fund_position
-from command import shu_commit
+from shu.run import shu_commit
 from sql import tools
 from crawl.stock_async import executor
 from crawl.fund_fee_howbuy import commit_fund_fee_hb
@@ -46,4 +46,4 @@ def commit_fund_fee():
 
 
 if __name__ == '__main__':
-    commit_fund_pos()
+    commit_portfolio_allocate()
