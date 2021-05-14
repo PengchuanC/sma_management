@@ -10,6 +10,7 @@ import click
 from sql import tools
 from shu.run import shu_commit
 from crawl import fund_limit
+from proc import commit as proc_commit
 
 
 @click.group()
@@ -59,6 +60,13 @@ def shu():
 
 
 @root.command()
+def proc():
+    proc_commit.commit_valuation()
+    proc_commit.commit_transaction()
+    proc_commit.commit_valuation()
+
+
+@root.command()
 def run_all():
     """存在依赖顺序，shu必须先commit"""
     shu_commit()
@@ -69,6 +77,7 @@ def run_all():
     tools.commit_tradingdays()
     tools.commit_preprocess()
     fund_limit.commit_fund_limit()
+    proc()
 
 
 if __name__ == '__main__':

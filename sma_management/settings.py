@@ -42,7 +42,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'channels',
     'drf_yasg',
-    'django_q'
+    'django_q',
+
+    'cta_fof.apps.CtaFofConfig',
 ]
 
 MIDDLEWARE = [
@@ -190,3 +192,5 @@ Q_CLUSTER = {
     'bulk': 10,
     'orm': 'default'
 }
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
