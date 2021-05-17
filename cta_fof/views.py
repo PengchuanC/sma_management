@@ -9,6 +9,8 @@ def cta_info(request):
     funds = models.Portfolio.objects.filter(valid=True)
     ret = []
     fund: models.Portfolio
+    num = len(funds)
+    total = 0
     for fund in funds:
         bl = models.Balance.objects.filter(port_code=fund.port_code).latest('date')
         # ble = models.BalanceExpanded.objects.filter(port_code=fund.port_code).latest('date')
@@ -21,7 +23,9 @@ def cta_info(request):
             'add': add, 'profit': profit
         }
         ret.append(info)
-    return JsonResponse({'data': ret})
+        total += bl.net_asset
+    average = total / num
+    return JsonResponse({'data': ret, 'total': total, 'num': num, 'avg': average})
 
 
 def added_amount(port_code: str):
