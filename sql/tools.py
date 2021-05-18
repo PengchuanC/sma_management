@@ -18,7 +18,6 @@ from sql.commit.stock import (
 )
 from sql.commit import commit_style
 from sql.commit import commit_brinson
-from tasks.task import commit_fund_fee
 from crawl.fund_limit import commit_fund_limit
 
 
@@ -49,7 +48,7 @@ def commit_index():
 def commit_fund():
     """提交规模基金相关数据"""
     commit_funds()
-    commit_fund_fee()
+    # commit_fund_fee()
     commit_fund_limit()
     commit_fund_associate()
     commit_fund_data()

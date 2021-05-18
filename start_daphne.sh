@@ -1,7 +1,7 @@
 
 echo start backend server
 
-ps aux|grep daphne|grep -v grep|cut -c 9-15|xargs kill -9
+ps aux|grep 5000|grep -v grep|cut -c 9-15|xargs kill -9
 ps aux|grep qcluster|grep -v grep|cut -c 9-15|xargs kill -9
 ps aux|grep stock_async|grep -v grep|cut -c 9-15|xargs kill -9
 
