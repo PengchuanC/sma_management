@@ -25,6 +25,8 @@ def read_transaction_yx(file_path: str):
     data = pd.read_excel(file_path, engine='openpyxl', converters={'基金代码': str})
     data = data[columns_mapping.keys()]
     data = data.rename(columns=columns_mapping)
+    data.secucode = data.secucode.str.zfill(6)
+    data = data.sort_values(['secucode', 'apply'])
     yield data
 
 
