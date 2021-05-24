@@ -63,7 +63,7 @@ def shu():
 def proc():
     proc_commit.commit_valuation()
     proc_commit.commit_transaction()
-    proc_commit.commit_valuation()
+    proc_commit.commit_holding()
 
 
 @root.command()

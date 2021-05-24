@@ -4,6 +4,7 @@ import pandas as pd
 from django.http.response import JsonResponse
 from django.forms.models import model_to_dict
 from django.db.models import Sum
+from investment.models import Funds
 
 from cta_fof import models
 
@@ -44,14 +45,22 @@ def holding(request):
     """cta fof持有的基金"""
     port_code = request.GET['port_code']
     last = models.Holding.objects.filter(port_code=port_code).latest('date').date
-    hold = models.Holding.objects.filter(port_code=port_code, date=last).values('secucode', 'holding_value', 'mkt_cap')
+    asset = models.Balance.objects.filter(port_code=port_code, date=last).last().net_asset
+    hold = models.Holding.objects.filter(
+        port_code=port_code, date=last).values('secucode', 'holding_value', 'mkt_cap', 'date')
     hold = pd.DataFrame(hold)
-    print(hold)
     resp = r.get('http://10.170.129.129/cta/api/')
     data = resp.json()['data']
     data = pd.DataFrame(data)
     columns = ['secucode', 'secuabbr', 'recent', 'week', 'month', 'quarter', 'ytd', 'last_year', 'si']
-    data = data[[columns]]
-    print(data.head())
-    print(data.columns)
-    return JsonResponse({})
+    data = data[columns]
+    names = Funds.objects.filter(secucode__in=list(hold.secucode))
+    names = {x.secucode: x.secuname for x in names}
+    hold = hold.merge(data, on='secucode', how='left')
+    hold = hold.where(hold.notnull(), None)
+    hold.secuabbr = hold.agg(lambda x: names.get(x.secucode) if not x.secuabbr else x.secuabbr, axis=1)
+    hold = hold.sort_values('mkt_cap', ascending=False)
+    hold['recent'] = hold.agg(lambda x: x.recent if x.recent else x.date, axis=1)
+    hold['ratio'] = hold['mkt_cap'] / asset
+    hold = hold.to_dict(orient='records')
+    return JsonResponse(hold, safe=False)
