@@ -1,3 +1,6 @@
+import requests as r
+import pandas as pd
+
 from django.http.response import JsonResponse
 from django.forms.models import model_to_dict
 from django.db.models import Sum
@@ -37,3 +40,18 @@ def added_amount(port_code: str):
     return add - minus
 
 
+def holding(request):
+    """cta fof持有的基金"""
+    port_code = request.GET['port_code']
+    last = models.Holding.objects.filter(port_code=port_code).latest('date').date
+    hold = models.Holding.objects.filter(port_code=port_code, date=last).values('secucode', 'holding_value', 'mkt_cap')
+    hold = pd.DataFrame(hold)
+    print(hold)
+    resp = r.get('http://10.170.129.129/cta/api/')
+    data = resp.json()['data']
+    data = pd.DataFrame(data)
+    columns = ['secucode', 'secuabbr', 'recent', 'week', 'month', 'quarter', 'ytd', 'last_year', 'si']
+    data = data[[columns]]
+    print(data.head())
+    print(data.columns)
+    return JsonResponse({})

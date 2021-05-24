@@ -20,14 +20,14 @@ transaction_wanted = {
 
 
 def read_holding(vf: VF):
-    data = pd.read_html(vf.absolute)[0]
+    data = pd.read_html(str(vf.absolute), converters={'secucode': str})[0]
     data = data.rename(columns=position_wanted)
     data = data.where(data.notnull(), None)
     return data
 
 
 def read_transaction(vf: VF):
-    data = pd.read_html(vf.absolute)[0]
+    data = pd.read_html(str(vf.absolute), converters={'secucode': str})[0]
     data = data.rename(columns=transaction_wanted)
     data = data.where(data.notnull(), None)
     return data
