@@ -54,6 +54,7 @@ class Balance(models.Model):
     value_added = models.DecimalField(verbose_name='估值增值', max_digits=18, decimal_places=4, default=0)
     profit_pay = models.DecimalField(verbose_name='应付利润(红利)', max_digits=18, decimal_places=4, default=0)
     cash_dividend = models.DecimalField(verbose_name='分红', max_digits=18, decimal_places=4, default=0)
+    security_deposit = models.DecimalField(verbose_name='存出保证金', max_digits=18, decimal_places=4, default=0)
     date = models.DateField(verbose_name='日期', null=False)
 
     class Meta:
@@ -135,6 +136,7 @@ class Holding(models.Model):
     dividend = models.DecimalField(verbose_name="当日分红", max_digits=18, decimal_places=4)
     total_dividend = models.DecimalField(verbose_name="累计分红", max_digits=18, decimal_places=4)
     category = models.CharField(verbose_name='证券类型', max_length=20, default='开放式基金')
+    trade_market = models.IntegerField(verbose_name='交易市场', default=6)
     date = models.DateField(null=False, verbose_name="交易日")
 
     class Meta:
