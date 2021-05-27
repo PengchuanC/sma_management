@@ -22,7 +22,7 @@ class BasicInfo(APIView):
             balance__date=last
         ).values(
             'port_code', 'port_type', 'port_name', 'launch_date', 'balance__net_asset', 'init_money',
-            'balance__unit_nav', 'balance__acc_nav', 'balance__savings', 'sales__name'
+            'balance__unit_nav', 'balance__acc_nav', 'balance__savings', 'sales__name', 'balance__security_deposit'
         )
         purchase = portfolio.Transactions.objects.filter(operation='TA申购').values('port_code').annotate(
             money=Sum('operation_amount'))
@@ -35,7 +35,7 @@ class BasicInfo(APIView):
         profit = {x['port_code']: x['profit'] for x in profit}
         rename = {
             'balance__net_asset': 'net_asset', 'balance__unit_nav': 'nav', 'balance__acc_nav': 'nav_acc',
-            'balance__savings': 'cash', 'sales__name': 'fa'
+            'sales__name': 'fa'
         }
         f_ports = []
         pt = {1: '现金型', 2: '固收型', 3: '平衡型', 4: '成长型', 5: '权益型'}
@@ -49,6 +49,7 @@ class BasicInfo(APIView):
             p['profit'] = profit.get(p['port_code'])
             p['port_type'] = pt.get(p['port_type'])
             p['key'] = count
+            p['cash'] = p.pop('balance_savings') + p.pop('balance_security_deposit')
             p['last'] = last.strftime('%Y-%m-%d')
             f_ports.append(p)
             count += 1

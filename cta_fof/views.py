@@ -64,3 +64,18 @@ def holding(request):
     hold['ratio'] = hold['mkt_cap'] / asset
     hold = hold.to_dict(orient='records')
     return JsonResponse(hold, safe=False)
+
+
+def transaction(request):
+    port_code = request.GET['port_code']
+    secucode = request.GET['secucode']
+    data = models.Transactions.objects.filter(port_code=port_code, secucode=secucode, operation='开放式基金申购成交确认').values()
+    data = [x for x in data]
+    ret = []
+    for x in data:
+        v = {
+            'secucode': x['secucode'], 'amount': -x['operation_amount'], 'share': x['order_value'],
+            'price': x['order_price']
+        }
+        ret.append(v)
+    return JsonResponse(ret, safe=False)

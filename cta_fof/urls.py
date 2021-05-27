@@ -5,5 +5,6 @@ from cta_fof import views
 
 urlpatterns = [
     path('', views.cta_info),
-    path('holding', views.holding)
+    path('holding', views.holding),
+    path('transaction', views.transaction)
 ]
