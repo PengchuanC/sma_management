@@ -49,7 +49,7 @@ class BasicInfo(APIView):
             p['profit'] = profit.get(p['port_code'])
             p['port_type'] = pt.get(p['port_type'])
             p['key'] = count
-            p['cash'] = p.pop('balance_savings') + p.pop('balance_security_deposit')
+            p['cash'] = p.pop('balance__savings') + p.pop('balance__security_deposit')
             p['last'] = last.strftime('%Y-%m-%d')
             f_ports.append(p)
             count += 1
