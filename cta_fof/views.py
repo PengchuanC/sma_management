@@ -75,7 +75,7 @@ def transaction(request):
     for x in data:
         v = {
             'secucode': x['secucode'], 'amount': -x['operation_amount'], 'share': x['order_value'],
-            'price': x['order_price']
+            'price': x['order_price'], 'date': x['date']
         }
         ret.append(v)
     return JsonResponse(ret, safe=False)
