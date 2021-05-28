@@ -139,7 +139,7 @@ class FundHoldingView(APIView):
         except Exception as e:
             holding['category'] = [None] * len(holding)
 
-        perf = FundHoldingView.period_return(funds, date)
+        perf = FundHoldingView.fund_performance(port_code, date)
         holding['secuname'] = holding.secucode.apply(lambda x: names.get(x))
         holding = pd.merge(holding, perf, on='secucode', how='left')
 
@@ -156,7 +156,7 @@ class FundHoldingView(APIView):
         port_code = request.query_params.get('portCode')
         if not date:
             date = datetime.date.today().strftime('%Y-%m-%d')
-        date = Holding.objects.filter(port_code=port_code, date__lte=date).aggregate(mdate=Max('date'))['mdate']
+        date = Holding.objects.filter(port_code=port_code, date__lte=date).latest('date').date
         return port_code, date
 
     @staticmethod
@@ -173,10 +173,30 @@ class FundHoldingView(APIView):
         return holding
 
     @staticmethod
-    def period_return(funds: list, date: datetime.date):
+    def fund_performance(port_code, date):
+        holding = models.Holding.objects.filter(
+            port_code=port_code, date=date, category='开放式基金').values('secucode', 'trade_market')
+        cw = [x['secucode'] for x in holding if x['trade_market'] == 6]
+        cn = [x['secucode'] for x in holding if x['trade_market'] == 1]
+        cw_data = FundHoldingView.period_return(cw, date, 6)
+        cn_data = FundHoldingView.period_return(cn, date, 1)
+        data = cw_data.append(cn_data)
+        return data
+
+    @staticmethod
+    def period_return(funds: list, date: datetime.date, market=6):
         start = date - relativedelta(years=1, months=1)
-        data = FAP.objects.filter(secucode__in=funds, date__range=[start, date]).values('secucode', 'adj_nav', 'date')
-        data = pd.DataFrame(data)
+        if market == 6:
+            data = FAP.objects.filter(
+                secucode__in=funds, date__range=[start, date]).values('secucode', 'adj_nav', 'date')
+            data = pd.DataFrame(data)
+        else:
+            data = models.FundQuote.objects.filter(
+                secucode__in=funds, date__range=[start, date]).values('secucode', 'closeprice', 'date')
+            data = pd.DataFrame(data)
+            if data.empty:
+                return data
+            data = data.rename(columns={'closeprice': 'adj_nav'})
         data.adj_nav = data.adj_nav.astype('float')
         data = pd.pivot_table(data, index='date', columns='secucode', values=['adj_nav'])['adj_nav']
         data = data.sort_index()
