@@ -215,3 +215,8 @@ class FundPosEstimate(models.Model):
 
     def __str__(self):
         return self.date
+
+
+# 场内基金行情数据
+class FundQuotePerformance(models.Model):
+    pass

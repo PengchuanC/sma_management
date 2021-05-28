@@ -57,6 +57,9 @@ def run_index():
 @root.command()
 def shu():
     shu_commit()
+    proc_commit.commit_valuation()
+    proc_commit.commit_transaction()
+    proc_commit.commit_holding()
 
 
 @root.command()
