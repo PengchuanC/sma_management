@@ -143,8 +143,30 @@ def commit_fund_holding_stock_hk():
         )
 
 
+def commit_fund_quote():
+    """
+    同步场内基金行情数据
+    Returns:
+    """
+    if not models.FundQuote.objects.exists():
+        data = read_oracle(funds.fund_quote_once)
+    else:
+        data = read_oracle(funds.fund_quote)
+        last = models.FundQuote.objects.values('secucode').annotate(mdate=Max('date'))
+        last = {x['secucode']: x['mdate'] for x in last}
+        data = data[data.agg(lambda x: x.date > last.get(x.secucode, datetime.date(2021, 1, 1)), axis=1)]
+    instance = models.Funds.objects.all()
+    instance = {x.secucode: x for x in instance}
+    data.secucode = data.secucode.apply(lambda x: instance.get(x))
+    data = data[data.secucode.notnull()]
+    data = data.dropna(how='any')
+    m = [models.FundQuote(**x) for _, x in data.iterrows()]
+    models.FundQuote.objects.bulk_create(m)
+
+
 if __name__ == '__main__':
     # commit_holding_stock_detail()
     # commit_fund_holding_stock_hk()
     # commit_holding_top_ten()
-    commit_asset_allocate_hk()
+    # commit_asset_allocate_hk()
+    commit_fund_quote()

@@ -333,3 +333,39 @@ fund_advisor = """
     JOIN JYDB.MF_INVESTADVISOROUTLINE mi ON
         mf.INVESTADVISORCODE = mi.INVESTADVISORCODE
 """
+
+# 场内基金行情数据
+fund_quote = """
+    SELECT
+    	s.SECUCODE,
+    	qd.CLOSEPRICE,
+    	qd.PREVCLOSEPRICE,
+    	qd.TRADINGDAY AS "date"
+    FROM
+    	JYDB.QT_DAILYQUOTE qd
+    JOIN JYDB.SECUMAIN s ON
+    	s.INNERCODE = qd.INNERCODE
+    WHERE
+    	s.SECUCATEGORY IN (8, 13)
+    	AND s.LISTEDSECTOR = 1
+    	AND qd.TRADINGDAY > (SYSDATE - INTERVAL '14' DAY)
+    ORDER BY 
+    	secucode, "date"
+"""
+
+fund_quote_once = """
+    SELECT
+    	s.SECUCODE,
+    	qd.CLOSEPRICE,
+    	qd.PREVCLOSEPRICE,
+    	qd.TRADINGDAY AS "date"
+    FROM
+    	JYDB.QT_DAILYQUOTE qd
+    JOIN JYDB.SECUMAIN s ON
+    	s.INNERCODE = qd.INNERCODE
+    WHERE
+    	s.SECUCATEGORY IN (8, 13)
+    	AND s.LISTEDSECTOR = 1
+    ORDER BY 
+    	secucode, "date"
+"""

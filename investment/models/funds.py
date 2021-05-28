@@ -218,5 +218,16 @@ class FundPosEstimate(models.Model):
 
 
 # 场内基金行情数据
-class FundQuotePerformance(models.Model):
-    pass
+class FundQuote(models.Model):
+    secucode = models.ForeignKey(Funds, to_field='secucode', on_delete=models.CASCADE, verbose_name='基金代码')
+    closeprice = models.FloatField(verbose_name='收盘价')
+    prevcloseprice = models.FloatField(verbose_name='昨收')
+    date = models.DateField()
+
+    class Meta:
+        db_table = 'sma_fund_quote'
+        verbose_name = '基金场内收盘价'
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.secucode.secucode

@@ -59,6 +59,7 @@ def commit_fund():
     commit_fund_advisor()
     commit_asset_allocate_hk()
     commit_fund_holding_stock_hk()
+    commit_fund_quote()
 
 
 def commit_trading_day():
