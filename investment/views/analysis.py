@@ -168,7 +168,7 @@ class FundHoldingView(APIView):
         holding = pd.DataFrame(holding)
 
         holding['ratio'] = holding.mkt_cap / na
-        holding = holding[holding['ratio'] > 0]
+        holding = holding[holding['ratio'] >= 0]
         holding = holding.sort_values(by=['ratio'], ascending=False).reset_index(drop=True)
         return holding
 
