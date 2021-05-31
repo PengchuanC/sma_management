@@ -7,7 +7,7 @@ position_wanted = {
     '证券代码': 'secucode', '持仓': 'holding_value', '市值': 'mkt_cap', '当前成本': 'current_cost',
     '含费用成本': 'total_cost', '费用合计': 'fee', '浮动盈亏': 'flow_profit', '总体盈亏': 'total_profit',
     '当日红利': 'dividend', '累计红利': 'total_dividend', '日期': 'date', '基金编号': 'port_code',
-    '证券类别': 'category'
+    '证券类别': 'category', '交易市场': 'trade_market'
 }
 
 
