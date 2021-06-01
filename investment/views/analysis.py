@@ -107,15 +107,15 @@ class AttributeChartView(APIView):
         """上周最后一个交易日"""
         date = parse(date).date()
         sunday = date - datetime.timedelta(days=date.weekday()+1)
-        prev = Balance.objects.filter(date__lt=sunday).last().date
+        prev = Balance.objects.filter(date__lt=sunday).latest('date').date
         return prev
 
     @staticmethod
     def last_trading_day_of_last_month(date: str):
-        """上周最后一个交易日"""
+        """上月最后一个交易日"""
         date = parse(date).date()
         begin = datetime.date(date.year, date.month, 1) - datetime.timedelta(days=1)
-        prev = Balance.objects.filter(date__lt=begin).last().date
+        prev = Balance.objects.filter(date__lte=begin).latest('date').date
         return prev
 
 
