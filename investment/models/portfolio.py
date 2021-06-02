@@ -78,6 +78,7 @@ class BalanceExpanded(models.Model):
     management_pay = models.DecimalField(verbose_name='应付管理人报酬', max_digits=18, decimal_places=4, default=0)
     custodian_pay = models.DecimalField(verbose_name='应付托管费', max_digits=18, decimal_places=4, default=0)
     withholding_pay = models.DecimalField(verbose_name='预提费用', max_digits=18, decimal_places=4, default=0)
+    interest_pay = models.DecimalField(verbose_name='应付利息税', max_digits=18, decimal_places=4, default=0)
     date = models.DateField(verbose_name='日期', null=False)
 
     class Meta:
@@ -191,6 +192,21 @@ class DetailFee(models.Model):
 
     def __str__(self):
         return self.port_code.port_name
+
+
+class InterestTax(models.Model):
+    port_code = models.ForeignKey(
+        Portfolio, to_field='port_code', on_delete=models.CASCADE)
+    secucode = models.CharField(verbose_name='基金代码', max_length=12)
+    tax = models.DecimalField(verbose_name='当月累计利息税',
+                              max_digits=18, decimal_places=4, default=0)
+    date = models.DateField(verbose_name='业务日期')
+
+    class Meta:
+        db_table = 'sma_interest_tax'
+        verbose_name = '组合场内交易基金利息税'
+        verbose_name_plural = verbose_name
+        get_latest_by = 'date'
 
 
 # 基准估值表
