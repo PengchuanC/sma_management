@@ -5,6 +5,7 @@ to_database
 @date: 2020-09-08
 @desc:
 """
+import datetime
 from django.db.transaction import atomic
 from django.db.models import Max
 
@@ -36,9 +37,13 @@ def commit_other(name):
     data = export(name)
     portfolios = Portfolio.objects.filter(valid=True).all()
     portfolios = [x.port_code for x in portfolios]
-    portfolios = m.objects.filter(port_code__in=portfolios).values('port_code').annotate(mdate=Max('date'))
+    portfolios = m.objects.filter(port_code__in=portfolios).values(
+        'port_code').annotate(mdate=Max('date'))
     date_mapping = {x['port_code']: x['mdate'] for x in portfolios}
-    min_date = min(date_mapping.values())
+    if not date_mapping:
+        min_date = datetime.date(2021, 1, 1)
+    else:
+        min_date = min(date_mapping.values())
     with atomic():
         data = {x: y for x, y in data.items() if x > min_date}
         for date, dat in data.items():
