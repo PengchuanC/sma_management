@@ -22,3 +22,4 @@ targets:
   sma_detail_fee: '组合费用表'
   sma_evaluate_benchmark: '基准净值表'
   sma_fund_style: '基金风格表'
+  sma_interest_tax: '基金应付利息税'

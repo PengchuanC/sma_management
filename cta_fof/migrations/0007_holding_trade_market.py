@@ -10,9 +10,4 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='holding',
-            name='trade_market',
-            field=models.IntegerField(default=6, verbose_name='交易市场'),
-        ),
     ]
