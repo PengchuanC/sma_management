@@ -94,13 +94,36 @@ class AttributeChartView(APIView):
         for ltw in [week, month]:
             sd: IncomeAsset = IncomeAsset.objects.get(port_code=port_code, date=ltw)
             scp = float(Income.objects.filter(port_code=port_code, date=ltw).last().unit_nav)
-            scp = cp + 1 - scp
+            scp = (cp + 1) / scp - 1
             a = d.total_profit - sd.total_profit
             change = {}
             for attr in ['total_profit', 'equity', 'bond', 'alter', 'money']:
                 change[attr] = round(scp * float((getattr(d, attr) - getattr(sd, attr)) / a) * 100, 2)
             ret.append(change)
         return Response({'data': data, 'week': ret[0], 'month': ret[1]})
+
+    @staticmethod
+    def monthly_attribute(request):
+        """月度收益归因"""
+        port_code = request.GET.get('port_code')
+        date = request.GET.get('date')
+        start = AttributeChartView.last_trading_day_of_last_month(date)
+        changes = models.Income.objects.filter(
+            port_code=port_code, date__range=(start, date)).values('date', 'unit_nav', 'change')
+        changes = [x for x in changes]
+        total = sum([x['change'] for x in changes[1:]])
+        columns = ['equity', 'bond', 'alter', 'money']
+        asset = models.IncomeAsset.objects.filter(
+            port_code=port_code, date__in=(start, date)).values('date', *columns)
+        asset = pd.DataFrame(asset).set_index('date')
+        asset = asset.diff(1).dropna()
+        asset /= total
+        change = (changes[-1]['unit_nav'] / changes[0]['unit_nav']) - 1
+        asset *= change
+        asset['fee'] = float(change) - float(asset.sum(axis=1))
+        asset['change'] = change
+        asset = asset.to_dict(orient='records')
+        return JsonResponse(asset[0])
 
     @staticmethod
     def last_trading_day_of_last_week(date: str):
