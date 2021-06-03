@@ -3,7 +3,7 @@ collect
 ~~~~~~~~~~~~~~~~~~~~~~~
 @author: chuanchao.peng
 @date: 2020-09-08
-@desc:
+@desc: 已废弃
 """
 import os
 

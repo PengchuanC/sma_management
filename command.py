@@ -8,7 +8,6 @@ command
 import click
 
 from sql import tools
-from shu.run import shu_commit
 from shu.from_sma import commit_sma
 from crawl import fund_limit
 from proc import commit as proc_commit

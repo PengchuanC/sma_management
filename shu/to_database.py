@@ -3,7 +3,7 @@ to_database
 ~~~~~~~~~~~~~~~~~~~~~~~
 @author: chuanchao.peng
 @date: 2020-09-08
-@desc:
+@desc: 已废弃
 """
 import datetime
 from django.db.transaction import atomic

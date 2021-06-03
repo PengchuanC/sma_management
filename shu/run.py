@@ -4,6 +4,7 @@ run
 @author: chuanchao.peng
 @date: 2020-09-08
 @desc: 导出数据
+@desc: 已废弃
 """
 
 from shu.sma_export.run import execute
