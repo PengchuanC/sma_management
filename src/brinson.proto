@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package brinson;
+
+option go_package=".;brinson";
+
+
+message Request {
+  string secucode = 1;
+  string indexcode = 2;
+  string start = 3;
+  string end = 4;
+}
+
+message Response {
+  repeated BrinsonType data = 1;
+
+}
+
+message BrinsonType {
+  string industry = 1;
+  float q1 = 2;
+  float q2 = 3;
+  float q3 = 4;
+  float q4 = 5;
+  float raa = 6;
+  float rss = 7;
+  float rin = 8;
+  float rtt = 9;
+}

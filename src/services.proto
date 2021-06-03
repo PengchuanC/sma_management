@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package src;
+
+import "src/brinson.proto";
+import "src/am_sma.proto";
+
+
+option go_package=".;src";
+
+
+service MicroService {
+  rpc BrinsonHandler(brinson.Request) returns (brinson.Response);
+
+  rpc SMAPortfolio(sma.NULL) returns (stream sma.Portfolio);
+
+  rpc SMABalance(sma.Request) returns (stream sma.Balance);
+
+  rpc SMABalanceExpanded(sma.Request) returns (stream sma.BalanceExpanded);
+
+  rpc SMAIncome(sma.Request) returns (stream sma.Income);
+
+  rpc SMAIncomeAsset(sma.Request) returns (stream sma.IncomeAsset);
+
+  rpc SMAHolding(sma.Request) returns (stream sma.Holding);
+
+  rpc SMATransaction(sma.Request) returns (stream sma.Transaction);
+
+  rpc SMADetailFee(sma.Request) returns (stream sma.DetailFee);
+
+  rpc SMABenchmark(sma.Request) returns (stream sma.Benchmark);
+
+  rpc SMAInterestTax(sma.Request) returns (stream sma.InterestTax);
+}

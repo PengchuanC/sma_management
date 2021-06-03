@@ -1,0 +1,142 @@
+syntax = "proto3";
+
+package sma;
+
+option go_package=".;sma";
+
+message NULL {}
+
+message Portfolio {
+  int64 id = 1;
+  string port_code = 2;
+  string port_name = 3;
+  string manager = 4;
+  float init_money = 5;
+  float purchase_fee = 6;
+  float redemption_fee =  7;
+  string base = 8;
+  string describe = 9;
+  float activation = 10;
+  string launch_date = 11;
+}
+
+
+// 请求组合数据
+message Request {
+  string port_code = 1;
+  string date = 2;
+}
+
+message Balance {
+  int64 id = 1;
+  string port_code_id = 2;
+  float asset = 3;
+  float debt = 4;
+  float net_asset = 5;
+  float shares = 6;
+  float unit_nav = 7;
+  float acc_nav = 8;
+  float savings = 9;
+  float fund_invest = 10;
+  float liquidation = 11;
+  float value_added = 12;
+  float profit_pay = 13;
+  float cash_dividend = 14;
+  float security_deposit = 15;
+  string date = 16;
+}
+
+message BalanceExpanded {
+  int64 id = 1;
+  string port_code_id = 2;
+  float dividend_rec = 3;
+  float interest_rec = 4;
+  float purchase_rec = 5;
+  float redemption_pay = 6;
+  float redemption_fee_pay = 7;
+  float management_pay = 8;
+  float custodian_pay = 9;
+  float withholding_pay = 10;
+  float interest_pay = 11;
+  string date = 12;
+}
+
+message Income {
+  int64 id = 1;
+  string port_code_id = 2;
+  float unit_nav = 3;
+  float net_asset = 4;
+  float change = 5;
+  float change_pct = 6;
+  string date = 7;
+}
+
+message IncomeAsset {
+  int64 id = 1;
+  string port_code_id = 2;
+  float total_profit = 3;
+  float equity = 4;
+  float bond = 5;
+  float alter = 6;
+  float money = 7;
+  string date = 8;
+}
+
+message Holding {
+  int64 id = 1;
+  string port_code_id = 2;
+  string secucode = 3;
+  float holding_value = 4;
+  float mkt_cap = 5;
+  float current_cost = 6;
+  float total_cost = 7;
+  float fee = 8;
+  float flow_profit = 9;
+  float total_profit = 10;
+  float dividend = 11;
+  float total_dividend = 12;
+  string category = 13;
+  int64 trade_market = 14;
+  string date = 15;
+}
+
+message Transaction {
+  int64 id = 1;
+  string port_code_id = 2;
+  string secucode = 3;
+  float amount = 4;
+  float balance = 5;
+  float order_price = 6;
+  float order_value = 7;
+  float deal_value = 8;
+  float fee = 9;
+  float operation_amount = 10;
+  string operation = 11;
+  string subject_name = 12;
+  string date = 13;
+}
+
+message DetailFee {
+  int64 id = 1;
+  string port_code_id = 2;
+  float management = 3;
+  float custodian = 4;
+  float audit = 5;
+  float interest = 6;
+  string date = 7;
+}
+
+message Benchmark {
+  int64 id = 1;
+  string port_code_id = 2;
+  float unit_nav = 3;
+  string date = 4;
+}
+
+message InterestTax {
+  int64 id = 1;
+  string port_code_id = 2;
+  string secucode = 3;
+  float tax = 4;
+  string date = 5;
+}

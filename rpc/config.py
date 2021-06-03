@@ -1,7 +1,7 @@
 
 # consul服务地址
 CONSUL_CONFIG = {
-    'host': '10.170.139.10',
+    'host': '10.170.139.12',
     'port': 8500
 }
 

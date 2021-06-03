@@ -6,7 +6,7 @@ configs
 @desc:
 """
 from shu import models
-from pathlib import Path
+from pathlib import Pathd
 
 
 TEST = False

@@ -1,7 +1,7 @@
 from tasks.prev_valuation import pre_valuation
 from tasks.asset_allocate import portfolio_asset_allocate
 from tasks import fund_position
-from shu.run import shu_commit
+from shu.from_sma import commit_sma
 from sql import tools
 from crawl.stock_async import executor
 from crawl.fund_fee_howbuy import commit_fund_fee_hb
@@ -16,7 +16,7 @@ def save_prev_valuation_nav():
 
 def commit_all_db_task():
     """同步组合净值"""
-    shu_commit()
+    commit_sma()
 
 
 def crawl_stock_price():

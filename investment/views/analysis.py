@@ -115,8 +115,10 @@ class AttributeChartView(APIView):
         columns = ['equity', 'bond', 'alter', 'money']
         asset = models.IncomeAsset.objects.filter(
             port_code=port_code, date__in=(start, date)).values('date', *columns)
+        print(asset)
         asset = pd.DataFrame(asset).set_index('date')
         asset = asset.diff(1).dropna()
+        print(total, asset.sum(axis=1))
         asset /= total
         change = (changes[-1]['unit_nav'] / changes[0]['unit_nav']) - 1
         asset *= change

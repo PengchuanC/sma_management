@@ -74,7 +74,6 @@ class BalanceExpanded(models.Model):
     interest_rec = models.DecimalField(verbose_name='应收利息', max_digits=18, decimal_places=4, default=0)
     purchase_rec = models.DecimalField(verbose_name='应收申购款', max_digits=18, decimal_places=4, default=0)
     redemption_pay = models.DecimalField(verbose_name='应付赎回款', max_digits=18, decimal_places=4, default=0)
-    redemption_fee_pay = models.DecimalField(verbose_name='应付赎回费', max_digits=18, decimal_places=4, default=0)
     management_pay = models.DecimalField(verbose_name='应付管理人报酬', max_digits=18, decimal_places=4, default=0)
     custodian_pay = models.DecimalField(verbose_name='应付托管费', max_digits=18, decimal_places=4, default=0)
     withholding_pay = models.DecimalField(verbose_name='预提费用', max_digits=18, decimal_places=4, default=0)
