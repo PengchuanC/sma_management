@@ -4,7 +4,7 @@
 
 
 # 基金代码及简称
-fund = "select secucode, secuabbr as secuname from jydb.secumain where secucategory=8"
+fund = "select secucode, secuabbr as secuname from jydb.secumain where secucategory in (8, 13)"
 
 # 基金累计净值数据
 acc_nav = """
