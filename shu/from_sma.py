@@ -79,7 +79,7 @@ async def balance_expanded(portfolio: models.Portfolio):
 
 async def income(portfolio: models.Portfolio):
     port_code = portfolio.port_code
-    date = await latest_update_date(models.BalanceExpanded, port_code)
+    date = await latest_update_date(models.Income, port_code)
     ret = []
     async for d in client.sma_income(port_code, date):
         m = models.Income(
