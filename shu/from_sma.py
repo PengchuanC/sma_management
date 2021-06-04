@@ -38,11 +38,11 @@ async def launch_date(port_code):
 
 async def latest_update_date(model, port_code: str):
     """最后更新日期"""
-    exist = await sync_to_async(model.objects.exists)()
+    exist = await sync_to_async(model.objects.filter(port_code=port_code).exists)()
     if not exist:
         last = await launch_date(port_code)
     else:
-        last = await sync_to_async(model.objects.latest)('date')
+        last = await sync_to_async(model.objects.filter(port_code=port_code).latest)('date')
         last = last.date
     date = last.strftime('%Y-%m-%d')
     return date
@@ -96,7 +96,7 @@ async def income_asset(portfolio: models.Portfolio):
     ret = []
     async for d in client.sma_income_asset(port_code, date):
         m = models.IncomeAsset(
-            port_code=portfolio, total_profit=d.total_profit, equity=d.equity, bond=d.bond, alte=d.alter,
+            port_code=portfolio, total_profit=d.total_profit, equity=d.equity, bond=d.bond, alter=d.alter,
             money=d.money, date=d.date
         )
         ret.append(m)
@@ -150,7 +150,7 @@ async def benchmark(portfolio: models.Portfolio):
     date = await latest_update_date(models.ValuationBenchmark, port_code)
     ret = []
     async for d in client.sma_benchmark(port_code, date):
-        m = models.ValuationBenchmark(port_code=portfolio, unit_nav=d.unit_nav, date=date)
+        m = models.ValuationBenchmark(port_code=portfolio, unit_nav=d.unit_nav, date=d.date)
         ret.append(m)
     await sync_to_async(models.ValuationBenchmark.objects.bulk_create)(ret)
 
