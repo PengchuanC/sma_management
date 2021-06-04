@@ -70,8 +70,8 @@ async def balance_expanded(portfolio: models.Portfolio):
     async for d in client.sma_balance_expanded(port_code, date):
         m = models.BalanceExpanded(
             port_code=portfolio, dividend_rec=d.dividend_rec, interest_rec=d.interest_rec, purchase_rec=d.purchase_rec,
-            redemption_pay=d.redemption_pay, management_pay=d.management_pay, custodian_pay=d.custodian_pay,
-            withholding_pay=d.withholding_pay, interest_pay=d.interest_pay, date=d.date
+            redemption_pay=d.redemption_pay, redemption_fee_pay=d.redemption_fee_pay, management_pay=d.management_pay,
+            custodian_pay=d.custodian_pay, withholding_pay=d.withholding_pay, interest_pay=d.interest_pay, date=d.date
         )
         ret.append(m)
     await sync_to_async(models.BalanceExpanded.objects.bulk_create)(ret)
