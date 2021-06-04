@@ -139,7 +139,7 @@ async def detail_fee(portfolio: models.Portfolio):
     async for d in client.sma_detail_fee(port_code, date):
         m = models.DetailFee(
             port_code=portfolio, management=d.management, custodian=d.custodian, audit=d.audit, interest=d.interest,
-            date=d.date
+            interest_tax=d.interest_tax, date=d.date
         )
         ret.append(m)
     await sync_to_async(models.DetailFee.objects.bulk_create)(ret)
@@ -160,7 +160,7 @@ async def interest_tax(portfolio: models.Portfolio):
     date = await latest_update_date(models.InterestTax, port_code)
     ret = []
     async for d in client.sma_interest_tax(port_code, date):
-        m = models.InterestTax(port_code=portfolio, secucode=d.secucde, tax=d.tax, date=d.date)
+        m = models.InterestTax(port_code=portfolio, secucode=d.secucode, tax=d.tax, date=d.date)
         ret.append(m)
     await sync_to_async(models.InterestTax.objects.bulk_create)(ret)
 

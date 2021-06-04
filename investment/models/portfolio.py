@@ -183,6 +183,7 @@ class DetailFee(models.Model):
     custodian = models.DecimalField(verbose_name='托管费', max_digits=18, decimal_places=4, default=0)
     audit = models.DecimalField(verbose_name='审计费', max_digits=18, decimal_places=4, default=0)
     interest = models.DecimalField(verbose_name='应收利息', max_digits=18, decimal_places=4, default=0)
+    interest_tax = models.DecimalField(verbose_name='应付利息税', max_digits=18, decimal_places=4, default=0)
     date = models.DateField(verbose_name='业务日期')
 
     class Meta:
