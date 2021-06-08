@@ -35,8 +35,10 @@ class PerformanceView(APIView):
         port_code = request.query_params.get('portCode')
         if not date:
             date = datetime.date.today().strftime('%Y-%m-%d')
-        p_nav = Income.objects.filter(port_code=port_code, date__lte=date).values('date', 'unit_nav')
-        b_nav = VB.objects.filter(port_code=port_code, date__lte=date).values('date', 'unit_nav')
+        p_nav = Income.objects.filter(
+            port_code=port_code, date__lte=date).values('date', 'unit_nav')
+        b_nav = VB.objects.filter(
+            port_code=port_code, date__lte=date).values('date', 'unit_nav')
         p_nav = pd.DataFrame(p_nav).rename(columns={'unit_nav': 'p'})
         b_nav = pd.DataFrame(b_nav).rename(columns={'unit_nav': 'b'})
         data = pd.merge(p_nav, b_nav, on='date', how='inner').set_index('date')
@@ -44,7 +46,8 @@ class PerformanceView(APIView):
         ret = PerformanceView.calc_performance(data)
         ucr = capture_return(data.p, data.b, mode=1)
         dcr = capture_return(data.p, data.b, mode=0)
-        ret.update({'ucr': {'p': ucr, 'b': None}, 'dcr': {'p': dcr, 'b': None}})
+        ret.update({'ucr': {'p': ucr, 'b': None},
+                   'dcr': {'p': dcr, 'b': None}})
         return Response(ret)
 
     @staticmethod
@@ -78,9 +81,11 @@ class AttributeChartView(APIView):
         port_code = request.query_params.get('portCode')
         if not date:
             date = datetime.date.today().strftime('%Y-%m-%d')
-        d: IncomeAsset = IncomeAsset.objects.filter(port_code=port_code, date__lte=date).last()
+        d: IncomeAsset = IncomeAsset.objects.filter(
+            port_code=port_code, date__lte=date).last()
         date = d.date.strftime('%Y-%m-%d')
-        cp = float(Income.objects.filter(port_code=port_code, date__lte=date).last().unit_nav) - 1
+        cp = float(Income.objects.filter(port_code=port_code,
+                   date__lte=date).last().unit_nav) - 1
         a = d.total_profit
         data = {
             'total_profit': round(cp * 100, 2), 'equity': round(cp * float(d.equity/a) * 100, 2),
@@ -92,13 +97,16 @@ class AttributeChartView(APIView):
         month = AttributeChartView.last_trading_day_of_last_month(date)
         ret = []
         for ltw in [week, month]:
-            sd: IncomeAsset = IncomeAsset.objects.get(port_code=port_code, date=ltw)
-            scp = float(Income.objects.filter(port_code=port_code, date=ltw).last().unit_nav)
+            sd: IncomeAsset = IncomeAsset.objects.get(
+                port_code=port_code, date=ltw)
+            scp = float(Income.objects.filter(
+                port_code=port_code, date=ltw).last().unit_nav)
             scp = (cp + 1) / scp - 1
             a = d.total_profit - sd.total_profit
             change = {}
             for attr in ['total_profit', 'equity', 'bond', 'alter', 'money']:
-                change[attr] = round(scp * float((getattr(d, attr) - getattr(sd, attr)) / a) * 100, 2)
+                change[attr] = round(
+                    scp * float((getattr(d, attr) - getattr(sd, attr)) / a) * 100, 2)
             ret.append(change)
         return Response({'data': data, 'week': ret[0], 'month': ret[1]})
 
@@ -137,7 +145,8 @@ class AttributeChartView(APIView):
     def last_trading_day_of_last_month(date: str):
         """上月最后一个交易日"""
         date = parse(date).date()
-        begin = datetime.date(date.year, date.month, 1) - datetime.timedelta(days=1)
+        begin = datetime.date(date.year, date.month, 1) - \
+            datetime.timedelta(days=1)
         prev = Balance.objects.filter(date__lte=begin).latest('date').date
         return prev
 
@@ -179,7 +188,8 @@ class FundHoldingView(APIView):
         port_code = request.query_params.get('portCode')
         if not date:
             date = datetime.date.today().strftime('%Y-%m-%d')
-        date = Holding.objects.filter(port_code=port_code, date__lte=date).latest('date').date
+        date = Holding.objects.filter(
+            port_code=port_code, date__lte=date).latest('date').date
         return port_code, date
 
     @staticmethod
@@ -192,7 +202,8 @@ class FundHoldingView(APIView):
 
         holding['ratio'] = holding.mkt_cap / na
         holding = holding[holding['ratio'] >= 0]
-        holding = holding.sort_values(by=['ratio'], ascending=False).reset_index(drop=True)
+        holding = holding.sort_values(
+            by=['ratio'], ascending=False).reset_index(drop=True)
         return holding
 
     @staticmethod
@@ -221,9 +232,11 @@ class FundHoldingView(APIView):
                 return data
             data = data.rename(columns={'closeprice': 'adj_nav'})
         data.adj_nav = data.adj_nav.astype('float')
-        data = pd.pivot_table(data, index='date', columns='secucode', values=['adj_nav'])['adj_nav']
+        data = pd.pivot_table(data, index='date', columns='secucode', values=[
+                              'adj_nav'])['adj_nav']
         data = data.sort_index()
-        tradingdays = TradingDays.objects.filter(date__range=[start, date]).values('date')
+        tradingdays = TradingDays.objects.filter(
+            date__range=[start, date]).values('date')
         tradingdays = [x['date'] for x in tradingdays]
         data = data[data.index.isin(tradingdays)]
         p = pc.Performance(data)
@@ -260,9 +273,11 @@ class FundHoldingView(APIView):
         """
         holding = FundHoldingView.fund_ratio(port_code, date)
         funds = list(holding.secucode)
-        relate = FundAssociate.objects.filter(relate__in=funds).order_by('define').all()
+        relate = FundAssociate.objects.filter(
+            relate__in=funds).order_by('define').all()
         relate = {x.relate: x.secucode.secucode for x in relate}
-        dates = FAA.objects.filter(secucode__in=funds).values('secucode').annotate(max_date=Max('date'))
+        dates = FAA.objects.filter(secucode__in=funds).values(
+            'secucode').annotate(max_date=Max('date'))
         data = []
         dates = {x['secucode']: x['max_date'] for x in dates}
         for x in funds:
@@ -281,7 +296,8 @@ class FundHoldingView(APIView):
                 )[0]
             data.append(d)
         data = pd.DataFrame(data).set_index('secucode')
-        data = data.merge(holding[['secucode', 'ratio']], left_index=True, right_on='secucode').set_index('secucode')
+        data = data.merge(holding[['secucode', 'ratio']],
+                          left_index=True, right_on='secucode').set_index('secucode')
         columns = ['stock', 'bond', 'fund', 'metals', 'monetary', 'other']
         for col in columns:
             data[col] *= data['ratio']
@@ -295,12 +311,14 @@ class FundHoldingView(APIView):
         date = request.GET.get('date')
         if not date:
             date = datetime.date.today().strftime('%Y-%m-%d')
-        date = Holding.objects.filter(port_code=port_code, date__lte=date).aggregate(mdate=Max('date'))['mdate']
+        date = Holding.objects.filter(port_code=port_code, date__lte=date).aggregate(
+            mdate=Max('date'))['mdate']
         holding = models.Holding.objects.filter(
             port_code=port_code, date=date).values('secucode', 'mkt_cap', 'holding_value')
         holding = pd.DataFrame(holding)
         holding = holding[holding['holding_value'] != 0]
-        holding_yx = models.HoldingYX.objects.filter(port_code=port_code, date=date).values('secucode', 'shares')
+        holding_yx = models.HoldingYX.objects.filter(
+            port_code=port_code, date=date).values('secucode', 'shares')
         holding_yx = pd.DataFrame(holding_yx)
         if holding_yx.empty:
             holding['shares'] = 0
@@ -312,7 +330,8 @@ class FundHoldingView(APIView):
         funds = list(set(list(data.secucode)))
         names = fund.fund_names(funds)
         data['secuname'] = data.secucode.apply(lambda x: names.get(x))
-        data = data.sort_values('ratio', ascending=False).reset_index(drop=True)
+        data = data.sort_values(
+            'ratio', ascending=False).reset_index(drop=True)
         data['key'] = data.index + 1
         ret = data.to_dict(orient='records')
         return JsonResponse({'data': ret})
@@ -325,9 +344,11 @@ class FundHoldingStockView(APIView):
         port_code = request.query_params.get('portCode')
         date = request.query_params.get('date')
         if not date:
-            date = Balance.objects.filter(port_code=port_code).last().date.strftime('%Y-%m-%d')
+            date = Balance.objects.filter(
+                port_code=port_code).last().date.strftime('%Y-%m-%d')
         else:
-            date = Balance.objects.filter(port_code=port_code, date__lte=date).last().date.strftime('%Y-%m-%d')
+            date = Balance.objects.filter(
+                port_code=port_code, date__lte=date).last().date.strftime('%Y-%m-%d')
         ret = fund_holding_stock(port_code, date)
         ind = FundHoldingStockView.industry_sw(ret)
         ratio = FundHoldingView.asset_allocate(port_code, date)
@@ -336,7 +357,8 @@ class FundHoldingStockView(APIView):
         ind['ratio'] = ind['ratio'].astype('float')
         ind['ratioinequity'] = ind['ratio'] / float(equity)
         ind = ind.merge(index, on='firstindustryname', how='outer').fillna(0)
-        ind = ind.sort_values(['ratio'], ascending=False).reset_index(drop=True)
+        ind = ind.sort_values(
+            ['ratio'], ascending=False).reset_index(drop=True)
         ind['key'] = ind.index + 1
         ret['ofnv'] = ret['ratio'] / ret['ratio'].sum()
         ret['cumsum'] = ret['ratio'].cumsum()
@@ -348,9 +370,11 @@ class FundHoldingStockView(APIView):
     def industry_sw(data: pd.DataFrame) -> pd.DataFrame:
         """接受基金组合中股票市值占比的DataFrame"""
         funds = list(data.stockcode)
-        ind = SISW.objects.filter(secucode__in=funds).values('secucode', 'firstindustryname')
+        ind = SISW.objects.filter(secucode__in=funds).values(
+            'secucode', 'firstindustryname')
         ind = pd.DataFrame(ind)
-        ind = pd.merge(ind, data, left_on='secucode', right_on='stockcode', how='outer')
+        ind = pd.merge(ind, data, left_on='secucode',
+                       right_on='stockcode', how='outer')
         ind.firstindustryname = ind.firstindustryname.fillna('港股')
         ind = ind.groupby(['firstindustryname'])['ratio'].sum()
         ind: pd.DataFrame = ind.reset_index()
@@ -375,8 +399,10 @@ class FundHoldingStockView(APIView):
             5               医药生物  0.095320  0.09882 -0.003500
 
         """
-        latest = Holding.objects.filter(port_code=port_code).latest('date').date
-        holding = Holding.objects.filter(port_code=port_code, date=latest).values('secucode', 'mkt_cap')
+        latest = Holding.objects.filter(
+            port_code=port_code).latest('date').date
+        holding = Holding.objects.filter(
+            port_code=port_code, date=latest).values('secucode', 'mkt_cap')
         holding = pd.DataFrame(holding)
         holding = holding[holding['mkt_cap'] != 0]
 
@@ -392,13 +418,16 @@ class FundHoldingStockView(APIView):
         data['ratio'] = data['ratio']*data['mkt_cap'] / mkt_cap
         data = data.groupby(['stockcode'])['ratio'].sum().reset_index()
 
-        sw = SISW.objects.filter(secucode__in=list(data.stockcode)).values('secucode', 'firstindustryname')
+        sw = SISW.objects.filter(secucode__in=list(data.stockcode)).values(
+            'secucode', 'firstindustryname')
         sw = {x['secucode']: x['firstindustryname'] for x in sw}
-        data['firstindustryname'] = data['stockcode'].apply(lambda x: sw.get(x, '港股'))
+        data['firstindustryname'] = data['stockcode'].apply(
+            lambda x: sw.get(x, '港股'))
         data = data.groupby(['firstindustryname'])['ratio'].sum().reset_index()
 
         index = index_holding_sw('000906')
-        index = index.groupby(['firstindustryname'])['weight'].sum().reset_index()
+        index = index.groupby(['firstindustryname'])[
+            'weight'].sum().reset_index()
         data = data.merge(index, on='firstindustryname', how='outer')
         data['ratio'] = data['ratio'].astype('float')
         data['weight'] = data['weight'].astype('float')
@@ -426,7 +455,8 @@ class FundHoldingNomuraOIView(object):
         category = FundHoldingView.fund_category(funds)
         data = data.merge(category, how='left', on='secucode')
 
-        names = models.Funds.objects.filter(secucode__in=funds).values('secucode', 'secuname')
+        names = models.Funds.objects.filter(
+            secucode__in=funds).values('secucode', 'secuname')
         names = {x['secucode']: x['secuname'] for x in names}
         data['secuname'] = data['secucode'].apply(lambda x: names.get(x))
         ret = []
@@ -434,12 +464,14 @@ class FundHoldingNomuraOIView(object):
         key = 1
         for category in ['股票型', '债券型', '另类', 'QDII型', '货币型']:
             d = data[data.branch == category]
-            allocate.append({'name': category, 'mkt_cap': d.mkt_cap.sum(), 'ratio': d.ratio.sum()})
+            allocate.append(
+                {'name': category, 'mkt_cap': d.mkt_cap.sum(), 'ratio': d.ratio.sum()})
             d = d.sort_values('ratio', ascending=False)
             children = []
             for _, r in d.iterrows():
                 children.append(
-                    {'key': key, 'secucode': r.secucode, 'secuname': r.secuname, 'mkt_cap': r.mkt_cap, 'ratio': r.ratio}
+                    {'key': key, 'secucode': r.secucode, 'secuname': r.secuname,
+                        'mkt_cap': r.mkt_cap, 'ratio': r.ratio}
                 )
                 key += 1
             ret.append({'key': key, 'secucode': None, 'secuname': category, 'mkt_cap': d.mkt_cap.sum(),
