@@ -105,25 +105,36 @@ class AttributeChartView(APIView):
     @staticmethod
     def monthly_attribute(request):
         """月度收益归因"""
-        port_code = request.GET.get('port_code')
+        port_code = request.GET.get('portCode')
         date = request.GET.get('date')
-        start = AttributeChartView.last_trading_day_of_last_month(date)
-        changes = models.Income.objects.filter(
-            port_code=port_code, date__range=(start, date)).values('date', 'unit_nav', 'change')
-        changes = [x for x in changes]
-        total = sum([x['change'] for x in changes[1:]])
-        columns = ['equity', 'bond', 'alter', 'money']
-        asset = models.IncomeAsset.objects.filter(
-            port_code=port_code, date__in=(start, date)).values('date', *columns)
-        asset = pd.DataFrame(asset).set_index('date')
-        asset = asset.diff(1).dropna()
-        asset /= total
-        change = (changes[-1]['unit_nav'] / changes[0]['unit_nav']) - 1
-        asset *= change
-        asset['fee'] = float(change) - float(asset.sum(axis=1))
-        asset['change'] = change
-        asset = asset.to_dict(orient='records')
-        return JsonResponse(asset[0])
+        if not date:
+            date = datetime.date.today().strftime('%Y-%m-%d')
+        d: IncomeAsset = IncomeAsset.objects.filter(port_code=port_code, date__lte=date).last()
+        date = d.date.strftime('%Y-%m-%d')
+        launch = models.Income.objects.filter(port_code=port_code).first().date
+        week = AttributeChartView.last_trading_day_of_last_week(date)
+        month = AttributeChartView.last_trading_day_of_last_month(date)
+        ret = []
+        for start in [launch, week, month]:
+            changes = models.Income.objects.filter(
+                port_code=port_code, date__range=(start, date)).values('date', 'unit_nav', 'change')
+            changes = [x for x in changes]
+            total = sum([x['change'] for x in changes[1:]])
+            columns = ['equity', 'bond', 'alter', 'money']
+            asset = models.IncomeAsset.objects.filter(
+                port_code=port_code, date__in=(start, date)).values('date', *columns)
+            asset = pd.DataFrame(asset).set_index('date')
+            asset = asset.diff(1).dropna()
+            asset /= total
+            change = (changes[-1]['unit_nav'] / changes[0]['unit_nav']) - 1
+            asset *= change
+            asset['fee'] = float(change) - float(asset.sum(axis=1))
+            asset['change'] = change
+            asset = asset.to_dict(orient='records')[0]
+            asset['total_profit'] = change
+            asset = {x: round(y*100, 2) for x, y in asset.items()}
+            ret.append(asset)
+        return JsonResponse({'data': ret[0], 'week': ret[1], 'month': ret[2]})
 
     @staticmethod
     def last_trading_day_of_last_week(date: str):
@@ -168,7 +179,7 @@ class FundHoldingView(APIView):
 
         limit = FundHoldingView.fund_limit(funds)
         holding = pd.merge(holding, limit, how='left', on='secucode')
-        holding = holding.replace(pd.NA, None)
+        holding = holding.where(holding.notnull(), None)
 
         holding = holding.to_dict(orient='records')
         return Response(holding)
@@ -181,6 +192,42 @@ class FundHoldingView(APIView):
             date = datetime.date.today().strftime('%Y-%m-%d')
         date = Holding.objects.filter(port_code=port_code, date__lte=date).latest('date').date
         return port_code, date
+
+    @staticmethod
+    def etf_profit(request):
+        """etf每日收益，取最近5个交易日"""
+        port_code = request.GET['portCode']
+        date = request.GET.get('date')
+        if not date:
+            date = models.Holding.objects.filter(port_code=port_code).latest('date').date
+        else:
+            date = models.Holding.objects.filter(port_code=port_code, date__lte=date).latest('date').date
+        start = date + datetime.timedelta(days=-7)
+        holdings = models.Holding.objects.filter(
+            port_code=port_code, date__range=(start, date), trade_market__in=(1, 2), category='开放式基金'
+        ).values()
+        holdings = pd.DataFrame(holdings)
+        holdings['key'] = holdings.index
+        funds = list(set(list(holdings.secucode)))
+        names = fund.fund_names(funds)
+        holdings['secuabbr'] = holdings['secucode'].apply(lambda x: names.get(x))
+        need = ['key', 'secucode', 'secuabbr', 'date', 'total_profit', 'fee', 'mkt_cap', 'holding_value']
+        holdings = holdings[need]
+
+        ret = []
+        count = 1
+        for _, g in holdings.groupby('secucode'):
+            g_max = g[g.date == g.date.max()]
+            g_max = g_max.to_dict(orient='records')[0]
+            g_max['key'] = len(holdings) + count
+            for attr in ['total_profit', 'fee']:
+                g[attr] = g[attr].diff()
+            g = g[g['total_profit'].notnull()].sort_values('date', ascending=False)
+            g = g.to_dict(orient='records')
+            g_max['children'] = g
+            ret.append(g_max)
+            count += 1
+        return JsonResponse(ret, safe=False)
 
     @staticmethod
     def fund_ratio(port_code: str, date: datetime.date):
