@@ -23,6 +23,7 @@ urlpatterns = [
     path('analysis/performance/', views.PerformanceView.as_view()),
     path('analysis/attribute/', views.AttributeChartView.as_view()),
     path('analysis/fundholding/', views.FundHoldingView.as_view()),
+    path('analysis/fundholding/etf/', views.FundHoldingView.etf_profit),
     path('analysis/fundholding/summary/', views.FundHoldingNomuraOIView.holding_by_NOI_classify),
     path('analysis/fundholding/stock/', views.FundHoldingStockView.as_view()),
     path('analysis/fundholding/yx/', views.FundHoldingView.holding_yx),
