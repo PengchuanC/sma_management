@@ -71,19 +71,22 @@ def _commit_holding_stocks(publish: str, sql):
 
     基金持仓来源于两张表，一为重仓股，源于季报，一为完成持仓，源于半年报或年报
     """
-    exist = models.FundHoldingStock.objects.filter(publish=publish).aggregate(max_date=Max('date'))
-    max_date = exist['max_date'] or datetime.date(2020, 1, 1)
-    existed = models.FundHoldingStock.objects.filter(publish=publish, date__lte=max_date).values('secucode').distinct()
-    existed = [x['secucode'] for x in existed]
+    if models.FundHoldingStock.objects.exists():
+        date = datetime.date.today()
+        date = datetime.date(date.year - 1, 1, 1)
+    else:
+        date = datetime.date(1990, 1, 1)
+    exist = models.FundHoldingStock.objects.filter(publish=publish).values('secucode').annotate(max_date=Max('date'))
+    existed = {x['secucode']: x['max_date'] for x in exist}
 
     full = models.Funds.objects.all()
-    need = [x.secucode for x in full if x.secucode not in existed]
-    sql = render(sql, '<date>', max_date.strftime('%Y-%m-%d'))
+    instance = {x.secucode: x for x in full}
+    sql = render(sql, '<date>', date.strftime('%Y-%m-%d'))
     data = read_oracle(sql)
-    data = data[data.secucode.isin(need)]
     data = data[data.publish == publish]
-    full = {x.secucode: x for x in full}
-    data.secucode = data.secucode.apply(lambda x: full.get(x))
+    data.secucode = data.secucode.apply(lambda x: instance.get(x))
+    data = data[data.secucode.notnull()]
+    data = data[data.agg(lambda x: x.date > existed.get(x.secucode, datetime.date(1990, 1, 1)), axis=1)]
     data = data.to_dict(orient='records')
     data = [models.FundHoldingStock(**x) for x in data]
     split = math.ceil(len(data) / 10000)
@@ -167,6 +170,6 @@ def commit_fund_quote():
 if __name__ == '__main__':
     # commit_holding_stock_detail()
     # commit_fund_holding_stock_hk()
-    # commit_holding_top_ten()
+    commit_holding_top_ten()
     # commit_asset_allocate_hk()
-    commit_fund_quote()
+    # commit_fund_quote()
