@@ -256,13 +256,25 @@ class FundHoldingView(APIView):
         buy = buy.groupby(['secucode', 'date', 'operation', 'order_price']).sum().reset_index()
         sell = [x for x in trans if x['operation'] == '证券卖出']
         sell = pd.DataFrame(sell)
-        sell = sell.groupby(['secucode', 'date', 'operation', 'order_price']).sum().reset_index()
+        if not sell.empty:
+            sell = sell.groupby(['secucode', 'date', 'operation', 'order_price']).sum().reset_index()
 
         ret = []
         for idx1, b in buy.iterrows():
             b_value = b['order_value']
             b_price = b['order_price']
             b_fee = b['fee']
+            b_date = b['date']
+            if sell.empty:
+                price = Decimal(price)
+                r = price / b_price - 1
+                profit = (price * b_value - b_fee) - b_price * b_value
+                ret.append({
+                    'buy_date': b_date.strftime('%Y-%m-%d'), 'sell_date': date.strftime('%Y-%m-%d'),
+                    'buy_price': b_price, 'sell_price': price, 'value': b_value, 'r': r, 'profit': profit,
+                    'fee': b_fee, 'note': '预估'
+                })
+                continue
             while b_value > 0:
                 for idx2, s in sell.iterrows():
                     s_value = s['order_value']
@@ -270,7 +282,6 @@ class FundHoldingView(APIView):
                     s_date = s['date']
                     s_fee = s['fee']
                     r = s_price / b_price - 1
-                    b_date = b['date']
                     if sell['order_value'].sum() == 0:
                         s_price = round(Decimal(price), 4)
                         r = s_price / b_price - 1
