@@ -4,8 +4,9 @@
 """
 
 import datetime
-import pandas as pd
+from decimal import Decimal
 
+import pandas as pd
 from dateutil.relativedelta import relativedelta
 from dateutil.parser import parse
 from django.db.models import Max
@@ -238,6 +239,79 @@ class FundHoldingView(APIView):
             ret.append(g_max)
             count += 1
         return JsonResponse(ret, safe=False)
+
+    @staticmethod
+    def etf_transaction_analysis(request):
+        """分析etf每笔买入的持仓收益"""
+        port_code = request.GET['port_code']
+        secucode = request.GET['secucode']
+        last = models.FundQuote.objects.filter(secucode=secucode).latest('date')
+        price = round(last.closeprice, 4)
+        date = last.date
+        trans = models.Transactions.objects.filter(
+            port_code=port_code, secucode=secucode, operation__in=('证券买入', '证券卖出')
+        ).values('secucode', 'date', 'operation', 'order_price', 'order_value', 'fee').order_by('date')
+        buy = [x for x in trans if x['operation'] == '证券买入']
+        buy = pd.DataFrame(buy)
+        buy = buy.groupby(['secucode', 'date', 'operation', 'order_price']).sum().reset_index()
+        sell = [x for x in trans if x['operation'] == '证券卖出']
+        sell = pd.DataFrame(sell)
+        sell = sell.groupby(['secucode', 'date', 'operation', 'order_price']).sum().reset_index()
+
+        ret = []
+        for idx1, b in buy.iterrows():
+            b_value = b['order_value']
+            b_price = b['order_price']
+            b_fee = b['fee']
+            while b_value > 0:
+                for idx2, s in sell.iterrows():
+                    s_value = s['order_value']
+                    s_price = s['order_price']
+                    s_date = s['date']
+                    s_fee = s['fee']
+                    r = s_price / b_price - 1
+                    b_date = b['date']
+                    if sell['order_value'].sum() == 0:
+                        s_price = round(Decimal(price), 4)
+                        r = s_price / b_price - 1
+                        value = b_value
+                        b_value = 0
+                        profit = (s_price * value - s_fee) - b_price * value
+                        ret.append({
+                            'buy_date': b_date.strftime('%Y-%m-%d'), 'sell_date': date.strftime('%Y-%m-%d'),
+                            'buy_price': b_price, 'sell_price': s_price, 'value': value, 'r': r, 'profit': profit,
+                            'fee': s_fee, 'note': '预估'
+                        })
+                        break
+                    if s_value == 0:
+                        continue
+                    if b_value <= s_value:
+                        real_s_fee = s_fee * b_value / s_value
+                        profit = (b_value * s_price - real_s_fee - b_fee) - (b_value * b_price)
+                        fee = real_s_fee + b_fee
+                        sell.loc[idx2, 'order_value'] = s_value - b_value
+                        sell.loc[idx2, 'fee'] = s_fee - real_s_fee
+                        value = b_value
+                        b_value = 0
+                    else:
+                        real_b_fee = b_fee * s_value / b_value
+                        profit = (s_value * s_price - s_fee - real_b_fee) - b_price * s_value
+                        fee = real_b_fee + s_fee
+                        b_fee -= real_b_fee
+                        b_value -= s_value
+                        value = s_value
+                        sell.loc[idx2, 'order_value'] = 0
+
+                    ret.append({
+                        'buy_date': b_date.strftime('%Y-%m-%d'), 'sell_date': s_date.strftime('%Y-%m-%d'),
+                        'buy_price': b_price, 'sell_price': s_price, 'value': value, 'r': r, 'profit': profit,
+                        'fee': fee, 'note': '已实现'
+                    })
+        ret = pd.DataFrame(ret)
+        total = ret['profit'].sum()
+        win = len(ret[ret.r >= 0]) / len(ret)
+        data = ret.to_dict(orient='records')
+        return JsonResponse({'total': total, 'win': win, 'data': data})
 
     @staticmethod
     def fund_ratio(port_code: str, date: datetime.date):

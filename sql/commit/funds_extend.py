@@ -170,6 +170,6 @@ def commit_fund_quote():
 if __name__ == '__main__':
     # commit_holding_stock_detail()
     # commit_fund_holding_stock_hk()
-    commit_holding_top_ten()
+    # commit_holding_top_ten()
     # commit_asset_allocate_hk()
-    # commit_fund_quote()
+    commit_fund_quote()
