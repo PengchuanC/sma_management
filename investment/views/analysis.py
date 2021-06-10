@@ -265,35 +265,25 @@ class FundHoldingView(APIView):
             b_price = b['order_price']
             b_fee = b['fee']
             b_date = b['date']
-            if sell.empty:
-                price = Decimal(price)
-                r = price / b_price - 1
-                profit = (price * b_value - b_fee) - b_price * b_value
-                ret.append({
-                    'buy_date': b_date.strftime('%Y-%m-%d'), 'sell_date': date.strftime('%Y-%m-%d'),
-                    'buy_price': b_price, 'sell_price': price, 'value': b_value, 'r': r, 'profit': profit,
-                    'fee': b_fee, 'note': '预估'
-                })
-                continue
             while b_value > 0:
+                if sell.empty or sell['order_value'].sum() == 0:
+                    s_price = round(Decimal(price), 4)
+                    r = s_price / b_price - 1
+                    value = b_value
+                    b_value = 0
+                    profit = (s_price * value) - b_price * value
+                    ret.append({
+                        'buy_date': b_date.strftime('%Y-%m-%d'), 'sell_date': date.strftime('%Y-%m-%d'),
+                        'buy_price': b_price, 'sell_price': s_price, 'value': value, 'r': r, 'profit': profit,
+                        'fee': b_fee, 'note': '预估'
+                    })
+                    continue
                 for idx2, s in sell.iterrows():
                     s_value = s['order_value']
                     s_price = s['order_price']
                     s_date = s['date']
                     s_fee = s['fee']
                     r = s_price / b_price - 1
-                    if sell['order_value'].sum() == 0:
-                        s_price = round(Decimal(price), 4)
-                        r = s_price / b_price - 1
-                        value = b_value
-                        b_value = 0
-                        profit = (s_price * value - s_fee) - b_price * value
-                        ret.append({
-                            'buy_date': b_date.strftime('%Y-%m-%d'), 'sell_date': date.strftime('%Y-%m-%d'),
-                            'buy_price': b_price, 'sell_price': s_price, 'value': value, 'r': r, 'profit': profit,
-                            'fee': s_fee, 'note': '预估'
-                        })
-                        break
                     if s_value == 0:
                         continue
                     if b_value <= s_value:
