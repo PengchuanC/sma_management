@@ -271,7 +271,7 @@ class FundHoldingView(APIView):
                     r = s_price / b_price - 1
                     value = b_value
                     b_value = 0
-                    profit = (s_price * value) - b_price * value
+                    profit = (s_price * value) - b_price * value - b_fee
                     ret.append({
                         'buy_date': b_date.strftime('%Y-%m-%d'), 'sell_date': date.strftime('%Y-%m-%d'),
                         'buy_price': b_price, 'sell_price': s_price, 'value': value, 'r': r, 'profit': profit,

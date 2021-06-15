@@ -49,6 +49,7 @@ def commit_fund():
     """提交规模基金相关数据"""
     commit_funds()
     # commit_fund_fee()
+    commit_fund_quote()
     commit_fund_limit()
     commit_fund_associate()
     commit_fund_data()
@@ -59,7 +60,6 @@ def commit_fund():
     commit_fund_advisor()
     commit_asset_allocate_hk()
     commit_fund_holding_stock_hk()
-    commit_fund_quote()
 
 
 def commit_trading_day():
