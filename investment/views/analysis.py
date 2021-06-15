@@ -213,11 +213,11 @@ class FundHoldingView(APIView):
             date = models.Holding.objects.filter(port_code=port_code).latest('date').date
         else:
             date = models.Holding.objects.filter(port_code=port_code, date__lte=date).latest('date').date
-        start = date + datetime.timedelta(days=-7)
         holdings = models.Holding.objects.filter(
-            port_code=port_code, date__range=(start, date), trade_market__in=(1, 2), category='开放式基金'
+            port_code=port_code, date__lte=date, trade_market__in=(1, 2), category='开放式基金'
         ).values()
         holdings = pd.DataFrame(holdings)
+        holdings = holdings.drop_duplicates(['holding_value', 'mkt_cap', 'total_profit'])
         holdings['key'] = holdings.index
         funds = list(set(list(holdings.secucode)))
         names = fund.fund_names(funds)
@@ -245,6 +245,31 @@ class FundHoldingView(APIView):
         """分析etf每笔买入的持仓收益"""
         port_code = request.GET['port_code']
         secucode = request.GET['secucode']
+        ret = FundHoldingView._etf_transaction_analysis(port_code, secucode)
+        ret = pd.DataFrame(ret)
+        total = ret['profit'].sum()
+        win = len(ret[ret.r >= 0]) / len(ret)
+        data = ret.to_dict(orient='records')
+        return JsonResponse({'total': total, 'win': win, 'data': data})
+
+    @staticmethod
+    def etf_transaction_whole(request):
+        port_code = request.GET['port_code']
+        funds = models.Transactions.objects.filter(port_code=port_code, operation='证券买入').values('secucode')
+        funds = set(x['secucode'] for x in funds)
+        ret = []
+        for etf in funds:
+            r = FundHoldingView._etf_transaction_analysis(port_code, etf)
+            ret.extend(r)
+        ret = pd.DataFrame(ret)
+        win = len(ret[ret.r >= 0]) / len(ret)
+        total = ret['profit'].sum()
+        data = ret.to_dict(orient='records')
+        return JsonResponse({'total': total, 'win': win, 'data': data})
+
+    @staticmethod
+    def _etf_transaction_analysis(port_code, secucode):
+        """分析etf每笔买入的持仓收益"""
         last = models.FundQuote.objects.filter(secucode=secucode).latest('date')
         price = round(last.closeprice, 4)
         date = last.date
@@ -265,6 +290,7 @@ class FundHoldingView(APIView):
             b_price = b['order_price']
             b_fee = b['fee']
             b_date = b['date']
+            secucode = b['secucode']
             while b_value > 0:
                 if sell.empty or sell['order_value'].sum() == 0:
                     s_price = round(Decimal(price), 4)
@@ -275,7 +301,8 @@ class FundHoldingView(APIView):
                     ret.append({
                         'buy_date': b_date.strftime('%Y-%m-%d'), 'sell_date': date.strftime('%Y-%m-%d'),
                         'buy_price': b_price, 'sell_price': s_price, 'value': value, 'r': r, 'profit': profit,
-                        'fee': b_fee, 'note': '预估'
+                        'fee': b_fee, 'note': '预估', 'secucode': secucode
+
                     })
                     continue
                 for idx2, s in sell.iterrows():
@@ -306,13 +333,9 @@ class FundHoldingView(APIView):
                     ret.append({
                         'buy_date': b_date.strftime('%Y-%m-%d'), 'sell_date': s_date.strftime('%Y-%m-%d'),
                         'buy_price': b_price, 'sell_price': s_price, 'value': value, 'r': r, 'profit': profit,
-                        'fee': fee, 'note': '已实现'
+                        'fee': fee, 'note': '已实现', 'secucode': secucode
                     })
-        ret = pd.DataFrame(ret)
-        total = ret['profit'].sum()
-        win = len(ret[ret.r >= 0]) / len(ret)
-        data = ret.to_dict(orient='records')
-        return JsonResponse({'total': total, 'win': win, 'data': data})
+        return ret
 
     @staticmethod
     def fund_ratio(port_code: str, date: datetime.date):
