@@ -6,11 +6,13 @@ from sql import tools
 from crawl.stock_async import executor
 from crawl.fund_fee_howbuy import commit_fund_fee_hb
 from crawl.fund_fee import commit_fund_fee_em
+from sql.commit.funds_extend import commit_fund_quote
 
 
 def save_prev_valuation_nav():
     """保存组合预估净值到数据库"""
     tools.commit_stock_daily_quote()
+    commit_fund_quote()
     pre_valuation()
 
 
