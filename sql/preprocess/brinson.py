@@ -190,7 +190,7 @@ class Model(object):
 
     @property
     def q4(self):
-        """主动股票选择：基准中行业权重*组合中行业收益"""
+        """主动股票选择：组合中行业权重*组合中行业收益"""
         q4 = self.f.weight * self.f.change
         q4.name = 'q4'
         return q4
