@@ -23,12 +23,11 @@ def latest_update_date(port_code: models.Portfolio) -> datetime.date:
     return info.launch_date.date() - datetime.timedelta(days=1)
 
 
-def three_days_ago():
+def three_days_ago(date=datetime.date.today()):
     """三个交易日之前"""
-    t = datetime.date.today()
-    month_ago = t - datetime.timedelta(days=30)
+    month_ago = date - datetime.timedelta(days=30)
     days = TradingDays.objects.filter(date__range=(
-        month_ago, t)).values('date').order_by('date')
+        month_ago, date)).values('date').order_by('date')
     days = [x['date'] for x in days]
     day = days[-3]
     return day

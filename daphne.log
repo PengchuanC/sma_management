@@ -1,0 +1,1580 @@
+2021-06-16 10:25:54,085 INFO     Starting server at tcp:port=5000:interface=127.0.0.1
+2021-06-16 10:25:54,087 INFO     HTTP/2 support not enabled (install the http2 and tls Twisted extras)
+2021-06-16 10:25:54,087 INFO     Configuring endpoint tcp:port=5000:interface=127.0.0.1
+2021-06-16 10:25:54,088 INFO     Listening on TCP address 127.0.0.1:5000
+2021-06-16 11:02:10,854 WARNING  Application instance <Task pending name='Task-11' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7f658b6b3790>()]>> for connection <WebSocketProtocol client=['127.0.0.1', 35526] path=b'/ws/prevaluation/'> took too long to shut down and was killed.
+2021-06-16 11:02:39,930 WARNING  Application instance <Task pending name='Task-29' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7f658b694f70>()]>> for connection <WebSocketProtocol client=['127.0.0.1', 36016] path=b'/ws/prevaluation/'> took too long to shut down and was killed.
+2021-06-16 11:02:45,948 WARNING  Application instance <Task pending name='Task-32' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7f658b688850>()]>> for connection <WebSocketProtocol client=['127.0.0.1', 36050] path=b'/ws/prevaluation/'> took too long to shut down and was killed.
+2021-06-16 11:19:29,649 WARNING  Application instance <Task pending name='Task-52' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7f659805ae20>()]>> for connection <WebSocketProtocol client=['127.0.0.1', 42362] path=b'/ws/prevaluation/'> took too long to shut down and was killed.
+127.0.0.1:59796 - - [16/Jun/2021:10:25:56] "GET /management/api/v1/basic/all/" 200 1177
+127.0.0.1:59798 - - [16/Jun/2021:10:25:56] "GET /management/api/v1/analysis/fundholding/?portCode=PFF005&date=2021-06-16" 200 16965
+127.0.0.1:59826 - - [16/Jun/2021:10:25:58] "GET /management/api/v1/analysis/fundholding/etf/?portCode=PFF005&date=2021-06-16" 200 9945
+127.0.0.1:59828 - - [16/Jun/2021:10:25:58] "GET /management/api/v1/analysis/fundholding/etf_analysis/?port_code=PFF005" 200 4013
+127.0.0.1:35504 - - [16/Jun/2021:11:01:57] "GET /management/api/v1/cta/" 200 816
+127.0.0.1:35502 - - [16/Jun/2021:11:01:57] "GET /management/api/v1/basic/all/" 200 1177
+127.0.0.1:35506 - - [16/Jun/2021:11:01:57] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:35510 - - [16/Jun/2021:11:01:57] "GET /management/api/v1/basic/all/" 200 1177
+127.0.0.1:35526 - - [16/Jun/2021:11:01:59] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:35526 - - [16/Jun/2021:11:01:59] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:35532 - - [16/Jun/2021:11:01:59] "GET /management/api/v1/overview/compare/?portCode=PFF003" 200 5622
+127.0.0.1:35534 - - [16/Jun/2021:11:01:59] "GET /management/api/v1/overview/allocate/history/?portCode=PFF003" 200 10810
+127.0.0.1:35536 - - [16/Jun/2021:11:01:59] "GET /management/api/v1/overview/allocate/?portCode=PFF003" 200 287
+127.0.0.1:35530 - - [16/Jun/2021:11:01:59] "GET /management/api/v1/overview/?portCode=PFF003" 200 3611
+127.0.0.1:35538 - - [16/Jun/2021:11:01:59] "GET /management/api/v1/overview/pos/?portCode=PFF003" 200 11170
+127.0.0.1:35540 - - [16/Jun/2021:11:01:59] "GET /management/api/v1/overview/allocate/avg/?portCode=PFF003&start=&end=" 200 279
+127.0.0.1:35548 - - [16/Jun/2021:11:01:59] "GET /management/api/v1/overview/questionnairy/?portCode=PFF003" 200 312
+127.0.0.1:35526 - - [16/Jun/2021:11:02:00] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:35566 - - [16/Jun/2021:11:02:00] "GET /management/api/v1/analysis/attribute/?portCode=PFF003&date=2021-06-16" 200 246
+127.0.0.1:35568 - - [16/Jun/2021:11:02:00] "GET /management/api/v1/analysis/performance/?date=2021-06-16&portCode=PFF003" 200 896
+127.0.0.1:35658 - - [16/Jun/2021:11:02:04] "GET /management/api/v1/analysis/performance/?date=2021-06-10&portCode=PFF003" 200 892
+127.0.0.1:35660 - - [16/Jun/2021:11:02:04] "GET /management/api/v1/analysis/attribute/?portCode=PFF003&date=2021-06-10" 200 241
+127.0.0.1:35664 - - [16/Jun/2021:11:02:04] "GET /management/api/v1/analysis/attribute/?portCode=PFF003&date=2021-06-10" 200 241
+127.0.0.1:35858 - - [16/Jun/2021:11:02:18] "GET /management/api/v1/analysis/performance/?date=2021-06-11&portCode=PFF003" 200 896
+127.0.0.1:35860 - - [16/Jun/2021:11:02:18] "GET /management/api/v1/analysis/attribute/?portCode=PFF003&date=2021-06-11" 200 246
+127.0.0.1:35864 - - [16/Jun/2021:11:02:18] "GET /management/api/v1/analysis/attribute/?portCode=PFF003&date=2021-06-11" 200 246
+127.0.0.1:36016 - - [16/Jun/2021:11:02:28] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:36016 - - [16/Jun/2021:11:02:28] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:36016 - - [16/Jun/2021:11:02:29] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:36050 - - [16/Jun/2021:11:02:30] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:36050 - - [16/Jun/2021:11:02:30] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:36054 - - [16/Jun/2021:11:02:30] "GET /management/api/v1/overview/allocate/?portCode=PFF005" 200 288
+127.0.0.1:36056 - - [16/Jun/2021:11:02:30] "GET /management/api/v1/overview/allocate/history/?portCode=PFF005" 200 5140
+127.0.0.1:36058 - - [16/Jun/2021:11:02:30] "GET /management/api/v1/overview/compare/?portCode=PFF005" 200 2522
+127.0.0.1:36062 - - [16/Jun/2021:11:02:30] "GET /management/api/v1/overview/pos/?portCode=PFF005" 200 11044
+127.0.0.1:36064 - - [16/Jun/2021:11:02:30] "GET /management/api/v1/overview/allocate/avg/?portCode=PFF005&start=&end=" 200 288
+127.0.0.1:36060 - - [16/Jun/2021:11:02:30] "GET /management/api/v1/overview/?portCode=PFF005" 200 1721
+127.0.0.1:36072 - - [16/Jun/2021:11:02:30] "GET /management/api/v1/overview/questionnairy/?portCode=PFF005" 200 321
+127.0.0.1:36050 - - [16/Jun/2021:11:02:35] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:36170 - - [16/Jun/2021:11:02:35] "GET /management/api/v1/analysis/performance/?date=2021-06-16&portCode=PFF005" 200 893
+127.0.0.1:36172 - - [16/Jun/2021:11:02:35] "GET /management/api/v1/analysis/attribute/?portCode=PFF005&date=2021-06-16" 200 245
+127.0.0.1:36202 - - [16/Jun/2021:11:02:38] "GET /management/api/v1/analysis/performance/?date=2021-06-10&portCode=PFF005" 200 892
+127.0.0.1:36204 - - [16/Jun/2021:11:02:38] "GET /management/api/v1/analysis/attribute/?portCode=PFF005&date=2021-06-10" 200 240
+127.0.0.1:36210 - - [16/Jun/2021:11:02:38] "GET /management/api/v1/analysis/attribute/?portCode=PFF005&date=2021-06-10" 200 240
+127.0.0.1:36466 - - [16/Jun/2021:11:02:53] "GET /management/api/v1/analysis/performance/?date=2021-06-11&portCode=PFF005" 200 893
+127.0.0.1:36468 - - [16/Jun/2021:11:02:53] "GET /management/api/v1/analysis/attribute/?portCode=PFF005&date=2021-06-11" 200 245
+127.0.0.1:36472 - - [16/Jun/2021:11:02:53] "GET /management/api/v1/analysis/attribute/?portCode=PFF005&date=2021-06-11" 200 245
+127.0.0.1:39494 - - [16/Jun/2021:11:06:17] "GET /management/api/v1/analysis/attribute/?portCode=PFF005&date=2021-06-10" 200 240
+127.0.0.1:39512 - - [16/Jun/2021:11:06:18] "GET /management/api/v1/analysis/monthly/?portCode=PFF005&date=2021-06-10" 200 404
+127.0.0.1:42362 - - [16/Jun/2021:11:09:29] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:42362 - - [16/Jun/2021:11:09:29] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:42366 - - [16/Jun/2021:11:09:29] "GET /management/api/v1/overview/allocate/history/?portCode=PFF005" 200 5140
+127.0.0.1:42368 - - [16/Jun/2021:11:09:29] "GET /management/api/v1/overview/allocate/?portCode=PFF005" 200 288
+127.0.0.1:42372 - - [16/Jun/2021:11:09:29] "GET /management/api/v1/overview/compare/?portCode=PFF005" 200 2522
+127.0.0.1:42374 - - [16/Jun/2021:11:09:29] "GET /management/api/v1/overview/pos/?portCode=PFF005" 200 11044
+127.0.0.1:42376 - - [16/Jun/2021:11:09:29] "GET /management/api/v1/overview/allocate/avg/?portCode=PFF005&start=&end=" 200 288
+127.0.0.1:42370 - - [16/Jun/2021:11:09:29] "GET /management/api/v1/overview/?portCode=PFF005" 200 1721
+127.0.0.1:42384 - - [16/Jun/2021:11:09:29] "GET /management/api/v1/overview/questionnairy/?portCode=PFF005" 200 321
+127.0.0.1:42362 - - [16/Jun/2021:11:19:19] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:51260 - - [16/Jun/2021:11:19:19] "GET /management/api/v1/analysis/performance/?date=2021-06-16&portCode=PFF005" 200 893
+127.0.0.1:51262 - - [16/Jun/2021:11:19:19] "GET /management/api/v1/analysis/attribute/?portCode=PFF005&date=2021-06-16" 200 245
+127.0.0.1:51284 - - [16/Jun/2021:11:19:21] "GET /management/api/v1/analysis/fundholding/?portCode=PFF005&date=2021-06-16" 200 16965
+127.0.0.1:51286 - - [16/Jun/2021:11:19:21] "GET /management/api/v1/basic/all/" 200 1177
+127.0.0.1:51364 - - [16/Jun/2021:11:19:23] "GET /management/api/v1/analysis/fundholding/etf/?portCode=PFF005&date=2021-06-16" 200 9945
+127.0.0.1:51366 - - [16/Jun/2021:11:19:23] "GET /management/api/v1/analysis/fundholding/etf_analysis/?port_code=PFF005" 200 4013
+127.0.0.1:53010 - - [16/Jun/2021:11:21:13] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:53010 - - [16/Jun/2021:11:21:13] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:53014 - - [16/Jun/2021:11:21:13] "GET /management/api/v1/overview/compare/?portCode=PFF005" 200 2522
+127.0.0.1:53022 - - [16/Jun/2021:11:21:13] "GET /management/api/v1/overview/questionnairy/?portCode=PFF005" 200 321
+127.0.0.1:53016 - - [16/Jun/2021:11:21:13] "GET /management/api/v1/overview/allocate/?portCode=PFF005" 200 288
+127.0.0.1:53020 - - [16/Jun/2021:11:21:13] "GET /management/api/v1/overview/allocate/avg/?portCode=PFF005&start=&end=" 200 288
+127.0.0.1:53024 - - [16/Jun/2021:11:21:13] "GET /management/api/v1/overview/pos/?portCode=PFF005" 200 11044
+127.0.0.1:53018 - - [16/Jun/2021:11:21:13] "GET /management/api/v1/overview/?portCode=PFF005" 200 1721
+127.0.0.1:53034 - - [16/Jun/2021:11:21:13] "GET /management/api/v1/overview/allocate/history/?portCode=PFF005" 200 5140
+127.0.0.1:53010 - - [16/Jun/2021:11:21:15] "WSDISCONNECT /ws/prevaluation/" - -
+2021-06-16 11:21:25,969 WARNING  Application instance <Task pending name='Task-70' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7f658b4f3430>()]>> for connection <WebSocketProtocol client=['127.0.0.1', 53010] path=b'/ws/prevaluation/'> took too long to shut down and was killed.
+2021-06-16 13:33:10,988 WARNING  Application instance <Task pending name='Task-86' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7f658b0c4eb0>()]>> for connection <WebSocketProtocol client=['127.0.0.1', 53580] path=b'/ws/prevaluation/'> took too long to shut down and was killed.
+2021-06-16 13:33:28,047 WARNING  Application instance <Task pending name='Task-101' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7f6599981a30>()]>> for connection <WebSocketProtocol client=['127.0.0.1', 60940] path=b'/ws/prevaluation/'> took too long to shut down and was killed.
+2021-06-16 13:44:10,270 WARNING  Application instance <Task pending name='Task-116' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7f65999961c0>()]>> for connection <WebSocketProtocol client=['127.0.0.1', 42444] path=b'/ws/prevaluation/'> took too long to shut down and was killed.
+2021-06-16 14:56:42,156 WARNING  Application instance <Task pending name='Task-136' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7f658b4d44c0>()]>> for connection <WebSocketProtocol client=['127.0.0.1', 50948] path=b'/ws/prevaluation/'> took too long to shut down and was killed.
+2021-06-16 14:56:51,185 WARNING  Application instance <Task pending name='Task-146' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7f6589c564f0>()]>> for connection <WebSocketProtocol client=['127.0.0.1', 51098] path=b'/ws/prevaluation/'> took too long to shut down and was killed.
+127.0.0.1:53060 - - [16/Jun/2021:11:21:15] "GET /management/api/v1/analysis/performance/?date=2021-06-16&portCode=PFF005" 200 893
+127.0.0.1:53062 - - [16/Jun/2021:11:21:15] "GET /management/api/v1/analysis/attribute/?portCode=PFF005&date=2021-06-16" 200 245
+127.0.0.1:53078 - - [16/Jun/2021:11:21:17] "GET /management/api/v1/analysis/fundholding/?portCode=PFF005&date=2021-06-16" 200 16965
+127.0.0.1:53080 - - [16/Jun/2021:11:21:17] "GET /management/api/v1/basic/all/" 200 1177
+127.0.0.1:53580 - - [16/Jun/2021:11:21:49] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:53580 - - [16/Jun/2021:11:21:49] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:55090 - - [16/Jun/2021:12:53:30] "GET /management/api/v1/cta/" 200 816
+127.0.0.1:55088 - - [16/Jun/2021:12:53:30] "GET /management/api/v1/basic/all/" 200 1178
+127.0.0.1:55092 - - [16/Jun/2021:12:53:30] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:55100 - - [16/Jun/2021:12:53:30] "GET /management/api/v1/basic/all/" 200 1178
+127.0.0.1:53580 - - [16/Jun/2021:13:33:00] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:60654 - - [16/Jun/2021:13:33:00] "GET /management/api/v1/analysis/attribute/?portCode=PFF005&date=2021-06-16" 200 246
+127.0.0.1:60656 - - [16/Jun/2021:13:33:00] "GET /management/api/v1/analysis/performance/?date=2021-06-16&portCode=PFF005" 200 893
+127.0.0.1:60712 - - [16/Jun/2021:13:33:03] "GET /management/api/v1/analysis/fundholding/?portCode=PFF005&date=2021-06-16" 200 17485
+127.0.0.1:60714 - - [16/Jun/2021:13:33:03] "GET /management/api/v1/basic/all/" 200 1178
+127.0.0.1:60916 - - [16/Jun/2021:13:33:13] "GET /management/api/v1/cta/" 200 816
+127.0.0.1:60918 - - [16/Jun/2021:13:33:13] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:60940 - - [16/Jun/2021:13:33:15] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:60940 - - [16/Jun/2021:13:33:15] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:60944 - - [16/Jun/2021:13:33:16] "GET /management/api/v1/overview/allocate/history/?portCode=SA5001" 200 21745
+127.0.0.1:60946 - - [16/Jun/2021:13:33:16] "GET /management/api/v1/overview/allocate/?portCode=SA5001" 200 286
+127.0.0.1:60948 - - [16/Jun/2021:13:33:16] "GET /management/api/v1/overview/compare/?portCode=SA5001" 200 11904
+127.0.0.1:60952 - - [16/Jun/2021:13:33:16] "GET /management/api/v1/overview/pos/?portCode=SA5001" 200 11164
+127.0.0.1:60954 - - [16/Jun/2021:13:33:16] "GET /management/api/v1/overview/allocate/avg/?portCode=SA5001&start=&end=" 200 262
+127.0.0.1:60950 - - [16/Jun/2021:13:33:16] "GET /management/api/v1/overview/?portCode=SA5001" 200 7239
+127.0.0.1:60962 - - [16/Jun/2021:13:33:16] "GET /management/api/v1/overview/questionnairy/?portCode=SA5001" 200 478
+127.0.0.1:60940 - - [16/Jun/2021:13:33:17] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:60984 - - [16/Jun/2021:13:33:18] "GET /management/api/v1/analysis/performance/?date=2021-06-16&portCode=SA5001" 200 893
+127.0.0.1:60986 - - [16/Jun/2021:13:33:18] "GET /management/api/v1/analysis/attribute/?portCode=SA5001&date=2021-06-16" 200 250
+127.0.0.1:32784 - - [16/Jun/2021:13:33:21] "GET /management/api/v1/analysis/fundholding/?portCode=SA5001&date=2021-06-16" 200 23371
+127.0.0.1:42444 - - [16/Jun/2021:13:43:57] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:42444 - - [16/Jun/2021:13:43:57] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:42446 - - [16/Jun/2021:13:43:57] "GET /management/api/v1/overview/allocate/?portCode=PFF003" 200 288
+127.0.0.1:42448 - - [16/Jun/2021:13:43:57] "GET /management/api/v1/overview/allocate/history/?portCode=PFF003" 200 10810
+127.0.0.1:42450 - - [16/Jun/2021:13:43:57] "GET /management/api/v1/overview/compare/?portCode=PFF003" 200 5622
+127.0.0.1:42452 - - [16/Jun/2021:13:43:57] "GET /management/api/v1/overview/?portCode=PFF003" 200 3655
+127.0.0.1:42456 - - [16/Jun/2021:13:43:57] "GET /management/api/v1/overview/questionnairy/?portCode=PFF003" 200 312
+127.0.0.1:42454 - - [16/Jun/2021:13:43:57] "GET /management/api/v1/overview/pos/?portCode=PFF003" 200 11170
+127.0.0.1:42466 - - [16/Jun/2021:13:43:57] "GET /management/api/v1/overview/allocate/avg/?portCode=PFF003&start=&end=" 200 259
+127.0.0.1:42444 - - [16/Jun/2021:13:43:59] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:42496 - - [16/Jun/2021:13:43:59] "GET /management/api/v1/analysis/performance/?date=2021-06-16&portCode=PFF003" 200 900
+127.0.0.1:42498 - - [16/Jun/2021:13:43:59] "GET /management/api/v1/analysis/attribute/?portCode=PFF003&date=2021-06-16" 200 246
+127.0.0.1:42534 - - [16/Jun/2021:13:44:01] "GET /management/api/v1/capital/category/" 200 674
+127.0.0.1:42772 - - [16/Jun/2021:13:44:37] "GET /management/api/v1/capital/?category=%E6%9C%89%E8%89%B2%E9%87%91%E5%B1%9E&date=" 200 9510
+127.0.0.1:42898 - - [16/Jun/2021:13:44:40] "GET /management/api/v1/capital/?category=%E9%92%A2%E9%93%81&date=" 200 9385
+127.0.0.1:43808 - - [16/Jun/2021:13:45:25] "GET /management/api/v1/capital/?category=%E6%9C%89%E8%89%B2%E9%87%91%E5%B1%9E&date=" 200 9510
+127.0.0.1:50916 - - [16/Jun/2021:14:56:24] "GET /management/api/v1/basic/all/" 200 1178
+127.0.0.1:50920 - - [16/Jun/2021:14:56:24] "GET /management/api/v1/cta/" 200 816
+127.0.0.1:50918 - - [16/Jun/2021:14:56:24] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:50926 - - [16/Jun/2021:14:56:24] "GET /management/api/v1/basic/all/" 200 1178
+127.0.0.1:50948 - - [16/Jun/2021:14:56:25] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:50948 - - [16/Jun/2021:14:56:25] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:50950 - - [16/Jun/2021:14:56:26] "GET /management/api/v1/overview/allocate/?portCode=PFF005" 200 287
+127.0.0.1:50952 - - [16/Jun/2021:14:56:26] "GET /management/api/v1/overview/allocate/history/?portCode=PFF005" 200 5140
+127.0.0.1:50954 - - [16/Jun/2021:14:56:26] "GET /management/api/v1/overview/compare/?portCode=PFF005" 200 2522
+127.0.0.1:50958 - - [16/Jun/2021:14:56:26] "GET /management/api/v1/overview/pos/?portCode=PFF005" 200 11044
+127.0.0.1:50956 - - [16/Jun/2021:14:56:26] "GET /management/api/v1/overview/?portCode=PFF005" 200 1765
+127.0.0.1:50960 - - [16/Jun/2021:14:56:26] "GET /management/api/v1/overview/allocate/avg/?portCode=PFF005&start=&end=" 200 280
+127.0.0.1:50968 - - [16/Jun/2021:14:56:26] "GET /management/api/v1/overview/questionnairy/?portCode=PFF005" 200 321
+127.0.0.1:50948 - - [16/Jun/2021:14:56:31] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:51098 - - [16/Jun/2021:14:56:33] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:51098 - - [16/Jun/2021:14:56:33] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:51100 - - [16/Jun/2021:14:56:33] "GET /management/api/v1/overview/allocate/?portCode=PFF003" 200 288
+127.0.0.1:51102 - - [16/Jun/2021:14:56:33] "GET /management/api/v1/overview/allocate/history/?portCode=PFF003" 200 10810
+127.0.0.1:51104 - - [16/Jun/2021:14:56:33] "GET /management/api/v1/overview/compare/?portCode=PFF003" 200 5622
+127.0.0.1:51106 - - [16/Jun/2021:14:56:33] "GET /management/api/v1/overview/pos/?portCode=PFF003" 200 11170
+127.0.0.1:51110 - - [16/Jun/2021:14:56:33] "GET /management/api/v1/overview/allocate/avg/?portCode=PFF003&start=&end=" 200 259
+127.0.0.1:51108 - - [16/Jun/2021:14:56:33] "GET /management/api/v1/overview/?portCode=PFF003" 200 3655
+127.0.0.1:51118 - - [16/Jun/2021:14:56:33] "GET /management/api/v1/overview/questionnairy/?portCode=PFF003" 200 312
+127.0.0.1:51098 - - [16/Jun/2021:14:56:40] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:54450 - - [16/Jun/2021:15:00:22] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:54450 - - [16/Jun/2021:15:00:22] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:54454 - - [16/Jun/2021:15:00:22] "GET /management/api/v1/overview/allocate/?portCode=PFF003" 200 288
+127.0.0.1:54456 - - [16/Jun/2021:15:00:22] "GET /management/api/v1/overview/allocate/history/?portCode=PFF003" 200 10810
+127.0.0.1:54458 - - [16/Jun/2021:15:00:22] "GET /management/api/v1/overview/compare/?portCode=PFF003" 200 5622
+127.0.0.1:54462 - - [16/Jun/2021:15:00:22] "GET /management/api/v1/overview/allocate/avg/?portCode=PFF003&start=&end=" 200 259
+127.0.0.1:54464 - - [16/Jun/2021:15:00:22] "GET /management/api/v1/overview/pos/?portCode=PFF003" 200 11170
+127.0.0.1:54460 - - [16/Jun/2021:15:00:22] "GET /management/api/v1/overview/?portCode=PFF003" 200 3655
+2021-06-16 15:00:47,998 WARNING  Application instance <Task pending name='Task-170' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7f658b0c4040>()]>> for connection <WebSocketProtocol client=['127.0.0.1', 54570] path=b'/ws/prevaluation/'> took too long to shut down and was killed.
+2021-06-16 15:03:34,760 WARNING  Application instance <Task pending name='Task-181' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7f6598097e20>()]>> for connection <WebSocketProtocol client=['127.0.0.1', 56298] path=b'/ws/prevaluation/'> took too long to shut down and was killed.
+2021-06-16 17:33:21,368 WARNING  Application instance <Task pending name='Task-214' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7f65980cb820>()]>> for connection <WebSocketProtocol client=['127.0.0.1', 32794] path=b'/ws/prevaluation/'> took too long to shut down and was killed.
+127.0.0.1:54472 - - [16/Jun/2021:15:00:22] "GET /management/api/v1/overview/questionnairy/?portCode=PFF003" 200 312
+127.0.0.1:54450 - - [16/Jun/2021:15:00:30] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:54550 - - [16/Jun/2021:15:00:30] "GET /management/api/v1/cta/" 200 816
+127.0.0.1:54548 - - [16/Jun/2021:15:00:30] "GET /management/api/v1/basic/all/" 200 1178
+127.0.0.1:54552 - - [16/Jun/2021:15:00:30] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:54556 - - [16/Jun/2021:15:00:30] "GET /management/api/v1/basic/all/" 200 1178
+127.0.0.1:54570 - - [16/Jun/2021:15:00:31] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:54570 - - [16/Jun/2021:15:00:31] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:54572 - - [16/Jun/2021:15:00:31] "GET /management/api/v1/overview/allocate/?portCode=PFF005" 200 287
+127.0.0.1:54574 - - [16/Jun/2021:15:00:31] "GET /management/api/v1/overview/allocate/history/?portCode=PFF005" 200 5140
+127.0.0.1:54576 - - [16/Jun/2021:15:00:31] "GET /management/api/v1/overview/compare/?portCode=PFF005" 200 2522
+127.0.0.1:54580 - - [16/Jun/2021:15:00:31] "GET /management/api/v1/overview/pos/?portCode=PFF005" 200 11044
+127.0.0.1:54582 - - [16/Jun/2021:15:00:31] "GET /management/api/v1/overview/allocate/avg/?portCode=PFF005&start=&end=" 200 280
+127.0.0.1:54578 - - [16/Jun/2021:15:00:31] "GET /management/api/v1/overview/?portCode=PFF005" 200 1765
+127.0.0.1:54590 - - [16/Jun/2021:15:00:31] "GET /management/api/v1/overview/questionnairy/?portCode=PFF005" 200 321
+127.0.0.1:54570 - - [16/Jun/2021:15:00:37] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:56298 - - [16/Jun/2021:15:03:23] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:56298 - - [16/Jun/2021:15:03:23] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:56302 - - [16/Jun/2021:15:03:23] "GET /management/api/v1/overview/allocate/?portCode=PFF003" 200 288
+127.0.0.1:56304 - - [16/Jun/2021:15:03:23] "GET /management/api/v1/overview/allocate/history/?portCode=PFF003" 200 10810
+127.0.0.1:56306 - - [16/Jun/2021:15:03:23] "GET /management/api/v1/overview/compare/?portCode=PFF003" 200 5622
+127.0.0.1:56310 - - [16/Jun/2021:15:03:23] "GET /management/api/v1/overview/pos/?portCode=PFF003" 200 11170
+127.0.0.1:56312 - - [16/Jun/2021:15:03:23] "GET /management/api/v1/overview/allocate/avg/?portCode=PFF003&start=&end=" 200 259
+127.0.0.1:56308 - - [16/Jun/2021:15:03:23] "GET /management/api/v1/overview/?portCode=PFF003" 200 3655
+127.0.0.1:56320 - - [16/Jun/2021:15:03:23] "GET /management/api/v1/overview/questionnairy/?portCode=PFF003" 200 312
+127.0.0.1:56298 - - [16/Jun/2021:15:03:23] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:56328 - - [16/Jun/2021:15:03:24] "GET /management/api/v1/analysis/performance/?date=2021-06-16&portCode=PFF003" 200 900
+127.0.0.1:56330 - - [16/Jun/2021:15:03:24] "GET /management/api/v1/analysis/attribute/?portCode=PFF003&date=2021-06-16" 200 246
+127.0.0.1:56350 - - [16/Jun/2021:15:03:27] "GET /management/api/v1/analysis/fundholding/?portCode=PFF003&date=2021-06-16" 200 27532
+127.0.0.1:56352 - - [16/Jun/2021:15:03:27] "GET /management/api/v1/basic/all/" 200 1178
+127.0.0.1:56378 - - [16/Jun/2021:15:03:27] "GET /management/api/v1/analysis/fundholding/etf/?portCode=PFF003&date=2021-06-16" 200 9634
+127.0.0.1:56380 - - [16/Jun/2021:15:03:27] "GET /management/api/v1/analysis/fundholding/etf_analysis/?port_code=PFF003" 200 3437
+127.0.0.1:35942 - - [16/Jun/2021:16:51:17] "GET /management/api/v1/cta/" 200 816
+127.0.0.1:35940 - - [16/Jun/2021:16:51:17] "GET /management/api/v1/basic/all/" 200 1178
+127.0.0.1:35946 - - [16/Jun/2021:16:51:17] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:35950 - - [16/Jun/2021:16:51:17] "GET /management/api/v1/basic/all/" 200 1178
+127.0.0.1:35966 - - [16/Jun/2021:16:51:18] "GET /management/api/v1/cta/holding?port_code=PFF006" 200 2614
+127.0.0.1:50978 - - [16/Jun/2021:17:16:26] "GET /management/api/v1/basic/all/" 200 1178
+127.0.0.1:50980 - - [16/Jun/2021:17:16:26] "GET /management/api/v1/cta/" 200 816
+127.0.0.1:50982 - - [16/Jun/2021:17:16:26] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:50986 - - [16/Jun/2021:17:16:26] "GET /management/api/v1/basic/all/" 200 1178
+127.0.0.1:60914 - - [16/Jun/2021:17:33:01] "GET /management/api/v1/cta/" 200 816
+127.0.0.1:60912 - - [16/Jun/2021:17:33:01] "GET /management/api/v1/basic/all/" 200 1178
+127.0.0.1:60916 - - [16/Jun/2021:17:33:01] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:60922 - - [16/Jun/2021:17:33:01] "GET /management/api/v1/basic/all/" 200 1178
+127.0.0.1:60960 - - [16/Jun/2021:17:33:05] "GET /management/api/v1/cta/holding?port_code=PFF006" 200 2614
+127.0.0.1:32794 - - [16/Jun/2021:17:33:10] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:32794 - - [16/Jun/2021:17:33:10] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:32792 - - [16/Jun/2021:17:33:10] "GET /management/api/v1/overview/allocate/?portCode=SA5001" 200 286
+127.0.0.1:32796 - - [16/Jun/2021:17:33:10] "GET /management/api/v1/overview/allocate/history/?portCode=SA5001" 200 21745
+127.0.0.1:32798 - - [16/Jun/2021:17:33:10] "GET /management/api/v1/overview/compare/?portCode=SA5001" 200 11979
+127.0.0.1:32802 - - [16/Jun/2021:17:33:10] "GET /management/api/v1/overview/pos/?portCode=SA5001" 200 11164
+127.0.0.1:32800 - - [16/Jun/2021:17:33:10] "GET /management/api/v1/overview/?portCode=SA5001" 200 7239
+127.0.0.1:32804 - - [16/Jun/2021:17:33:10] "GET /management/api/v1/overview/allocate/avg/?portCode=SA5001&start=&end=" 200 262
+127.0.0.1:32812 - - [16/Jun/2021:17:33:10] "GET /management/api/v1/overview/questionnairy/?portCode=SA5001" 200 478
+127.0.0.1:32794 - - [16/Jun/2021:17:33:11] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:32910 - - [16/Jun/2021:17:33:19] "GET /management/api/v1/cta/holding?port_code=PFF007" 200 924
+127.0.0.1:32930 - - [16/Jun/2021:17:33:21] "GET /management/api/v1/cta/transaction?port_code=PFF007&secucode=003465" 200 2
+127.0.0.1:32944 - - [16/Jun/2021:17:33:22] "GET /management/api/v1/cta/transaction?port_code=PFF007&secucode=000759" 200 2
+127.0.0.1:32948 - - [16/Jun/2021:17:33:22] "GET /management/api/v1/cta/transaction?port_code=PFF007&secucode=000759" 200 2
+127.0.0.1:32958 - - [16/Jun/2021:17:33:22] "GET /management/api/v1/cta/transaction?port_code=PFF007&secucode=020007" 200 2
+127.0.0.1:32962 - - [16/Jun/2021:17:33:22] "GET /management/api/v1/cta/transaction?port_code=PFF007&secucode=020007" 200 2
+127.0.0.1:32966 - - [16/Jun/2021:17:33:22] "GET /management/api/v1/cta/transaction?port_code=PFF007&secucode=020007" 200 2
+127.0.0.1:33562 - - [16/Jun/2021:17:34:21] "GET /management/api/v1/cta/transaction?port_code=PFF007&secucode=003465" 200 2
+127.0.0.1:33566 - - [16/Jun/2021:17:34:21] "GET /management/api/v1/cta/transaction?port_code=PFF007&secucode=003465" 200 2
+127.0.0.1:33570 - - [16/Jun/2021:17:34:21] "GET /management/api/v1/cta/transaction?port_code=PFF007&secucode=003465" 200 2
+127.0.0.1:33574 - - [16/Jun/2021:17:34:21] "GET /management/api/v1/cta/transaction?port_code=PFF007&secucode=003465" 200 2
+127.0.0.1:33578 - - [16/Jun/2021:17:34:21] "GET /management/api/v1/cta/transaction?port_code=PFF007&secucode=003465" 200 2
+127.0.0.1:34186 - - [16/Jun/2021:17:35:22] "GET /management/api/v1/cta/transaction?port_code=PFF007&secucode=003465" 200 2
+127.0.0.1:34190 - - [16/Jun/2021:17:35:22] "GET /management/api/v1/cta/transaction?port_code=PFF007&secucode=003465" 200 2
+127.0.0.1:34196 - - [16/Jun/2021:17:35:22] "GET /management/api/v1/cta/transaction?port_code=PFF007&secucode=003465" 200 2
+127.0.0.1:34200 - - [16/Jun/2021:17:35:22] "GET /management/api/v1/cta/transaction?port_code=PFF007&secucode=003465" 200 2
+127.0.0.1:34204 - - [16/Jun/2021:17:35:22] "GET /management/api/v1/cta/transaction?port_code=PFF007&secucode=003465" 200 2
+127.0.0.1:34812 - - [16/Jun/2021:17:36:23] "GET /management/api/v1/cta/transaction?port_code=PFF007&secucode=003465" 200 2
+127.0.0.1:34816 - - [16/Jun/2021:17:36:23] "GET /management/api/v1/cta/transaction?port_code=PFF007&secucode=003465" 200 2
+127.0.0.1:34820 - - [16/Jun/2021:17:36:23] "GET /management/api/v1/cta/transaction?port_code=PFF007&secucode=003465" 200 2
+127.0.0.1:34824 - - [16/Jun/2021:17:36:23] "GET /management/api/v1/cta/transaction?port_code=PFF007&secucode=003465" 200 2
+2021-06-17 11:20:57,106 WARNING  Application instance <Task pending name='Task-262' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7f65d95fb160>()]>> for connection <WebSocketProtocol client=['127.0.0.1', 54710] path=b'/ws/prevaluation/'> took too long to shut down and was killed.
+2021-06-17 11:30:16,075 WARNING  Application instance <Task pending name='Task-286' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7f6599aee550>()]>> for connection <WebSocketProtocol client=['127.0.0.1', 33780] path=b'/ws/prevaluation/'> took too long to shut down and was killed.
+127.0.0.1:34828 - - [16/Jun/2021:17:36:23] "GET /management/api/v1/cta/transaction?port_code=PFF007&secucode=003465" 200 2
+127.0.0.1:35430 - - [16/Jun/2021:17:37:23] "GET /management/api/v1/cta/transaction?port_code=PFF007&secucode=003465" 200 2
+127.0.0.1:35434 - - [16/Jun/2021:17:37:23] "GET /management/api/v1/cta/transaction?port_code=PFF007&secucode=003465" 200 2
+127.0.0.1:35438 - - [16/Jun/2021:17:37:23] "GET /management/api/v1/cta/transaction?port_code=PFF007&secucode=003465" 200 2
+127.0.0.1:35442 - - [16/Jun/2021:17:37:23] "GET /management/api/v1/cta/transaction?port_code=PFF007&secucode=003465" 200 2
+127.0.0.1:35446 - - [16/Jun/2021:17:37:23] "GET /management/api/v1/cta/transaction?port_code=PFF007&secucode=003465" 200 2
+127.0.0.1:35478 - - [16/Jun/2021:17:37:26] "GET /management/api/v1/basic/all/" 200 1178
+127.0.0.1:35480 - - [16/Jun/2021:17:37:26] "GET /management/api/v1/cta/" 200 816
+127.0.0.1:35482 - - [16/Jun/2021:17:37:26] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:35490 - - [16/Jun/2021:17:37:26] "GET /management/api/v1/basic/all/" 200 1178
+127.0.0.1:37904 - - [17/Jun/2021:09:29:09] "GET /management/api/v1/overview/?portCode=SA5001" 200 7239
+127.0.0.1:37910 - - [17/Jun/2021:09:29:09] "GET /management/api/v1/overview/?portCode=PFF003" 200 3655
+127.0.0.1:37914 - - [17/Jun/2021:09:29:09] "GET /management/api/v1/overview/?portCode=PFF005" 200 1765
+127.0.0.1:54662 - - [17/Jun/2021:09:48:07] "GET /management/api/v1/cta/holding?port_code=PFF006" 200 2614
+127.0.0.1:54674 - - [17/Jun/2021:09:48:08] "GET /management/api/v1/cta/" 200 816
+127.0.0.1:54672 - - [17/Jun/2021:09:48:08] "GET /management/api/v1/basic/all/" 200 1178
+127.0.0.1:54676 - - [17/Jun/2021:09:48:08] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:54690 - - [17/Jun/2021:09:48:08] "GET /management/api/v1/basic/all/" 200 1178
+127.0.0.1:54710 - - [17/Jun/2021:09:48:09] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:54710 - - [17/Jun/2021:09:48:09] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:54712 - - [17/Jun/2021:09:48:09] "GET /management/api/v1/overview/allocate/?portCode=PFF005" 200 287
+127.0.0.1:54714 - - [17/Jun/2021:09:48:09] "GET /management/api/v1/overview/allocate/history/?portCode=PFF005" 200 5275
+127.0.0.1:54716 - - [17/Jun/2021:09:48:09] "GET /management/api/v1/overview/compare/?portCode=PFF005" 200 2597
+127.0.0.1:54720 - - [17/Jun/2021:09:48:09] "GET /management/api/v1/overview/pos/?portCode=PFF005" 200 11050
+127.0.0.1:54718 - - [17/Jun/2021:09:48:09] "GET /management/api/v1/overview/?portCode=PFF005" 200 1765
+127.0.0.1:54722 - - [17/Jun/2021:09:48:09] "GET /management/api/v1/overview/allocate/avg/?portCode=PFF005&start=&end=" 200 278
+127.0.0.1:54734 - - [17/Jun/2021:09:48:09] "GET /management/api/v1/overview/questionnairy/?portCode=PFF005" 200 321
+127.0.0.1:42286 - - [17/Jun/2021:11:08:09] "GET /questionnaire/" 200 4616
+127.0.0.1:42464 - - [17/Jun/2021:11:08:21] "GET /management/admin/questionnaire/client/" 200 31744
+127.0.0.1:42480 - - [17/Jun/2021:11:08:21] "GET /management/admin/jsi18n/" 200 7732
+127.0.0.1:42870 - - [17/Jun/2021:11:08:46] "GET /questionnaire/create/" 200 88503
+127.0.0.1:47058 - - [17/Jun/2021:11:13:23] "POST /questionnaire/save/" 200 1906
+127.0.0.1:47074 - - [17/Jun/2021:11:13:24] "GET /questionnaire/modify/19/" 200 104113
+127.0.0.1:47092 - - [17/Jun/2021:11:13:26] "GET /questionnaire/view/" 200 8248
+127.0.0.1:47296 - - [17/Jun/2021:11:13:40] "GET /questionnaire/create/" 200 88503
+127.0.0.1:51038 - - [17/Jun/2021:11:17:47] "POST /questionnaire/save/" 200 1906
+127.0.0.1:51056 - - [17/Jun/2021:11:17:49] "GET /questionnaire/view/" 200 8659
+127.0.0.1:54710 - - [17/Jun/2021:11:20:46] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:53740 - - [17/Jun/2021:11:20:46] "GET /management/api/v1/basic/all/" 200 1178
+127.0.0.1:53742 - - [17/Jun/2021:11:20:46] "GET /management/api/v1/cta/" 200 816
+127.0.0.1:53744 - - [17/Jun/2021:11:20:46] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:53750 - - [17/Jun/2021:11:20:46] "GET /management/api/v1/basic/all/" 200 1178
+127.0.0.1:33780 - - [17/Jun/2021:11:30:00] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:33780 - - [17/Jun/2021:11:30:00] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:33782 - - [17/Jun/2021:11:30:00] "GET /management/api/v1/overview/allocate/?portCode=PFF003" 200 288
+127.0.0.1:33784 - - [17/Jun/2021:11:30:00] "GET /management/api/v1/overview/compare/?portCode=PFF003" 200 5697
+127.0.0.1:33786 - - [17/Jun/2021:11:30:00] "GET /management/api/v1/overview/allocate/history/?portCode=PFF003" 200 10945
+127.0.0.1:33790 - - [17/Jun/2021:11:30:00] "GET /management/api/v1/overview/pos/?portCode=PFF003" 200 11170
+127.0.0.1:33788 - - [17/Jun/2021:11:30:00] "GET /management/api/v1/overview/?portCode=PFF003" 200 3655
+127.0.0.1:33792 - - [17/Jun/2021:11:30:00] "GET /management/api/v1/overview/allocate/avg/?portCode=PFF003&start=&end=" 200 289
+127.0.0.1:33800 - - [17/Jun/2021:11:30:00] "GET /management/api/v1/overview/questionnairy/?portCode=PFF003" 200 312
+127.0.0.1:33780 - - [17/Jun/2021:11:30:05] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:33860 - - [17/Jun/2021:11:30:05] "GET /management/api/v1/cta/" 200 816
+127.0.0.1:33858 - - [17/Jun/2021:11:30:05] "GET /management/api/v1/basic/all/" 200 1178
+127.0.0.1:33862 - - [17/Jun/2021:11:30:05] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:33866 - - [17/Jun/2021:11:30:05] "GET /management/api/v1/basic/all/" 200 1178
+127.0.0.1:53816 - - [17/Jun/2021:13:57:01] "GET /management/api/v1/capital/category/" 200 674
+127.0.0.1:53858 - - [17/Jun/2021:13:57:08] "GET /management/api/v1/capital/?category=%E6%9C%89%E8%89%B2%E9%87%91%E5%B1%9E&date=" 200 9666
+127.0.0.1:35400 - - [17/Jun/2021:14:07:59] "GET /management/api/v1/analysis/performance/?date=2021-06-17&portCode=PFF003" 200 905
+127.0.0.1:35402 - - [17/Jun/2021:14:07:59] "GET /management/api/v1/analysis/attribute/?portCode=PFF003&date=2021-06-17" 200 248
+127.0.0.1:35496 - - [17/Jun/2021:14:08:05] "GET /management/api/v1/analysis/brinson/?portCode=PFF003&date=2021-06-17" 200 6572
+127.0.0.1:35498 - - [17/Jun/2021:14:08:05] "GET /management/api/v1/analysis/style/?portCode=PFF003&date=2021-06-17" 200 11371
+127.0.0.1:35500 - - [17/Jun/2021:14:08:05] "GET /management/api/v1/analysis/expose/?portCode=PFF003&date=2021-06-17" 200 320
+127.0.0.1:35502 - - [17/Jun/2021:14:08:05] "GET /management/api/v1/analysis/std/?portCode=PFF003&date=2021-06-17" 200 2802
+127.0.0.1:35534 - - [17/Jun/2021:14:08:14] "GET /management/api/v1/analysis/fundholding/?portCode=PFF003&date=2021-06-17" 200 27594
+127.0.0.1:35536 - - [17/Jun/2021:14:08:14] "GET /management/api/v1/basic/all/" 200 1175
+127.0.0.1:35624 - - [17/Jun/2021:14:08:14] "GET /management/api/v1/analysis/attribute/?portCode=PFF003&date=2021-06-11" 200 246
+127.0.0.1:35626 - - [17/Jun/2021:14:08:14] "GET /management/api/v1/analysis/performance/?date=2021-06-11&portCode=PFF003" 200 896
+127.0.0.1:35684 - - [17/Jun/2021:14:08:15] "GET /management/api/v1/analysis/fundholding/?portCode=PFF003&date=2021-06-17" 200 27594
+127.0.0.1:35688 - - [17/Jun/2021:14:08:15] "GET /management/api/v1/analysis/attribute/?portCode=PFF003&date=2021-06-11" 200 246
+127.0.0.1:35778 - - [17/Jun/2021:14:08:22] "GET /management/api/v1/analysis/fundholding/?portCode=PFF003&date=2021-06-11" 200 27786
+127.0.0.1:36486 - - [17/Jun/2021:14:09:07] "GET /management/api/v1/analysis/performance/?date=2021-06-17&portCode=PFF003" 200 905
+127.0.0.1:36488 - - [17/Jun/2021:14:09:07] "GET /management/api/v1/analysis/attribute/?portCode=PFF003&date=2021-06-17" 200 248
+127.0.0.1:36494 - - [17/Jun/2021:14:09:07] "GET /management/api/v1/analysis/attribute/?portCode=PFF003&date=2021-06-17" 200 248
+127.0.0.1:35338 - - [17/Jun/2021:15:16:22] "GET /management/api/v1/analysis/performance/?date=2021-06-17&portCode=SA5001" 200 895
+127.0.0.1:35340 - - [17/Jun/2021:15:16:22] "GET /management/api/v1/analysis/attribute/?portCode=SA5001&date=2021-06-17" 200 251
+127.0.0.1:35352 - - [17/Jun/2021:15:16:23] "GET /management/api/v1/cta/" 200 816
+127.0.0.1:35350 - - [17/Jun/2021:15:16:23] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:35354 - - [17/Jun/2021:15:16:23] "GET /management/api/v1/basic/all/" 200 1175
+Internal Server Error: /management/api/v1/cta/holding
+Traceback (most recent call last):
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 330, in thread_handler
+    raise exc_info[1]
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 38, in inner
+    response = await get_response(request)
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/base.py", line 231, in _get_response_async
+    response = await wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 296, in __call__
+    ret = await asyncio.wait_for(future, timeout=None)
+  File "/usr/local/python3/lib/python3.8/asyncio/tasks.py", line 455, in wait_for
+    return await fut
+  File "/usr/local/python3/lib/python3.8/concurrent/futures/thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 334, in thread_handler
+    return func(*args, **kwargs)
+  File "./cta_fof/views.py", line 53, in holding
+    data = resp.json()['data']
+  File "/home/sma/.local/lib/python3.8/site-packages/requests/models.py", line 898, in json
+    return complexjson.loads(self.text, **kwargs)
+  File "/usr/local/python3/lib/python3.8/json/__init__.py", line 357, in loads
+    return _default_decoder.decode(s)
+  File "/usr/local/python3/lib/python3.8/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/local/python3/lib/python3.8/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+2021-06-17 15:16:24,696 ERROR    Internal Server Error: /management/api/v1/cta/holding
+Traceback (most recent call last):
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 330, in thread_handler
+    raise exc_info[1]
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 38, in inner
+    response = await get_response(request)
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/base.py", line 231, in _get_response_async
+    response = await wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 296, in __call__
+    ret = await asyncio.wait_for(future, timeout=None)
+  File "/usr/local/python3/lib/python3.8/asyncio/tasks.py", line 455, in wait_for
+    return await fut
+  File "/usr/local/python3/lib/python3.8/concurrent/futures/thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 334, in thread_handler
+    return func(*args, **kwargs)
+  File "./cta_fof/views.py", line 53, in holding
+    data = resp.json()['data']
+  File "/home/sma/.local/lib/python3.8/site-packages/requests/models.py", line 898, in json
+    return complexjson.loads(self.text, **kwargs)
+  File "/usr/local/python3/lib/python3.8/json/__init__.py", line 357, in loads
+    return _default_decoder.decode(s)
+  File "/usr/local/python3/lib/python3.8/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/local/python3/lib/python3.8/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+2021-06-17 18:30:30,476 WARNING  Application instance <Task pending name='Task-384' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7f6599a9bd90>()]>> for connection <WebSocketProtocol client=['127.0.0.1', 38212] path=b'/ws/prevaluation/'> took too long to shut down and was killed.
+127.0.0.1:35360 - - [17/Jun/2021:15:16:23] "GET /management/api/v1/basic/all/" 200 1175
+127.0.0.1:35374 - - [17/Jun/2021:15:16:24] "GET /management/api/v1/cta/holding?port_code=PFF006" 500 122132
+127.0.0.1:36690 - - [17/Jun/2021:15:18:34] "GET /management/api/v1/cta/" 200 816
+127.0.0.1:36692 - - [17/Jun/2021:15:18:34] "GET /management/api/v1/basic/all/" 200 1175
+127.0.0.1:36694 - - [17/Jun/2021:15:18:34] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:36700 - - [17/Jun/2021:15:18:34] "GET /management/api/v1/basic/all/" 200 1175
+127.0.0.1:36764 - - [17/Jun/2021:15:18:40] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:36764 - - [17/Jun/2021:15:18:40] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:36766 - - [17/Jun/2021:15:18:40] "GET /management/api/v1/overview/allocate/?portCode=PFF003" 200 289
+127.0.0.1:36768 - - [17/Jun/2021:15:18:40] "GET /management/api/v1/overview/allocate/history/?portCode=PFF003" 200 10945
+127.0.0.1:36770 - - [17/Jun/2021:15:18:40] "GET /management/api/v1/overview/compare/?portCode=PFF003" 200 5772
+127.0.0.1:36774 - - [17/Jun/2021:15:18:40] "GET /management/api/v1/overview/allocate/avg/?portCode=PFF003&start=&end=" 200 289
+127.0.0.1:36776 - - [17/Jun/2021:15:18:40] "GET /management/api/v1/overview/pos/?portCode=PFF003" 200 11170
+127.0.0.1:36772 - - [17/Jun/2021:15:18:40] "GET /management/api/v1/overview/?portCode=PFF003" 200 3699
+127.0.0.1:36786 - - [17/Jun/2021:15:18:40] "GET /management/api/v1/overview/questionnairy/?portCode=PFF003" 200 312
+127.0.0.1:42748 - - [17/Jun/2021:17:03:18] "GET /management/api/v1/analysis/performance/?date=2021-06-16&portCode=PFF003" 200 905
+127.0.0.1:42750 - - [17/Jun/2021:17:03:18] "GET /management/api/v1/analysis/attribute/?portCode=PFF003&date=2021-06-16" 200 248
+127.0.0.1:42752 - - [17/Jun/2021:17:03:18] "GET /management/api/v1/analysis/fundholding/?portCode=PFF003&date=2021-06-17" 200 27594
+127.0.0.1:42766 - - [17/Jun/2021:17:03:18] "GET /management/api/v1/analysis/attribute/?portCode=PFF003&date=2021-06-16" 200 248
+127.0.0.1:43024 - - [17/Jun/2021:17:03:45] "GET /management/api/v1/analysis/performance/?date=2021-06-11&portCode=PFF003" 200 896
+127.0.0.1:43026 - - [17/Jun/2021:17:03:45] "GET /management/api/v1/analysis/attribute/?portCode=PFF003&date=2021-06-11" 200 246
+127.0.0.1:43028 - - [17/Jun/2021:17:03:45] "GET /management/api/v1/analysis/fundholding/?portCode=PFF003&date=2021-06-16" 200 27594
+127.0.0.1:43044 - - [17/Jun/2021:17:03:45] "GET /management/api/v1/analysis/attribute/?portCode=PFF003&date=2021-06-11" 200 246
+127.0.0.1:43076 - - [17/Jun/2021:17:03:48] "GET /management/api/v1/analysis/fundholding/?portCode=PFF003&date=2021-06-11" 200 27786
+127.0.0.1:43252 - - [17/Jun/2021:17:04:05] "GET /management/api/v1/analysis/performance/?date=2021-06-17&portCode=PFF003" 200 905
+127.0.0.1:43254 - - [17/Jun/2021:17:04:05] "GET /management/api/v1/analysis/attribute/?portCode=PFF003&date=2021-06-17" 200 248
+127.0.0.1:43260 - - [17/Jun/2021:17:04:05] "GET /management/api/v1/analysis/attribute/?portCode=PFF003&date=2021-06-17" 200 248
+127.0.0.1:51586 - - [17/Jun/2021:17:18:03] "GET /management/api/v1/basic/all/" 200 1175
+127.0.0.1:51588 - - [17/Jun/2021:17:18:03] "GET /management/api/v1/cta/" 200 816
+127.0.0.1:51590 - - [17/Jun/2021:17:18:03] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:51596 - - [17/Jun/2021:17:18:03] "GET /management/api/v1/basic/all/" 200 1175
+127.0.0.1:51628 - - [17/Jun/2021:17:18:06] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:51628 - - [17/Jun/2021:17:18:06] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:51630 - - [17/Jun/2021:17:18:06] "GET /management/api/v1/overview/allocate/?portCode=PFF003" 200 289
+127.0.0.1:51634 - - [17/Jun/2021:17:18:06] "GET /management/api/v1/overview/allocate/history/?portCode=PFF003" 200 10945
+127.0.0.1:51636 - - [17/Jun/2021:17:18:06] "GET /management/api/v1/overview/compare/?portCode=PFF003" 200 5772
+127.0.0.1:51640 - - [17/Jun/2021:17:18:06] "GET /management/api/v1/overview/pos/?portCode=PFF003" 200 11170
+127.0.0.1:51642 - - [17/Jun/2021:17:18:06] "GET /management/api/v1/overview/allocate/avg/?portCode=PFF003&start=&end=" 200 289
+127.0.0.1:51638 - - [17/Jun/2021:17:18:06] "GET /management/api/v1/overview/?portCode=PFF003" 200 3699
+127.0.0.1:51650 - - [17/Jun/2021:17:18:06] "GET /management/api/v1/overview/questionnairy/?portCode=PFF003" 200 312
+127.0.0.1:51628 - - [17/Jun/2021:18:05:05] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:38030 - - [17/Jun/2021:18:30:00] "GET /management/api/v1/cta/" 200 816
+127.0.0.1:38028 - - [17/Jun/2021:18:30:00] "GET /management/api/v1/basic/all/" 200 1175
+127.0.0.1:38032 - - [17/Jun/2021:18:30:00] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:38038 - - [17/Jun/2021:18:30:00] "GET /management/api/v1/basic/all/" 200 1175
+127.0.0.1:38062 - - [17/Jun/2021:18:30:02] "GET /management/api/v1/cta/holding?port_code=PFF006" 200 2622
+127.0.0.1:38212 - - [17/Jun/2021:18:30:16] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:38212 - - [17/Jun/2021:18:30:16] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:38214 - - [17/Jun/2021:18:30:16] "GET /management/api/v1/overview/allocate/?portCode=SA5001" 200 288
+127.0.0.1:38216 - - [17/Jun/2021:18:30:16] "GET /management/api/v1/overview/allocate/history/?portCode=SA5001" 200 21880
+127.0.0.1:38218 - - [17/Jun/2021:18:30:16] "GET /management/api/v1/overview/compare/?portCode=SA5001" 200 12054
+127.0.0.1:38222 - - [17/Jun/2021:18:30:16] "GET /management/api/v1/overview/pos/?portCode=SA5001" 200 11170
+127.0.0.1:38224 - - [17/Jun/2021:18:30:16] "GET /management/api/v1/overview/allocate/avg/?portCode=SA5001&start=&end=" 200 288
+127.0.0.1:38220 - - [17/Jun/2021:18:30:16] "GET /management/api/v1/overview/?portCode=SA5001" 200 7283
+127.0.0.1:38232 - - [17/Jun/2021:18:30:16] "GET /management/api/v1/overview/questionnairy/?portCode=SA5001" 200 478
+127.0.0.1:38212 - - [17/Jun/2021:18:30:20] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:38720 - - [17/Jun/2021:18:31:05] "POST /management/api/v1/history/summary/" 200 54328
+127.0.0.1:38722 - - [17/Jun/2021:18:31:05] "GET /management/api/v1/history/summary/?portCode=SA5001&date" 200 158
+127.0.0.1:38760 - - [17/Jun/2021:18:31:08] "GET /management/api/v1/warehouse/portfolio/" 200 407
+127.0.0.1:38772 - - [17/Jun/2021:18:31:09] "GET /management/api/v1/warehouse/fundlist/?keyword&portCode=" 200 12
+127.0.0.1:38812 - - [17/Jun/2021:18:31:14] "GET /management/api/v1/backtest/?date=2021-06-17" 200 238697
+127.0.0.1:38822 - - [17/Jun/2021:18:31:14] "GET /management/api/v1/capital/category/" 200 674
+127.0.0.1:38846 - - [17/Jun/2021:18:31:15] "GET /management/api/v1/cta/" 200 816
+127.0.0.1:38844 - - [17/Jun/2021:18:31:15] "GET /management/api/v1/basic/all/" 200 1175
+127.0.0.1:38848 - - [17/Jun/2021:18:31:15] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:38852 - - [17/Jun/2021:18:31:15] "GET /management/api/v1/basic/all/" 200 1175
+127.0.0.1:38864 - - [17/Jun/2021:18:31:16] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:38864 - - [17/Jun/2021:18:31:16] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:38868 - - [17/Jun/2021:18:31:16] "GET /management/api/v1/overview/allocate/?portCode=SA5001" 200 288
+127.0.0.1:38870 - - [17/Jun/2021:18:31:16] "GET /management/api/v1/overview/allocate/history/?portCode=SA5001" 200 21880
+127.0.0.1:38872 - - [17/Jun/2021:18:31:16] "GET /management/api/v1/overview/compare/?portCode=SA5001" 200 12054
+127.0.0.1:38876 - - [17/Jun/2021:18:31:16] "GET /management/api/v1/overview/pos/?portCode=SA5001" 200 11170
+127.0.0.1:38874 - - [17/Jun/2021:18:31:16] "GET /management/api/v1/overview/?portCode=SA5001" 200 7283
+127.0.0.1:38878 - - [17/Jun/2021:18:31:16] "GET /management/api/v1/overview/allocate/avg/?portCode=SA5001&start=&end=" 200 288
+127.0.0.1:38884 - - [17/Jun/2021:18:31:16] "GET /management/api/v1/overview/questionnairy/?portCode=SA5001" 200 478
+127.0.0.1:38864 - - [17/Jun/2021:18:31:24] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:39012 - - [17/Jun/2021:18:31:29] "GET /management/api/v1/cta/holding?port_code=PFF006" 200 2622
+127.0.0.1:39124 - - [17/Jun/2021:18:31:39] "GET /management/admin/" 302 -
+127.0.0.1:39126 - - [17/Jun/2021:18:31:39] "GET /management/admin/login/?next=/management/admin/" 200 2229
+2021-06-17 18:31:51,774 WARNING  Application instance <Task pending name='Task-418' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7f659993c820>()]>> for connection <WebSocketProtocol client=['127.0.0.1', 39132] path=b'/ws/prevaluation/'> took too long to shut down and was killed.
+2021-06-17 18:31:57,789 WARNING  Application instance <Task pending name='Task-430' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7f658a2d4970>()]>> for connection <WebSocketProtocol client=['127.0.0.1', 39190] path=b'/ws/prevaluation/'> took too long to shut down and was killed.
+2021-06-17 18:32:00,806 WARNING  Application instance <Task pending name='Task-435' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7f6589356f40>()]>> for connection <WebSocketProtocol client=['127.0.0.1', 39256] path=b'/ws/prevaluation/'> took too long to shut down and was killed.
+127.0.0.1:39132 - - [17/Jun/2021:18:31:39] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:39132 - - [17/Jun/2021:18:31:39] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:39134 - - [17/Jun/2021:18:31:40] "GET /management/api/v1/overview/allocate/?portCode=PFF005" 200 287
+127.0.0.1:39136 - - [17/Jun/2021:18:31:40] "GET /management/api/v1/overview/allocate/history/?portCode=PFF005" 200 5275
+127.0.0.1:39138 - - [17/Jun/2021:18:31:40] "GET /management/api/v1/overview/compare/?portCode=PFF005" 200 2672
+127.0.0.1:39142 - - [17/Jun/2021:18:31:40] "GET /management/api/v1/overview/pos/?portCode=PFF005" 200 11050
+127.0.0.1:39144 - - [17/Jun/2021:18:31:40] "GET /management/api/v1/overview/allocate/avg/?portCode=PFF005&start=&end=" 200 278
+127.0.0.1:39140 - - [17/Jun/2021:18:31:40] "GET /management/api/v1/overview/?portCode=PFF005" 200 1809
+127.0.0.1:39152 - - [17/Jun/2021:18:31:40] "GET /management/api/v1/overview/questionnairy/?portCode=PFF005" 200 321
+127.0.0.1:39166 - - [17/Jun/2021:18:31:41] "GET /management/admin/" 302 -
+127.0.0.1:39170 - - [17/Jun/2021:18:31:41] "GET /management/admin/login/?next=/management/admin/" 200 2229
+127.0.0.1:39132 - - [17/Jun/2021:18:31:41] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:39190 - - [17/Jun/2021:18:31:42] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:39190 - - [17/Jun/2021:18:31:42] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:39210 - - [17/Jun/2021:18:31:45] "POST /management/admin/login/?next=/management/admin/" 302 -
+127.0.0.1:39220 - - [17/Jun/2021:18:31:45] "GET /management/admin/" 200 33787
+127.0.0.1:39190 - - [17/Jun/2021:18:31:47] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:39256 - - [17/Jun/2021:18:31:48] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:39256 - - [17/Jun/2021:18:31:48] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:39260 - - [17/Jun/2021:18:31:48] "GET /management/api/v1/overview/allocate/?portCode=PFF003" 200 289
+127.0.0.1:39262 - - [17/Jun/2021:18:31:48] "GET /management/api/v1/overview/allocate/history/?portCode=PFF003" 200 10945
+127.0.0.1:39264 - - [17/Jun/2021:18:31:48] "GET /management/api/v1/overview/compare/?portCode=PFF003" 200 5772
+127.0.0.1:39268 - - [17/Jun/2021:18:31:48] "GET /management/api/v1/overview/pos/?portCode=PFF003" 200 11170
+127.0.0.1:39270 - - [17/Jun/2021:18:31:48] "GET /management/api/v1/overview/allocate/avg/?portCode=PFF003&start=&end=" 200 289
+127.0.0.1:39266 - - [17/Jun/2021:18:31:48] "GET /management/api/v1/overview/?portCode=PFF003" 200 3699
+127.0.0.1:39276 - - [17/Jun/2021:18:31:48] "GET /management/api/v1/overview/questionnairy/?portCode=PFF003" 200 312
+127.0.0.1:39256 - - [17/Jun/2021:18:31:50] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:39324 - - [17/Jun/2021:18:31:53] "GET /management/admin/cta_fof/balance/" 200 54586
+127.0.0.1:39330 - - [17/Jun/2021:18:31:53] "GET /management/admin/jsi18n/" 200 7732
+127.0.0.1:39382 - - [17/Jun/2021:18:31:58] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:39382 - - [17/Jun/2021:18:31:58] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:39384 - - [17/Jun/2021:18:31:58] "GET /management/api/v1/overview/allocate/?portCode=PFF003" 200 289
+127.0.0.1:39386 - - [17/Jun/2021:18:31:58] "GET /management/api/v1/overview/allocate/history/?portCode=PFF003" 200 10945
+127.0.0.1:39388 - - [17/Jun/2021:18:31:58] "GET /management/api/v1/overview/compare/?portCode=PFF003" 200 5772
+127.0.0.1:39392 - - [17/Jun/2021:18:31:58] "GET /management/api/v1/overview/pos/?portCode=PFF003" 200 11170
+127.0.0.1:39394 - - [17/Jun/2021:18:31:58] "GET /management/api/v1/overview/allocate/avg/?portCode=PFF003&start=&end=" 200 289
+127.0.0.1:39390 - - [17/Jun/2021:18:31:58] "GET /management/api/v1/overview/?portCode=PFF003" 200 3699
+127.0.0.1:39402 - - [17/Jun/2021:18:31:58] "GET /management/api/v1/overview/questionnairy/?portCode=PFF003" 200 312
+127.0.0.1:39456 - - [17/Jun/2021:18:32:03] "GET /management/admin/cta_fof/balance/" 302 -
+127.0.0.1:39460 - - [17/Jun/2021:18:32:03] "GET /management/admin/login/?next=/management/admin/cta_fof/balance/" 200 2261
+127.0.0.1:39536 - - [17/Jun/2021:18:32:11] "POST /management/admin/login/?next=/management/admin/cta_fof/balance/" 200 2394
+127.0.0.1:39560 - - [17/Jun/2021:18:32:13] "POST /management/admin/login/?next=/management/admin/cta_fof/balance/" 302 -
+127.0.0.1:39566 - - [17/Jun/2021:18:32:13] "GET /management/admin/cta_fof/balance/" 200 54586
+127.0.0.1:39570 - - [17/Jun/2021:18:32:13] "GET /management/admin/jsi18n/" 200 7732
+127.0.0.1:39700 - - [17/Jun/2021:18:32:26] "GET /management/admin/cta_fof/balance/?port_code__port_code__exact=PFF006" 200 49658
+127.0.0.1:39706 - - [17/Jun/2021:18:32:26] "GET /management/admin/jsi18n/" 200 7732
+127.0.0.1:36764 - - [17/Jun/2021:18:55:01] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:53184 - - [17/Jun/2021:18:55:01] "GET /management/api/v1/analysis/performance/?date=2021-06-17&portCode=PFF003" 200 905
+127.0.0.1:53186 - - [17/Jun/2021:18:55:01] "GET /management/api/v1/analysis/attribute/?portCode=PFF003&date=2021-06-17" 200 248
+127.0.0.1:53222 - - [17/Jun/2021:18:55:04] "GET /management/api/v1/analysis/monthly/?portCode=PFF003&date=2021-06-17" 200 414
+127.0.0.1:59508 - - [17/Jun/2021:19:05:38] "GET /management/api/v1/backtest/?date=2021-06-17" 200 238697
+127.0.0.1:60160 - - [17/Jun/2021:19:06:43] "GET /management/api/v1/backtest/?date=2021-06-17" 200 238697
+127.0.0.1:60310 - - [17/Jun/2021:19:06:57] "GET /management/api/v1/backtest/?date=2021-06-16" 200 238697
+127.0.0.1:60344 - - [17/Jun/2021:19:06:59] "GET /management/api/v1/backtest/download/" 200 104643
+127.0.0.1:48302 - - [17/Jun/2021:19:34:10] "GET /management/api/v1/warehouse/portfolio/" 200 407
+127.0.0.1:48314 - - [17/Jun/2021:19:34:11] "GET /management/api/v1/warehouse/fundlist/?keyword&portCode=" 200 12
+127.0.0.1:48328 - - [17/Jun/2021:19:34:12] "GET /management/api/v1/basic/all/" 200 1175
+127.0.0.1:48330 - - [17/Jun/2021:19:34:12] "GET /management/api/v1/cta/" 200 816
+127.0.0.1:48332 - - [17/Jun/2021:19:34:12] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:48340 - - [17/Jun/2021:19:34:12] "GET /management/api/v1/basic/all/" 200 1175
+127.0.0.1:48386 - - [17/Jun/2021:19:34:16] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:48386 - - [17/Jun/2021:19:34:16] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:48390 - - [17/Jun/2021:19:34:16] "GET /management/api/v1/overview/allocate/history/?portCode=PFF005" 200 5275
+127.0.0.1:48392 - - [17/Jun/2021:19:34:16] "GET /management/api/v1/overview/allocate/?portCode=PFF005" 200 287
+127.0.0.1:48396 - - [17/Jun/2021:19:34:16] "GET /management/api/v1/overview/pos/?portCode=PFF005" 200 11050
+127.0.0.1:48394 - - [17/Jun/2021:19:34:16] "GET /management/api/v1/overview/?portCode=PFF005" 200 1809
+127.0.0.1:48398 - - [17/Jun/2021:19:34:16] "GET /management/api/v1/overview/compare/?portCode=PFF005" 200 2672
+127.0.0.1:48400 - - [17/Jun/2021:19:34:16] "GET /management/api/v1/overview/allocate/avg/?portCode=PFF005&start=&end=" 200 278
+127.0.0.1:48408 - - [17/Jun/2021:19:34:16] "GET /management/api/v1/overview/questionnairy/?portCode=PFF005" 200 321
+127.0.0.1:48386 - - [17/Jun/2021:19:35:18] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:49024 - - [17/Jun/2021:19:35:18] "GET /management/api/v1/analysis/performance/?date=2021-06-17&portCode=PFF005" 200 891
+127.0.0.1:49026 - - [17/Jun/2021:19:35:18] "GET /management/api/v1/analysis/attribute/?portCode=PFF005&date=2021-06-17" 200 245
+127.0.0.1:49090 - - [17/Jun/2021:19:35:24] "GET /management/api/v1/analysis/performance/?date=2021-06-17&portCode=PFF005" 200 891
+127.0.0.1:49092 - - [17/Jun/2021:19:35:24] "GET /management/api/v1/analysis/attribute/?portCode=PFF005&date=2021-06-17" 200 245
+127.0.0.1:49140 - - [17/Jun/2021:19:35:28] "GET /management/api/v1/analysis/attribute/?portCode=PFF005&date=2021-06-17" 200 6216
+127.0.0.1:52342 - - [17/Jun/2021:19:40:51] "GET /management/api/v1/analysis/attribute/?portCode=PFF003&date=2021-06-11" 200 246
+127.0.0.1:52346 - - [17/Jun/2021:19:40:51] "GET /management/api/v1/analysis/attribute/?portCode=PFF005&date=2021-06-11" 200 245
+127.0.0.1:54402 - - [17/Jun/2021:19:44:17] "GET /management/api/v1/analysis/attribute/?portCode=PFF003&date=2021-06-11" 200 246
+127.0.0.1:54540 - - [17/Jun/2021:19:44:31] "GET /management/api/v1/analysis/attribute/?portCode=PFF003&date=2021-06-11" 200 246
+2021-06-18 09:47:44,028 WARNING  Application instance <Task pending name='Task-530' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[_chain_future.<locals>._call_check_cancel() at /usr/local/python3/lib/python3.8/asyncio/futures.py:360, <TaskWakeupMethWrapper object at 0x7f6588fed1f0>()]>> for connection <WebRequest at 0x7f658a1e0100 method=GET uri=/management/api/v1/capital/?category=%E5%86%9C%E6%9E%97%E7%89%A7%E6%B8%94&date= clientproto=HTTP/1.0> took too long to shut down and was killed.
+2021-06-18 09:48:14,129 WARNING  Application instance <Task pending name='Task-535' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[_chain_future.<locals>._call_check_cancel() at /usr/local/python3/lib/python3.8/asyncio/futures.py:360, <TaskWakeupMethWrapper object at 0x7f6588ff61c0>()]>> for connection <WebRequest at 0x7f657ec46f10 method=GET uri=/management/api/v1/capital/?category=%E5%8C%96%E5%B7%A5&date= clientproto=HTTP/1.0> took too long to shut down and was killed.
+127.0.0.1:54852 - - [17/Jun/2021:19:45:02] "GET /management/api/v1/analysis/attribute/?portCode=PFF003&date=2021-06-11" 200 246
+127.0.0.1:54856 - - [17/Jun/2021:19:45:02] "GET /management/api/v1/analysis/attribute/?portCode=PFF005&date=2021-06-11" 200 245
+127.0.0.1:55090 - - [17/Jun/2021:19:45:25] "GET /management/api/v1/analysis/attribute/?portCode=PFF003&date=2021-06-11" 200 246
+127.0.0.1:55094 - - [17/Jun/2021:19:45:25] "GET /management/api/v1/analysis/attribute/?portCode=PFF005&date=2021-06-11" 200 245
+127.0.0.1:42250 - - [17/Jun/2021:20:11:14] "GET /management/api/v1/cta/" 200 816
+127.0.0.1:42248 - - [17/Jun/2021:20:11:14] "GET /management/api/v1/basic/all/" 200 1175
+127.0.0.1:42252 - - [17/Jun/2021:20:11:14] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:42256 - - [17/Jun/2021:20:11:14] "GET /management/api/v1/basic/all/" 200 1175
+127.0.0.1:42292 - - [17/Jun/2021:20:11:17] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:42292 - - [17/Jun/2021:20:11:17] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:42294 - - [17/Jun/2021:20:11:17] "GET /management/api/v1/overview/allocate/?portCode=PFF005" 200 287
+127.0.0.1:42296 - - [17/Jun/2021:20:11:17] "GET /management/api/v1/overview/allocate/history/?portCode=PFF005" 200 5275
+127.0.0.1:42298 - - [17/Jun/2021:20:11:17] "GET /management/api/v1/overview/compare/?portCode=PFF005" 200 2672
+127.0.0.1:42302 - - [17/Jun/2021:20:11:17] "GET /management/api/v1/overview/pos/?portCode=PFF005" 200 11050
+127.0.0.1:42304 - - [17/Jun/2021:20:11:17] "GET /management/api/v1/overview/allocate/avg/?portCode=PFF005&start=&end=" 200 278
+127.0.0.1:42300 - - [17/Jun/2021:20:11:17] "GET /management/api/v1/overview/?portCode=PFF005" 200 1809
+127.0.0.1:42312 - - [17/Jun/2021:20:11:17] "GET /management/api/v1/overview/questionnairy/?portCode=PFF005" 200 321
+127.0.0.1:42292 - - [17/Jun/2021:20:11:27] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:42420 - - [17/Jun/2021:20:11:28] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:42420 - - [17/Jun/2021:20:11:28] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:42422 - - [17/Jun/2021:20:11:28] "GET /management/api/v1/overview/allocate/?portCode=PFF003" 200 289
+127.0.0.1:42424 - - [17/Jun/2021:20:11:28] "GET /management/api/v1/overview/allocate/history/?portCode=PFF003" 200 10945
+127.0.0.1:42428 - - [17/Jun/2021:20:11:28] "GET /management/api/v1/overview/compare/?portCode=PFF003" 200 5772
+127.0.0.1:42430 - - [17/Jun/2021:20:11:28] "GET /management/api/v1/overview/pos/?portCode=PFF003" 200 11170
+127.0.0.1:42432 - - [17/Jun/2021:20:11:28] "GET /management/api/v1/overview/allocate/avg/?portCode=PFF003&start=&end=" 200 289
+127.0.0.1:42426 - - [17/Jun/2021:20:11:28] "GET /management/api/v1/overview/?portCode=PFF003" 200 3699
+127.0.0.1:42440 - - [17/Jun/2021:20:11:28] "GET /management/api/v1/overview/questionnairy/?portCode=PFF003" 200 312
+127.0.0.1:42420 - - [18/Jun/2021:08:31:21] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:53926 - - [18/Jun/2021:09:47:22] "GET /management/api/v1/capital/category/" 200 674
+127.0.0.1:54170 - - [18/Jun/2021:09:47:48] "GET /management/api/v1/capital/category/" 200 674
+127.0.0.1:54344 - - [18/Jun/2021:09:47:51] "GET /management/api/v1/capital/category/" 200 674
+127.0.0.1:54414 - - [18/Jun/2021:09:48:01] "GET /management/api/v1/capital/?category=%E9%87%87%E6%8E%98&date=" 200 9485
+127.0.0.1:54566 - - [18/Jun/2021:09:48:17] "GET /management/api/v1/capital/category/" 200 674
+127.0.0.1:55682 - - [18/Jun/2021:09:49:20] "GET /management/api/v1/capital/category/" 200 674
+127.0.0.1:56552 - - [18/Jun/2021:09:50:19] "GET /management/api/v1/capital/?category=%E6%9C%89%E8%89%B2%E9%87%91%E5%B1%9E&date=" 200 9670
+127.0.0.1:56952 - - [18/Jun/2021:09:50:44] "GET /management/api/v1/capital/?category=%E7%94%B5%E5%AD%90&date=" 200 9702
+127.0.0.1:56998 - - [18/Jun/2021:09:50:47] "GET /management/api/v1/capital/?category=%E5%AE%B6%E7%94%A8%E7%94%B5%E5%99%A8&date=" 200 9449
+127.0.0.1:57032 - - [18/Jun/2021:09:50:50] "GET /management/api/v1/capital/?category=%E9%A3%9F%E5%93%81%E9%A5%AE%E6%96%99&date=" 200 9692
+127.0.0.1:57122 - - [18/Jun/2021:09:50:55] "GET /management/api/v1/capital/?category=%E5%8C%BB%E8%8D%AF%E7%94%9F%E7%89%A9&date=" 200 9770
+127.0.0.1:57296 - - [18/Jun/2021:09:51:07] "GET /management/api/v1/capital/?category=%E5%8C%96%E5%B7%A5&date=" 200 9648
+127.0.0.1:57430 - - [18/Jun/2021:09:51:14] "GET /management/api/v1/capital/?category=%E9%9D%9E%E9%93%B6%E9%87%91%E8%9E%8D&date=" 200 9693
+127.0.0.1:57586 - - [18/Jun/2021:09:51:24] "GET /management/api/v1/capital/?category=%E9%80%9A%E4%BF%A1&date=" 200 9523
+127.0.0.1:57622 - - [18/Jun/2021:09:51:27] "GET /management/api/v1/capital/?category=%E9%93%B6%E8%A1%8C&date=" 200 9588
+127.0.0.1:35680 - - [18/Jun/2021:09:58:29] "GET /management/admin/" 200 33787
+127.0.0.1:35694 - - [18/Jun/2021:09:58:30] "GET /management/admin/" 200 33787
+127.0.0.1:35808 - - [18/Jun/2021:09:58:36] "GET /management/admin/investment/clientpr/" 200 30882
+127.0.0.1:35814 - - [18/Jun/2021:09:58:36] "GET /management/admin/jsi18n/" 200 7732
+127.0.0.1:35976 - - [18/Jun/2021:09:58:47] "GET /management/admin/investment/clientpr/add/" 200 29398
+127.0.0.1:35984 - - [18/Jun/2021:09:58:47] "GET /management/admin/jsi18n/" 200 7732
+127.0.0.1:36284 - - [18/Jun/2021:09:59:07] "POST /management/admin/investment/clientpr/add/" 302 -
+127.0.0.1:36288 - - [18/Jun/2021:09:59:07] "GET /management/admin/investment/clientpr/" 200 31701
+127.0.0.1:36294 - - [18/Jun/2021:09:59:07] "GET /management/admin/jsi18n/" 200 7732
+127.0.0.1:41302 - - [18/Jun/2021:10:04:43] "GET /management/api/v1/capital/?category=%E5%9B%BD%E9%98%B2%E5%86%9B%E5%B7%A5&date=" 200 9567
+127.0.0.1:41350 - - [18/Jun/2021:10:04:46] "GET /management/api/v1/capital/?category=%E8%AE%A1%E7%AE%97%E6%9C%BA&date=" 200 9712
+127.0.0.1:41494 - - [18/Jun/2021:10:04:54] "GET /management/api/v1/capital/?category=%E9%80%9A%E4%BF%A1&date=" 200 9523
+127.0.0.1:41526 - - [18/Jun/2021:10:04:57] "GET /management/api/v1/capital/?category=%E9%93%B6%E8%A1%8C&date=" 200 9588
+127.0.0.1:41552 - - [18/Jun/2021:10:04:59] "GET /management/api/v1/capital/?category=%E9%9D%9E%E9%93%B6%E9%87%91%E8%9E%8D&date=" 200 9693
+127.0.0.1:41600 - - [18/Jun/2021:10:05:02] "GET /management/api/v1/capital/?category=%E6%B1%BD%E8%BD%A6&date=" 200 9619
+127.0.0.1:41676 - - [18/Jun/2021:10:05:07] "GET /management/api/v1/capital/?category=%E6%9C%BA%E6%A2%B0%E8%AE%BE%E5%A4%87&date=" 200 9626
+127.0.0.1:43732 - - [18/Jun/2021:10:07:23] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:43732 - - [18/Jun/2021:10:07:23] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:43734 - - [18/Jun/2021:10:07:23] "GET /management/api/v1/overview/allocate/?portCode=PFF003" 200 289
+127.0.0.1:43736 - - [18/Jun/2021:10:07:23] "GET /management/api/v1/overview/allocate/history/?portCode=PFF003" 200 11080
+127.0.0.1:43738 - - [18/Jun/2021:10:07:23] "GET /management/api/v1/overview/compare/?portCode=PFF003" 200 5772
+127.0.0.1:43740 - - [18/Jun/2021:10:07:23] "GET /management/api/v1/overview/?portCode=PFF003" 200 3699
+127.0.0.1:43742 - - [18/Jun/2021:10:07:23] "GET /management/api/v1/overview/pos/?portCode=PFF003" 200 11170
+127.0.0.1:43744 - - [18/Jun/2021:10:07:23] "GET /management/api/v1/overview/allocate/avg/?portCode=PFF003&start=&end=" 200 289
+127.0.0.1:43756 - - [18/Jun/2021:10:07:23] "GET /management/api/v1/overview/questionnairy/?portCode=PFF003" 200 312
+127.0.0.1:43732 - - [18/Jun/2021:10:07:23] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:43772 - - [18/Jun/2021:10:07:23] "GET /management/api/v1/analysis/performance/?date=2021-06-18&portCode=PFF003" 200 905
+127.0.0.1:43774 - - [18/Jun/2021:10:07:23] "GET /management/api/v1/analysis/attribute/?portCode=PFF003&date=2021-06-18" 200 248
+127.0.0.1:43794 - - [18/Jun/2021:10:07:27] "GET /management/api/v1/analysis/brinson/?portCode=PFF003&date=2021-06-18" 200 6572
+127.0.0.1:43796 - - [18/Jun/2021:10:07:27] "GET /management/api/v1/analysis/style/?portCode=PFF003&date=2021-06-18" 200 11371
+127.0.0.1:43798 - - [18/Jun/2021:10:07:27] "GET /management/api/v1/analysis/expose/?portCode=PFF003&date=2021-06-18" 200 323
+127.0.0.1:43800 - - [18/Jun/2021:10:07:27] "GET /management/api/v1/analysis/std/?portCode=PFF003&date=2021-06-18" 200 2802
+2021-06-18 10:07:34,235 WARNING  Application instance <Task pending name='Task-563' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7f659993c820>()]>> for connection <WebSocketProtocol client=['127.0.0.1', 43732] path=b'/ws/prevaluation/'> took too long to shut down and was killed.
+2021-06-18 10:07:59,320 WARNING  Application instance <Task pending name='Task-592' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7f65999e92b0>()]>> for connection <WebSocketProtocol client=['127.0.0.1', 44164] path=b'/ws/prevaluation/'> took too long to shut down and was killed.
+2021-06-18 10:14:10,679 WARNING  Application instance <Task pending name='Task-611' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7f658a1eb4f0>()]>> for connection <WebSocketProtocol client=['127.0.0.1', 49738] path=b'/ws/prevaluation/'> took too long to shut down and was killed.
+2021-06-18 10:14:16,708 WARNING  Application instance <Task pending name='Task-625' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7f65999f79d0>()]>> for connection <WebSocketProtocol client=['127.0.0.1', 49816] path=b'/ws/prevaluation/'> took too long to shut down and was killed.
+2021-06-18 10:14:28,750 WARNING  Application instance <Task pending name='Task-628' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7f658a2f1760>()]>> for connection <WebSocketProtocol client=['127.0.0.1', 49930] path=b'/ws/prevaluation/'> took too long to shut down and was killed.
+2021-06-18 10:14:34,780 WARNING  Application instance <Task pending name='Task-636' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7f6599a951f0>()]>> for connection <WebSocketProtocol client=['127.0.0.1', 50174] path=b'/ws/prevaluation/'> took too long to shut down and was killed.
+2021-06-18 10:14:36,784 WARNING  Application instance <Task pending name='Task-642' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7f657d7236a0>()]>> for connection <WebSocketProtocol client=['127.0.0.1', 50230] path=b'/ws/prevaluation/'> took too long to shut down and was killed.
+2021-06-18 10:14:41,806 WARNING  Application instance <Task pending name='Task-645' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7f658a2f48b0>()]>> for connection <WebSocketProtocol client=['127.0.0.1', 50254] path=b'/ws/prevaluation/'> took too long to shut down and was killed.
+127.0.0.1:43810 - - [18/Jun/2021:10:07:37] "GET /management/api/v1/analysis/fundholding/?portCode=PFF003&date=2021-06-18" 200 27811
+127.0.0.1:43812 - - [18/Jun/2021:10:07:37] "GET /management/api/v1/basic/all/" 200 1175
+127.0.0.1:44002 - - [18/Jun/2021:10:07:38] "GET /management/api/v1/cta/" 200 816
+127.0.0.1:44000 - - [18/Jun/2021:10:07:38] "GET /management/api/v1/basic/all/" 200 1175
+127.0.0.1:44004 - - [18/Jun/2021:10:07:38] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:44012 - - [18/Jun/2021:10:07:38] "GET /management/api/v1/basic/all/" 200 1175
+127.0.0.1:44164 - - [18/Jun/2021:10:07:48] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:44164 - - [18/Jun/2021:10:07:48] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:44166 - - [18/Jun/2021:10:07:48] "GET /management/api/v1/overview/allocate/?portCode=PFF003" 200 289
+127.0.0.1:44168 - - [18/Jun/2021:10:07:48] "GET /management/api/v1/overview/allocate/history/?portCode=PFF003" 200 11080
+127.0.0.1:44170 - - [18/Jun/2021:10:07:48] "GET /management/api/v1/overview/compare/?portCode=PFF003" 200 5772
+127.0.0.1:44174 - - [18/Jun/2021:10:07:48] "GET /management/api/v1/overview/pos/?portCode=PFF003" 200 11170
+127.0.0.1:44176 - - [18/Jun/2021:10:07:48] "GET /management/api/v1/overview/allocate/avg/?portCode=PFF003&start=&end=" 200 289
+127.0.0.1:44172 - - [18/Jun/2021:10:07:48] "GET /management/api/v1/overview/?portCode=PFF003" 200 3699
+127.0.0.1:44188 - - [18/Jun/2021:10:07:48] "GET /management/api/v1/overview/questionnairy/?portCode=PFF003" 200 312
+127.0.0.1:44164 - - [18/Jun/2021:10:07:49] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:44204 - - [18/Jun/2021:10:07:49] "POST /management/api/v1/history/summary/" 200 50876
+127.0.0.1:44208 - - [18/Jun/2021:10:07:49] "GET /management/api/v1/history/summary/?portCode=PFF003&date" 200 139
+127.0.0.1:44220 - - [18/Jun/2021:10:07:50] "GET /management/api/v1/analysis/performance/?date=2021-06-18&portCode=PFF003" 200 905
+127.0.0.1:44222 - - [18/Jun/2021:10:07:50] "GET /management/api/v1/analysis/attribute/?portCode=PFF003&date=2021-06-18" 200 248
+127.0.0.1:44242 - - [18/Jun/2021:10:07:51] "GET /management/api/v1/analysis/fundholding/?portCode=PFF003&date=2021-06-18" 200 27811
+127.0.0.1:44278 - - [18/Jun/2021:10:07:52] "GET /management/api/v1/analysis/fundholding/etf/?portCode=PFF003&date=2021-06-18" 200 10469
+127.0.0.1:44280 - - [18/Jun/2021:10:07:52] "GET /management/api/v1/analysis/fundholding/etf_analysis/?port_code=PFF003" 200 3440
+127.0.0.1:49738 - - [18/Jun/2021:10:13:58] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:49738 - - [18/Jun/2021:10:13:58] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:49740 - - [18/Jun/2021:10:13:58] "GET /management/api/v1/overview/allocate/?portCode=PFF003" 200 289
+127.0.0.1:49742 - - [18/Jun/2021:10:13:58] "GET /management/api/v1/overview/allocate/history/?portCode=PFF003" 200 11080
+127.0.0.1:49744 - - [18/Jun/2021:10:13:58] "GET /management/api/v1/overview/compare/?portCode=PFF003" 200 5772
+127.0.0.1:49748 - - [18/Jun/2021:10:13:58] "GET /management/api/v1/overview/pos/?portCode=PFF003" 200 11170
+127.0.0.1:49746 - - [18/Jun/2021:10:13:58] "GET /management/api/v1/overview/?portCode=PFF003" 200 3699
+127.0.0.1:49750 - - [18/Jun/2021:10:13:58] "GET /management/api/v1/overview/allocate/avg/?portCode=PFF003&start=&end=" 200 289
+127.0.0.1:49758 - - [18/Jun/2021:10:13:58] "GET /management/api/v1/overview/questionnairy/?portCode=PFF003" 200 312
+127.0.0.1:49738 - - [18/Jun/2021:10:13:59] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:49774 - - [18/Jun/2021:10:13:59] "GET /management/api/v1/cta/" 200 816
+127.0.0.1:49772 - - [18/Jun/2021:10:13:59] "GET /management/api/v1/basic/all/" 200 1175
+127.0.0.1:49776 - - [18/Jun/2021:10:13:59] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:49782 - - [18/Jun/2021:10:13:59] "GET /management/api/v1/basic/all/" 200 1175
+127.0.0.1:49816 - - [18/Jun/2021:10:14:01] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:49816 - - [18/Jun/2021:10:14:01] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:49816 - - [18/Jun/2021:10:14:06] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:49930 - - [18/Jun/2021:10:14:08] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:49930 - - [18/Jun/2021:10:14:08] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:49930 - - [18/Jun/2021:10:14:18] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:50076 - - [18/Jun/2021:10:14:18] "GET /management/api/v1/analysis/performance/?date=2021-06-18&portCode=PFF003" 200 905
+127.0.0.1:50078 - - [18/Jun/2021:10:14:18] "GET /management/api/v1/analysis/attribute/?portCode=PFF003&date=2021-06-18" 200 248
+127.0.0.1:50098 - - [18/Jun/2021:10:14:20] "GET /management/api/v1/analysis/fundholding/?portCode=PFF003&date=2021-06-18" 200 27811
+127.0.0.1:50174 - - [18/Jun/2021:10:14:22] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:50174 - - [18/Jun/2021:10:14:22] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:50174 - - [18/Jun/2021:10:14:24] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:50202 - - [18/Jun/2021:10:14:24] "POST /management/api/v1/history/summary/" 200 50876
+127.0.0.1:50204 - - [18/Jun/2021:10:14:24] "GET /management/api/v1/history/summary/?portCode=PFF003&date" 200 139
+127.0.0.1:50218 - - [18/Jun/2021:10:14:25] "GET /management/api/v1/mock/date/?portCode=PFF003" 200 444
+127.0.0.1:50230 - - [18/Jun/2021:10:14:25] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:50230 - - [18/Jun/2021:10:14:25] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:50230 - - [18/Jun/2021:10:14:26] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:50254 - - [18/Jun/2021:10:14:27] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:50254 - - [18/Jun/2021:10:14:27] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:50254 - - [18/Jun/2021:10:14:31] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:50360 - - [18/Jun/2021:10:14:33] "GET /management/api/v1/capital/category/" 200 674
+127.0.0.1:50394 - - [18/Jun/2021:10:14:36] "GET /management/api/v1/capital/?category=%E6%9C%89%E8%89%B2%E9%87%91%E5%B1%9E&date=" 200 9670
+127.0.0.1:50430 - - [18/Jun/2021:10:14:39] "GET /management/api/v1/capital/?category=%E5%AE%B6%E7%94%A8%E7%94%B5%E5%99%A8&date=" 200 9449
+127.0.0.1:50484 - - [18/Jun/2021:10:14:42] "GET /management/api/v1/capital/?category=%E9%A3%9F%E5%93%81%E9%A5%AE%E6%96%99&date=" 200 9692
+127.0.0.1:50556 - - [18/Jun/2021:10:14:47] "GET /management/api/v1/capital/?category=%E5%8C%BB%E8%8D%AF%E7%94%9F%E7%89%A9&date=" 200 9770
+127.0.0.1:50670 - - [18/Jun/2021:10:14:53] "GET /management/api/v1/capital/?category=%E6%88%BF%E5%9C%B0%E4%BA%A7&date=" 200 9478
+127.0.0.1:50732 - - [18/Jun/2021:10:14:58] "GET /management/api/v1/capital/?category=%E7%94%B5%E6%B0%94%E8%AE%BE%E5%A4%87&date=" 200 9690
+127.0.0.1:51312 - - [18/Jun/2021:10:15:35] "GET /management/api/v1/capital/?category=%E9%9D%9E%E9%93%B6%E9%87%91%E8%9E%8D&date=" 200 9693
+127.0.0.1:51370 - - [18/Jun/2021:10:15:40] "GET /management/api/v1/capital/?category=%E9%93%B6%E8%A1%8C&date=" 200 9588
+127.0.0.1:51478 - - [18/Jun/2021:10:15:46] "GET /management/api/v1/capital/?category=%E5%BB%BA%E7%AD%91%E6%9D%90%E6%96%99&date=" 200 9515
+127.0.0.1:51582 - - [18/Jun/2021:10:15:53] "GET /management/api/v1/capital/?category=%E9%A3%9F%E5%93%81%E9%A5%AE%E6%96%99&date=" 200 9692
+127.0.0.1:39382 - - [18/Jun/2021:12:32:06] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:43666 - - [18/Jun/2021:13:16:45] "GET /management/admin/" 200 33849
+127.0.0.1:43682 - - [18/Jun/2021:13:16:47] "GET /management/admin/" 200 33849
+127.0.0.1:43810 - - [18/Jun/2021:13:16:54] "GET /management/admin/django_q/success/" 200 85217
+127.0.0.1:43816 - - [18/Jun/2021:13:16:54] "GET /management/admin/jsi18n/" 200 7732
+127.0.0.1:57370 - - [18/Jun/2021:14:35:28] "GET /management/api/v1/capital/?category=%E6%9C%89%E8%89%B2%E9%87%91%E5%B1%9E&date=" 200 9670
+127.0.0.1:41718 - - [18/Jun/2021:17:53:43] "GET /management/api/v1/cta/" 200 816
+127.0.0.1:41720 - - [18/Jun/2021:17:53:43] "GET /management/api/v1/basic/all/" 200 1173
+127.0.0.1:41722 - - [18/Jun/2021:17:53:43] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:41726 - - [18/Jun/2021:17:53:43] "GET /management/api/v1/basic/all/" 200 1173
+127.0.0.1:42450 - - [18/Jun/2021:17:54:56] "WSCONNECTING /ws/prevaluation/" - -
+Internal Server Error: /management/api/v1/cta/holding
+Traceback (most recent call last):
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 330, in thread_handler
+    raise exc_info[1]
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 38, in inner
+    response = await get_response(request)
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/base.py", line 231, in _get_response_async
+    response = await wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 296, in __call__
+    ret = await asyncio.wait_for(future, timeout=None)
+  File "/usr/local/python3/lib/python3.8/asyncio/tasks.py", line 455, in wait_for
+    return await fut
+  File "/usr/local/python3/lib/python3.8/concurrent/futures/thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 334, in thread_handler
+    return func(*args, **kwargs)
+  File "./cta_fof/views.py", line 53, in holding
+    data = resp.json()['data']
+  File "/home/sma/.local/lib/python3.8/site-packages/requests/models.py", line 898, in json
+    return complexjson.loads(self.text, **kwargs)
+  File "/usr/local/python3/lib/python3.8/json/__init__.py", line 357, in loads
+    return _default_decoder.decode(s)
+  File "/usr/local/python3/lib/python3.8/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/local/python3/lib/python3.8/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+2021-06-18 17:55:05,497 ERROR    Internal Server Error: /management/api/v1/cta/holding
+Traceback (most recent call last):
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 330, in thread_handler
+    raise exc_info[1]
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 38, in inner
+    response = await get_response(request)
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/base.py", line 231, in _get_response_async
+    response = await wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 296, in __call__
+    ret = await asyncio.wait_for(future, timeout=None)
+  File "/usr/local/python3/lib/python3.8/asyncio/tasks.py", line 455, in wait_for
+    return await fut
+  File "/usr/local/python3/lib/python3.8/concurrent/futures/thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 334, in thread_handler
+    return func(*args, **kwargs)
+  File "./cta_fof/views.py", line 53, in holding
+    data = resp.json()['data']
+  File "/home/sma/.local/lib/python3.8/site-packages/requests/models.py", line 898, in json
+    return complexjson.loads(self.text, **kwargs)
+  File "/usr/local/python3/lib/python3.8/json/__init__.py", line 357, in loads
+    return _default_decoder.decode(s)
+  File "/usr/local/python3/lib/python3.8/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/local/python3/lib/python3.8/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Internal Server Error: /management/api/v1/cta/holding
+Traceback (most recent call last):
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 330, in thread_handler
+    raise exc_info[1]
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 38, in inner
+    response = await get_response(request)
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/base.py", line 231, in _get_response_async
+    response = await wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 296, in __call__
+    ret = await asyncio.wait_for(future, timeout=None)
+  File "/usr/local/python3/lib/python3.8/asyncio/tasks.py", line 455, in wait_for
+    return await fut
+  File "/usr/local/python3/lib/python3.8/concurrent/futures/thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 334, in thread_handler
+    return func(*args, **kwargs)
+  File "./cta_fof/views.py", line 53, in holding
+    data = resp.json()['data']
+  File "/home/sma/.local/lib/python3.8/site-packages/requests/models.py", line 898, in json
+    return complexjson.loads(self.text, **kwargs)
+  File "/usr/local/python3/lib/python3.8/json/__init__.py", line 357, in loads
+    return _default_decoder.decode(s)
+  File "/usr/local/python3/lib/python3.8/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/local/python3/lib/python3.8/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+2021-06-21 09:05:33,498 ERROR    Internal Server Error: /management/api/v1/cta/holding
+Traceback (most recent call last):
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 330, in thread_handler
+    raise exc_info[1]
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 38, in inner
+    response = await get_response(request)
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/base.py", line 231, in _get_response_async
+    response = await wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 296, in __call__
+    ret = await asyncio.wait_for(future, timeout=None)
+  File "/usr/local/python3/lib/python3.8/asyncio/tasks.py", line 455, in wait_for
+    return await fut
+  File "/usr/local/python3/lib/python3.8/concurrent/futures/thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 334, in thread_handler
+    return func(*args, **kwargs)
+  File "./cta_fof/views.py", line 53, in holding
+    data = resp.json()['data']
+  File "/home/sma/.local/lib/python3.8/site-packages/requests/models.py", line 898, in json
+    return complexjson.loads(self.text, **kwargs)
+  File "/usr/local/python3/lib/python3.8/json/__init__.py", line 357, in loads
+    return _default_decoder.decode(s)
+  File "/usr/local/python3/lib/python3.8/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/local/python3/lib/python3.8/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+Internal Server Error: /management/api/v1/cta/holding
+Traceback (most recent call last):
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 330, in thread_handler
+    raise exc_info[1]
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 38, in inner
+    response = await get_response(request)
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/base.py", line 231, in _get_response_async
+    response = await wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 296, in __call__
+    ret = await asyncio.wait_for(future, timeout=None)
+  File "/usr/local/python3/lib/python3.8/asyncio/tasks.py", line 455, in wait_for
+    return await fut
+  File "/usr/local/python3/lib/python3.8/concurrent/futures/thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 334, in thread_handler
+    return func(*args, **kwargs)
+  File "./cta_fof/views.py", line 53, in holding
+    data = resp.json()['data']
+  File "/home/sma/.local/lib/python3.8/site-packages/requests/models.py", line 898, in json
+    return complexjson.loads(self.text, **kwargs)
+  File "/usr/local/python3/lib/python3.8/json/__init__.py", line 357, in loads
+    return _default_decoder.decode(s)
+  File "/usr/local/python3/lib/python3.8/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/local/python3/lib/python3.8/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+2021-06-21 09:09:39,564 ERROR    Internal Server Error: /management/api/v1/cta/holding
+Traceback (most recent call last):
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 330, in thread_handler
+    raise exc_info[1]
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 38, in inner
+    response = await get_response(request)
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/base.py", line 231, in _get_response_async
+    response = await wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 296, in __call__
+    ret = await asyncio.wait_for(future, timeout=None)
+  File "/usr/local/python3/lib/python3.8/asyncio/tasks.py", line 455, in wait_for
+    return await fut
+  File "/usr/local/python3/lib/python3.8/concurrent/futures/thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 334, in thread_handler
+    return func(*args, **kwargs)
+  File "./cta_fof/views.py", line 53, in holding
+    data = resp.json()['data']
+  File "/home/sma/.local/lib/python3.8/site-packages/requests/models.py", line 898, in json
+    return complexjson.loads(self.text, **kwargs)
+  File "/usr/local/python3/lib/python3.8/json/__init__.py", line 357, in loads
+    return _default_decoder.decode(s)
+  File "/usr/local/python3/lib/python3.8/json/decoder.py", line 337, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+  File "/usr/local/python3/lib/python3.8/json/decoder.py", line 355, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+127.0.0.1:42450 - - [18/Jun/2021:17:54:56] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:42452 - - [18/Jun/2021:17:54:56] "GET /management/api/v1/overview/allocate/?portCode=PFF005" 200 288
+127.0.0.1:42454 - - [18/Jun/2021:17:54:56] "GET /management/api/v1/overview/allocate/history/?portCode=PFF005" 200 5410
+127.0.0.1:42458 - - [18/Jun/2021:17:54:56] "GET /management/api/v1/overview/compare/?portCode=PFF005" 200 2745
+127.0.0.1:42462 - - [18/Jun/2021:17:54:56] "GET /management/api/v1/overview/pos/?portCode=PFF005" 200 11056
+127.0.0.1:42464 - - [18/Jun/2021:17:54:56] "GET /management/api/v1/overview/allocate/avg/?portCode=PFF005&start=&end=" 200 288
+127.0.0.1:42460 - - [18/Jun/2021:17:54:56] "GET /management/api/v1/overview/?portCode=PFF005" 200 1852
+127.0.0.1:42472 - - [18/Jun/2021:17:54:56] "GET /management/api/v1/overview/questionnairy/?portCode=PFF005" 200 321
+127.0.0.1:42560 - - [18/Jun/2021:17:55:05] "GET /management/api/v1/cta/holding?port_code=PFF006" 500 121324
+127.0.0.1:44094 - - [18/Jun/2021:17:57:37] "GET /questionnaire/" 200 4616
+127.0.0.1:44142 - - [18/Jun/2021:17:57:42] "GET /question" 301 -
+127.0.0.1:44144 - - [18/Jun/2021:17:57:42] "GET /question/" 200 3964
+127.0.0.1:44206 - - [18/Jun/2021:17:57:48] "GET /question/authenticate/" 200 4534
+127.0.0.1:42450 - - [19/Jun/2021:17:54:57] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:45894 - - [21/Jun/2021:09:05:27] "GET /management/api/v1/cta/" 200 816
+127.0.0.1:45892 - - [21/Jun/2021:09:05:27] "GET /management/api/v1/basic/all/" 200 1173
+127.0.0.1:45896 - - [21/Jun/2021:09:05:27] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:45908 - - [21/Jun/2021:09:05:27] "GET /management/api/v1/basic/all/" 200 1173
+127.0.0.1:45970 - - [21/Jun/2021:09:05:33] "GET /management/api/v1/cta/holding?port_code=PFF006" 500 121879
+127.0.0.1:47138 - - [21/Jun/2021:09:07:27] "GET /management/api/v1/cta/" 200 816
+127.0.0.1:47136 - - [21/Jun/2021:09:07:27] "GET /management/api/v1/basic/all/" 200 1173
+127.0.0.1:47140 - - [21/Jun/2021:09:07:27] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:47146 - - [21/Jun/2021:09:07:27] "GET /management/api/v1/basic/all/" 200 1173
+127.0.0.1:47262 - - [21/Jun/2021:09:07:39] "GET /management/admin/cta_fof/balance/" 200 54586
+127.0.0.1:47270 - - [21/Jun/2021:09:07:39] "GET /management/admin/jsi18n/" 200 7732
+127.0.0.1:47370 - - [21/Jun/2021:09:07:49] "GET /management/admin/cta_fof/balance/?port_code__port_code__exact=PFF006" 200 49658
+127.0.0.1:47374 - - [21/Jun/2021:09:07:49] "GET /management/admin/jsi18n/" 200 7732
+127.0.0.1:48478 - - [21/Jun/2021:09:09:39] "GET /management/api/v1/cta/holding?port_code=PFF006" 500 121879
+127.0.0.1:48510 - - [21/Jun/2021:09:09:40] "GET /management/api/v1/basic/all/" 200 1173
+127.0.0.1:48512 - - [21/Jun/2021:09:09:40] "GET /management/api/v1/cta/" 200 816
+127.0.0.1:48514 - - [21/Jun/2021:09:09:40] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:48520 - - [21/Jun/2021:09:09:40] "GET /management/api/v1/basic/all/" 200 1173
+127.0.0.1:48820 - - [21/Jun/2021:09:10:09] "GET /management/api/v1/cta/" 200 816
+127.0.0.1:48822 - - [21/Jun/2021:09:10:09] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:48824 - - [21/Jun/2021:09:10:09] "GET /management/api/v1/basic/all/" 200 1173
+127.0.0.1:48828 - - [21/Jun/2021:09:10:09] "GET /management/api/v1/basic/all/" 200 1173
+127.0.0.1:38516 - - [21/Jun/2021:09:37:09] "GET /management/api/v1/cta/holding?port_code=PFF006" 200 2622
+127.0.0.1:38678 - - [21/Jun/2021:09:37:19] "GET /management/api/v1/basic/all/" 200 1173
+127.0.0.1:38680 - - [21/Jun/2021:09:37:19] "GET /management/api/v1/cta/" 200 816
+127.0.0.1:38682 - - [21/Jun/2021:09:37:19] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:38686 - - [21/Jun/2021:09:37:19] "GET /management/api/v1/basic/all/" 200 1173
+127.0.0.1:43720 - - [21/Jun/2021:09:42:57] "GET /management/admin/" 200 33849
+127.0.0.1:43728 - - [21/Jun/2021:09:42:57] "GET /management/admin/" 200 33849
+127.0.0.1:43928 - - [21/Jun/2021:09:43:11] "GET /management/admin/cta_fof/balance/" 200 54586
+127.0.0.1:43936 - - [21/Jun/2021:09:43:11] "GET /management/admin/jsi18n/" 200 7732
+127.0.0.1:44058 - - [21/Jun/2021:09:43:19] "GET /management/admin/cta_fof/balanceexpanded/" 200 48080
+127.0.0.1:44064 - - [21/Jun/2021:09:43:20] "GET /management/admin/jsi18n/" 200 7732
+127.0.0.1:44108 - - [21/Jun/2021:09:43:22] "GET /management/admin/cta_fof/holding/" 200 97547
+127.0.0.1:44122 - - [21/Jun/2021:09:43:22] "GET /management/admin/jsi18n/" 200 7732
+127.0.0.1:44174 - - [21/Jun/2021:09:43:24] "GET /management/admin/cta_fof/balanceexpanded/" 200 48080
+127.0.0.1:44180 - - [21/Jun/2021:09:43:25] "GET /management/admin/jsi18n/" 200 7732
+127.0.0.1:44302 - - [21/Jun/2021:09:43:33] "POST /management/admin/cta_fof/balanceexpanded/" 200 30363
+127.0.0.1:44338 - - [21/Jun/2021:09:43:35] "POST /management/admin/cta_fof/balanceexpanded/" 302 -
+127.0.0.1:44344 - - [21/Jun/2021:09:43:35] "GET /management/admin/cta_fof/balanceexpanded/" 200 25194
+127.0.0.1:44350 - - [21/Jun/2021:09:43:35] "GET /management/admin/jsi18n/" 200 7732
+127.0.0.1:44380 - - [21/Jun/2021:09:43:38] "GET /management/admin/cta_fof/balance/" 200 54586
+127.0.0.1:44386 - - [21/Jun/2021:09:43:38] "GET /management/admin/jsi18n/" 200 7732
+127.0.0.1:44422 - - [21/Jun/2021:09:43:41] "POST /management/admin/cta_fof/balance/" 200 29711
+127.0.0.1:44468 - - [21/Jun/2021:09:43:43] "POST /management/admin/cta_fof/balance/" 302 -
+127.0.0.1:44472 - - [21/Jun/2021:09:43:43] "GET /management/admin/cta_fof/balance/" 200 25160
+127.0.0.1:44478 - - [21/Jun/2021:09:43:43] "GET /management/admin/jsi18n/" 200 7732
+127.0.0.1:46030 - - [21/Jun/2021:09:45:22] "GET /management/admin/cta_fof/balance/" 302 -
+127.0.0.1:46032 - - [21/Jun/2021:09:45:22] "GET /management/admin/login/?next=/management/admin/cta_fof/balance/" 200 2261
+127.0.0.1:46082 - - [21/Jun/2021:09:45:25] "GET /management/api/v1/basic/all/" 200 1173
+127.0.0.1:46086 - - [21/Jun/2021:09:45:26] "GET /management/api/v1/cta/" 200 817
+127.0.0.1:46084 - - [21/Jun/2021:09:45:26] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:46094 - - [21/Jun/2021:09:45:26] "GET /management/api/v1/basic/all/" 200 1173
+127.0.0.1:46128 - - [21/Jun/2021:09:45:29] "POST /management/admin/login/?next=/management/admin/cta_fof/balance/" 200 2394
+127.0.0.1:46240 - - [21/Jun/2021:09:45:34] "POST /management/admin/login/?next=/management/admin/cta_fof/balance/" 302 -
+127.0.0.1:46246 - - [21/Jun/2021:09:45:34] "GET /management/admin/cta_fof/balance/" 200 57839
+127.0.0.1:46252 - - [21/Jun/2021:09:45:34] "GET /management/admin/jsi18n/" 200 7732
+127.0.0.1:46288 - - [21/Jun/2021:09:45:38] "GET /management/admin/cta_fof/balance/?port_code__port_code__exact=PFF006" 200 51411
+127.0.0.1:46292 - - [21/Jun/2021:09:45:38] "GET /management/admin/jsi18n/" 200 7732
+127.0.0.1:46550 - - [21/Jun/2021:09:45:54] "GET /management/admin/cta_fof/balance/" 200 57839
+127.0.0.1:46556 - - [21/Jun/2021:09:45:54] "GET /management/admin/jsi18n/" 200 7732
+127.0.0.1:60474 - - [21/Jun/2021:10:32:47] "GET /management/admin/cta_fof/balance/?port_code__port_code__exact=PFF006" 302 -
+127.0.0.1:60478 - - [21/Jun/2021:10:32:47] "GET /management/admin/login/?next=/management/admin/cta_fof/balance/%3Fport_code__port_code__exact%3DPFF006" 200 2335
+127.0.0.1:60564 - - [21/Jun/2021:10:32:52] "POST /management/admin/login/?next=/management/admin/cta_fof/balance/%3Fport_code__port_code__exact%3DPFF006" 302 -
+127.0.0.1:60576 - - [21/Jun/2021:10:32:53] "GET /management/admin/cta_fof/balance/?port_code__port_code__exact=PFF006" 200 51411
+127.0.0.1:60586 - - [21/Jun/2021:10:32:53] "GET /management/admin/jsi18n/" 200 7732
+127.0.0.1:34622 - - [21/Jun/2021:10:35:24] "GET /management/api/v1/basic/all/" 200 1173
+127.0.0.1:34624 - - [21/Jun/2021:10:35:24] "GET /management/api/v1/cta/" 200 817
+127.0.0.1:34626 - - [21/Jun/2021:10:35:24] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:34632 - - [21/Jun/2021:10:35:24] "GET /management/api/v1/basic/all/" 200 1173
+127.0.0.1:34842 - - [21/Jun/2021:10:35:40] "GET /management/api/v1/cta/holding?port_code=PFF006" 200 2353
+127.0.0.1:38632 - - [21/Jun/2021:10:39:53] "GET /management/api/v1/cta/" 200 817
+2021-06-21 10:40:11,241 WARNING  Application instance <Task pending name='Task-759' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7f657c3e8640>()]>> for connection <WebSocketProtocol client=['127.0.0.1', 38666] path=b'/ws/prevaluation/'> took too long to shut down and was killed.
+2021-06-21 11:09:34,881 WARNING  Application instance <Task pending name='Task-769' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7f6575535cd0>()]>> for connection <WebSocketProtocol client=['127.0.0.1', 38786] path=b'/ws/prevaluation/'> took too long to shut down and was killed.
+2021-06-21 11:17:05,206 WARNING  Application instance <Task pending name='Task-783' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7f65980975e0>()]>> for connection <WebSocketProtocol client=['127.0.0.1', 37244] path=b'/ws/prevaluation/'> took too long to shut down and was killed.
+2021-06-21 11:17:20,263 WARNING  Application instance <Task pending name='Task-794' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[_chain_future.<locals>._call_check_cancel() at /usr/local/python3/lib/python3.8/asyncio/futures.py:360, <TaskWakeupMethWrapper object at 0x7f658842b640>()]>> for connection <WebRequest at 0x7f6589362be0 method=GET uri=/management/api/v1/capital/?category=%E6%9C%89%E8%89%B2%E9%87%91%E5%B1%9E&date= clientproto=HTTP/1.0> took too long to shut down and was killed.
+2021-06-21 11:17:20,264 WARNING  Application instance <Task pending name='Task-795' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[_chain_future.<locals>._call_check_cancel() at /usr/local/python3/lib/python3.8/asyncio/futures.py:360, <TaskWakeupMethWrapper object at 0x7f657550ea60>()]>> for connection <WebRequest at 0x7f657e99f310 method=GET uri=/management/api/v1/capital/?category=%E6%9C%89%E8%89%B2%E9%87%91%E5%B1%9E&date=2021-06-21 clientproto=HTTP/1.0> took too long to shut down and was killed.
+2021-06-21 11:19:56,882 WARNING  Application instance <Task pending name='Task-799' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[_chain_future.<locals>._call_check_cancel() at /usr/local/python3/lib/python3.8/asyncio/futures.py:360, <TaskWakeupMethWrapper object at 0x7f658842bf70>()]>> for connection <WebRequest at 0x7f657550a490 method=GET uri=/management/api/v1/capital/?category=%E7%94%B5%E6%B0%94%E8%AE%BE%E5%A4%87&date= clientproto=HTTP/1.0> took too long to shut down and was killed.
+2021-06-21 11:19:56,887 WARNING  Application instance <Task pending name='Task-800' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[_chain_future.<locals>._call_check_cancel() at /usr/local/python3/lib/python3.8/asyncio/futures.py:360, <TaskWakeupMethWrapper object at 0x7f657cb88b80>()]>> for connection <WebRequest at 0x7f658a8c5a30 method=GET uri=/management/api/v1/capital/?category=%E7%94%B5%E6%B0%94%E8%AE%BE%E5%A4%87&date=2021-06-21 clientproto=HTTP/1.0> took too long to shut down and was killed.
+2021-06-21 11:32:14,993 WARNING  Application instance <Task pending name='Task-812' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7f65d95fb190>()]>> for connection <WebSocketProtocol client=['127.0.0.1', 57048] path=b'/ws/prevaluation/'> took too long to shut down and was killed.
+Internal Server Error: /management/api/v1/analysis/fundholding/etf/
+Traceback (most recent call last):
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 330, in thread_handler
+    raise exc_info[1]
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 38, in inner
+    response = await get_response(request)
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/base.py", line 231, in _get_response_async
+    response = await wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 296, in __call__
+    ret = await asyncio.wait_for(future, timeout=None)
+  File "/usr/local/python3/lib/python3.8/asyncio/tasks.py", line 455, in wait_for
+    return await fut
+  File "/usr/local/python3/lib/python3.8/concurrent/futures/thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 334, in thread_handler
+    return func(*args, **kwargs)
+  File "./investment/views/analysis.py", line 222, in etf_profit
+    funds = list(set(list(holdings.secucode)))
+  File "/home/sma/.local/lib/python3.8/site-packages/pandas/core/generic.py", line 5139, in __getattr__
+    return object.__getattribute__(self, name)
+AttributeError: 'DataFrame' object has no attribute 'secucode'
+2021-06-21 11:32:20,142 ERROR    Internal Server Error: /management/api/v1/analysis/fundholding/etf/
+Traceback (most recent call last):
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 330, in thread_handler
+    raise exc_info[1]
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 38, in inner
+    response = await get_response(request)
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/base.py", line 231, in _get_response_async
+    response = await wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 296, in __call__
+    ret = await asyncio.wait_for(future, timeout=None)
+  File "/usr/local/python3/lib/python3.8/asyncio/tasks.py", line 455, in wait_for
+    return await fut
+  File "/usr/local/python3/lib/python3.8/concurrent/futures/thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 334, in thread_handler
+    return func(*args, **kwargs)
+  File "./investment/views/analysis.py", line 222, in etf_profit
+    funds = list(set(list(holdings.secucode)))
+  File "/home/sma/.local/lib/python3.8/site-packages/pandas/core/generic.py", line 5139, in __getattr__
+    return object.__getattribute__(self, name)
+AttributeError: 'DataFrame' object has no attribute 'secucode'
+Internal Server Error: /management/api/v1/analysis/fundholding/etf_analysis/
+Traceback (most recent call last):
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 330, in thread_handler
+    raise exc_info[1]
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 38, in inner
+    response = await get_response(request)
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/base.py", line 231, in _get_response_async
+    response = await wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 296, in __call__
+    ret = await asyncio.wait_for(future, timeout=None)
+  File "/usr/local/python3/lib/python3.8/asyncio/tasks.py", line 455, in wait_for
+    return await fut
+  File "/usr/local/python3/lib/python3.8/concurrent/futures/thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 334, in thread_handler
+    return func(*args, **kwargs)
+  File "./investment/views/analysis.py", line 265, in etf_transaction_whole
+    win = len(ret[ret.r >= 0]) / len(ret)
+  File "/home/sma/.local/lib/python3.8/site-packages/pandas/core/generic.py", line 5139, in __getattr__
+    return object.__getattribute__(self, name)
+AttributeError: 'DataFrame' object has no attribute 'r'
+2021-06-21 11:32:20,164 ERROR    Internal Server Error: /management/api/v1/analysis/fundholding/etf_analysis/
+Traceback (most recent call last):
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 330, in thread_handler
+    raise exc_info[1]
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 38, in inner
+    response = await get_response(request)
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/base.py", line 231, in _get_response_async
+    response = await wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 296, in __call__
+    ret = await asyncio.wait_for(future, timeout=None)
+  File "/usr/local/python3/lib/python3.8/asyncio/tasks.py", line 455, in wait_for
+    return await fut
+  File "/usr/local/python3/lib/python3.8/concurrent/futures/thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 334, in thread_handler
+    return func(*args, **kwargs)
+  File "./investment/views/analysis.py", line 265, in etf_transaction_whole
+    win = len(ret[ret.r >= 0]) / len(ret)
+  File "/home/sma/.local/lib/python3.8/site-packages/pandas/core/generic.py", line 5139, in __getattr__
+    return object.__getattribute__(self, name)
+AttributeError: 'DataFrame' object has no attribute 'r'
+Internal Server Error: /management/api/v1/analysis/fundholding/etf_analysis/
+Traceback (most recent call last):
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 330, in thread_handler
+    raise exc_info[1]
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 38, in inner
+    response = await get_response(request)
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/base.py", line 231, in _get_response_async
+    response = await wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 296, in __call__
+    ret = await asyncio.wait_for(future, timeout=None)
+  File "/usr/local/python3/lib/python3.8/asyncio/tasks.py", line 455, in wait_for
+    return await fut
+  File "/usr/local/python3/lib/python3.8/concurrent/futures/thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 334, in thread_handler
+    return func(*args, **kwargs)
+  File "./investment/views/analysis.py", line 265, in etf_transaction_whole
+    win = len(ret[ret.r >= 0]) / len(ret)
+  File "/home/sma/.local/lib/python3.8/site-packages/pandas/core/generic.py", line 5139, in __getattr__
+    return object.__getattribute__(self, name)
+AttributeError: 'DataFrame' object has no attribute 'r'
+2021-06-21 11:32:26,482 ERROR    Internal Server Error: /management/api/v1/analysis/fundholding/etf_analysis/
+Traceback (most recent call last):
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 330, in thread_handler
+    raise exc_info[1]
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 38, in inner
+    response = await get_response(request)
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/base.py", line 231, in _get_response_async
+    response = await wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 296, in __call__
+    ret = await asyncio.wait_for(future, timeout=None)
+  File "/usr/local/python3/lib/python3.8/asyncio/tasks.py", line 455, in wait_for
+    return await fut
+  File "/usr/local/python3/lib/python3.8/concurrent/futures/thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 334, in thread_handler
+    return func(*args, **kwargs)
+  File "./investment/views/analysis.py", line 265, in etf_transaction_whole
+    win = len(ret[ret.r >= 0]) / len(ret)
+  File "/home/sma/.local/lib/python3.8/site-packages/pandas/core/generic.py", line 5139, in __getattr__
+    return object.__getattribute__(self, name)
+AttributeError: 'DataFrame' object has no attribute 'r'
+Internal Server Error: /management/api/v1/analysis/fundholding/etf/
+Traceback (most recent call last):
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 330, in thread_handler
+    raise exc_info[1]
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 38, in inner
+    response = await get_response(request)
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/base.py", line 231, in _get_response_async
+    response = await wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 296, in __call__
+    ret = await asyncio.wait_for(future, timeout=None)
+  File "/usr/local/python3/lib/python3.8/asyncio/tasks.py", line 455, in wait_for
+    return await fut
+  File "/usr/local/python3/lib/python3.8/concurrent/futures/thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 334, in thread_handler
+    return func(*args, **kwargs)
+  File "./investment/views/analysis.py", line 222, in etf_profit
+    funds = list(set(list(holdings.secucode)))
+  File "/home/sma/.local/lib/python3.8/site-packages/pandas/core/generic.py", line 5139, in __getattr__
+    return object.__getattribute__(self, name)
+AttributeError: 'DataFrame' object has no attribute 'secucode'
+2021-06-21 11:32:26,498 ERROR    Internal Server Error: /management/api/v1/analysis/fundholding/etf/
+Traceback (most recent call last):
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 330, in thread_handler
+    raise exc_info[1]
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 38, in inner
+    response = await get_response(request)
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/base.py", line 231, in _get_response_async
+    response = await wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 296, in __call__
+    ret = await asyncio.wait_for(future, timeout=None)
+  File "/usr/local/python3/lib/python3.8/asyncio/tasks.py", line 455, in wait_for
+    return await fut
+  File "/usr/local/python3/lib/python3.8/concurrent/futures/thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 334, in thread_handler
+    return func(*args, **kwargs)
+  File "./investment/views/analysis.py", line 222, in etf_profit
+    funds = list(set(list(holdings.secucode)))
+  File "/home/sma/.local/lib/python3.8/site-packages/pandas/core/generic.py", line 5139, in __getattr__
+    return object.__getattribute__(self, name)
+AttributeError: 'DataFrame' object has no attribute 'secucode'
+127.0.0.1:38630 - - [21/Jun/2021:10:39:53] "GET /management/api/v1/basic/all/" 200 1173
+127.0.0.1:38634 - - [21/Jun/2021:10:39:53] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:38640 - - [21/Jun/2021:10:39:53] "GET /management/api/v1/basic/all/" 200 1173
+127.0.0.1:38666 - - [21/Jun/2021:10:39:55] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:38666 - - [21/Jun/2021:10:39:55] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:38668 - - [21/Jun/2021:10:39:56] "GET /management/api/v1/overview/allocate/?portCode=PFF005" 200 288
+127.0.0.1:38670 - - [21/Jun/2021:10:39:56] "GET /management/api/v1/overview/allocate/history/?portCode=PFF005" 200 5545
+127.0.0.1:38672 - - [21/Jun/2021:10:39:56] "GET /management/api/v1/overview/compare/?portCode=PFF005" 200 2745
+127.0.0.1:38674 - - [21/Jun/2021:10:39:56] "GET /management/api/v1/overview/?portCode=PFF005" 200 1852
+127.0.0.1:38676 - - [21/Jun/2021:10:39:56] "GET /management/api/v1/overview/pos/?portCode=PFF005" 200 11062
+127.0.0.1:38678 - - [21/Jun/2021:10:39:56] "GET /management/api/v1/overview/allocate/avg/?portCode=PFF005&start=&end=" 200 277
+127.0.0.1:38692 - - [21/Jun/2021:10:39:56] "GET /management/api/v1/overview/questionnairy/?portCode=PFF005" 200 321
+127.0.0.1:38666 - - [21/Jun/2021:10:40:00] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:38786 - - [21/Jun/2021:10:40:02] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:38786 - - [21/Jun/2021:10:40:02] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:38790 - - [21/Jun/2021:10:40:02] "GET /management/api/v1/overview/allocate/?portCode=PFF003" 200 289
+127.0.0.1:38792 - - [21/Jun/2021:10:40:02] "GET /management/api/v1/overview/allocate/history/?portCode=PFF003" 200 11215
+127.0.0.1:38794 - - [21/Jun/2021:10:40:02] "GET /management/api/v1/overview/compare/?portCode=PFF003" 200 5845
+127.0.0.1:38798 - - [21/Jun/2021:10:40:02] "GET /management/api/v1/overview/pos/?portCode=PFF003" 200 11170
+127.0.0.1:38800 - - [21/Jun/2021:10:40:02] "GET /management/api/v1/overview/allocate/avg/?portCode=PFF003&start=&end=" 200 277
+127.0.0.1:38796 - - [21/Jun/2021:10:40:02] "GET /management/api/v1/overview/?portCode=PFF003" 200 3742
+127.0.0.1:38814 - - [21/Jun/2021:10:40:02] "GET /management/api/v1/overview/questionnairy/?portCode=PFF003" 200 312
+127.0.0.1:38786 - - [21/Jun/2021:11:09:24] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:37194 - - [21/Jun/2021:11:09:24] "GET /management/api/v1/cta/" 200 817
+127.0.0.1:37192 - - [21/Jun/2021:11:09:24] "GET /management/api/v1/basic/all/" 200 1173
+127.0.0.1:37196 - - [21/Jun/2021:11:09:24] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:37200 - - [21/Jun/2021:11:09:24] "GET /management/api/v1/basic/all/" 200 1173
+127.0.0.1:37244 - - [21/Jun/2021:11:09:28] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:37244 - - [21/Jun/2021:11:09:28] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:37248 - - [21/Jun/2021:11:09:28] "GET /management/api/v1/overview/allocate/?portCode=SA5001" 200 289
+127.0.0.1:37250 - - [21/Jun/2021:11:09:28] "GET /management/api/v1/overview/allocate/history/?portCode=SA5001" 200 22150
+127.0.0.1:37254 - - [21/Jun/2021:11:09:28] "GET /management/api/v1/overview/compare/?portCode=SA5001" 200 12127
+127.0.0.1:37258 - - [21/Jun/2021:11:09:28] "GET /management/api/v1/overview/pos/?portCode=SA5001" 200 11170
+127.0.0.1:37260 - - [21/Jun/2021:11:09:28] "GET /management/api/v1/overview/allocate/avg/?portCode=SA5001&start=&end=" 200 287
+127.0.0.1:37256 - - [21/Jun/2021:11:09:28] "GET /management/api/v1/overview/?portCode=SA5001" 200 7327
+127.0.0.1:37268 - - [21/Jun/2021:11:09:28] "GET /management/api/v1/overview/questionnairy/?portCode=SA5001" 200 478
+127.0.0.1:37244 - - [21/Jun/2021:11:16:54] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:44036 - - [21/Jun/2021:11:16:54] "GET /management/api/v1/capital/category/" 200 674
+127.0.0.1:44256 - - [21/Jun/2021:11:17:34] "GET /management/api/v1/capital/category/" 200 674
+127.0.0.1:45846 - - [21/Jun/2021:11:18:54] "GET /management/api/v1/capital/category/" 200 674
+127.0.0.1:45872 - - [21/Jun/2021:11:18:57] "GET /management/api/v1/capital/?category=%E6%9C%89%E8%89%B2%E9%87%91%E5%B1%9E&date=" 200 9672
+127.0.0.1:46736 - - [21/Jun/2021:11:19:57] "GET /management/api/v1/capital/category/" 200 674
+127.0.0.1:46788 - - [21/Jun/2021:11:20:05] "GET /management/api/v1/backtest/?date=2021-06-21" 200 239134
+127.0.0.1:46886 - - [21/Jun/2021:11:20:06] "GET /management/api/v1/capital/?category=%E7%94%B5%E6%B0%94%E8%AE%BE%E5%A4%87&date=" 200 9685
+127.0.0.1:46932 - - [21/Jun/2021:11:20:07] "GET /management/api/v1/capital/?category=%E7%94%B5%E6%B0%94%E8%AE%BE%E5%A4%87&date=2021-06-21" 200 9239
+127.0.0.1:47094 - - [21/Jun/2021:11:20:16] "GET /management/admin/cta_fof/balance/?port_code__port_code__exact=PFF006" 200 51411
+127.0.0.1:47098 - - [21/Jun/2021:11:20:16] "GET /management/admin/jsi18n/" 200 7732
+127.0.0.1:56982 - - [21/Jun/2021:11:31:56] "GET /management/api/v1/cta/" 200 817
+127.0.0.1:56980 - - [21/Jun/2021:11:31:57] "GET /management/api/v1/basic/all/" 200 1173
+127.0.0.1:56984 - - [21/Jun/2021:11:31:57] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:56986 - - [21/Jun/2021:11:31:57] "GET /management/api/v1/basic/all/" 200 1173
+127.0.0.1:57048 - - [21/Jun/2021:11:32:02] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:57048 - - [21/Jun/2021:11:32:02] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:57052 - - [21/Jun/2021:11:32:03] "GET /management/api/v1/overview/compare/?portCode=SA3001" 200 2878
+127.0.0.1:57054 - - [21/Jun/2021:11:32:03] "GET /management/api/v1/overview/allocate/history/?portCode=SA3001" 200 5275
+127.0.0.1:57056 - - [21/Jun/2021:11:32:03] "GET /management/api/v1/overview/allocate/?portCode=SA3001" 200 286
+127.0.0.1:57058 - - [21/Jun/2021:11:32:03] "GET /management/api/v1/overview/?portCode=SA3001" 200 1851
+127.0.0.1:57060 - - [21/Jun/2021:11:32:03] "GET /management/api/v1/overview/allocate/avg/?portCode=SA3001&start=&end=" 200 288
+127.0.0.1:57062 - - [21/Jun/2021:11:32:03] "GET /management/api/v1/overview/pos/?portCode=SA3001" 200 11050
+127.0.0.1:57070 - - [21/Jun/2021:11:32:03] "GET /management/api/v1/overview/questionnairy/?portCode=SA3001" 200 455
+127.0.0.1:57048 - - [21/Jun/2021:11:32:04] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:57090 - - [21/Jun/2021:11:32:04] "GET /management/api/v1/analysis/performance/?date=2021-06-21&portCode=SA3001" 200 892
+127.0.0.1:57092 - - [21/Jun/2021:11:32:04] "GET /management/api/v1/analysis/attribute/?portCode=SA3001&date=2021-06-21" 200 246
+127.0.0.1:57106 - - [21/Jun/2021:11:32:09] "GET /management/api/v1/analysis/fundholding/?portCode=SA3001&date=2021-06-21" 200 9540
+127.0.0.1:57260 - - [21/Jun/2021:11:32:20] "GET /management/api/v1/analysis/fundholding/etf/?portCode=SA3001&date=2021-06-21" 500 85928
+127.0.0.1:57262 - - [21/Jun/2021:11:32:20] "GET /management/api/v1/analysis/fundholding/etf_analysis/?port_code=SA3001" 500 85461
+127.0.0.1:57318 - - [21/Jun/2021:11:32:24] "GET /management/api/v1/analysis/fundholding/summary/?portCode=SA3001&date=2021-06-21" 200 3627
+127.0.0.1:57342 - - [21/Jun/2021:11:32:26] "GET /management/api/v1/analysis/fundholding/etf_analysis/?port_code=SA3001" 500 85461
+127.0.0.1:57340 - - [21/Jun/2021:11:32:26] "GET /management/api/v1/analysis/fundholding/etf/?portCode=SA3001&date=2021-06-21" 500 85928
+127.0.0.1:57458 - - [21/Jun/2021:11:32:37] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:57458 - - [21/Jun/2021:11:32:37] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:57462 - - [21/Jun/2021:11:32:37] "GET /management/api/v1/overview/allocate/history/?portCode=PFF003" 200 11215
+127.0.0.1:57464 - - [21/Jun/2021:11:32:37] "GET /management/api/v1/overview/allocate/?portCode=PFF003" 200 289
+127.0.0.1:57466 - - [21/Jun/2021:11:32:37] "GET /management/api/v1/overview/compare/?portCode=PFF003" 200 5845
+127.0.0.1:57468 - - [21/Jun/2021:11:32:37] "GET /management/api/v1/overview/allocate/avg/?portCode=PFF003&start=&end=" 200 277
+127.0.0.1:57472 - - [21/Jun/2021:11:32:37] "GET /management/api/v1/overview/pos/?portCode=PFF003" 200 11170
+127.0.0.1:57470 - - [21/Jun/2021:11:32:37] "GET /management/api/v1/overview/?portCode=PFF003" 200 3742
+127.0.0.1:57480 - - [21/Jun/2021:11:32:37] "GET /management/api/v1/overview/questionnairy/?portCode=PFF003" 200 312
+2021-06-21 11:32:49,092 WARNING  Application instance <Task pending name='Task-834' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7f658b4da2e0>()]>> for connection <WebSocketProtocol client=['127.0.0.1', 57458] path=b'/ws/prevaluation/'> took too long to shut down and was killed.
+2021-06-21 14:20:05,710 WARNING  Application instance <Task pending name='Task-869' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7f657d0a2be0>()]>> for connection <WebSocketProtocol client=['127.0.0.1', 48728] path=b'/ws/prevaluation/'> took too long to shut down and was killed.
+2021-06-21 15:13:53,625 WARNING  Application instance <Task pending name='Task-891' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7f659a6d8b50>()]>> for connection <WebSocketProtocol client=['127.0.0.1', 57632] path=b'/ws/prevaluation/'> took too long to shut down and was killed.
+2021-06-21 15:13:59,643 WARNING  Application instance <Task pending name='Task-903' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7f658a1e0d60>()]>> for connection <WebSocketProtocol client=['127.0.0.1', 57722] path=b'/ws/prevaluation/'> took too long to shut down and was killed.
+2021-06-21 15:14:01,650 WARNING  Application instance <Task pending name='Task-906' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7f657d0b36d0>()]>> for connection <WebSocketProtocol client=['127.0.0.1', 57752] path=b'/ws/prevaluation/'> took too long to shut down and was killed.
+127.0.0.1:57458 - - [21/Jun/2021:11:32:38] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:57496 - - [21/Jun/2021:11:32:39] "GET /management/api/v1/analysis/performance/?date=2021-06-21&portCode=PFF003" 200 901
+127.0.0.1:57498 - - [21/Jun/2021:11:32:39] "GET /management/api/v1/analysis/attribute/?portCode=PFF003&date=2021-06-21" 200 249
+127.0.0.1:57512 - - [21/Jun/2021:11:32:42] "GET /management/api/v1/analysis/fundholding/?portCode=PFF003&date=2021-06-21" 200 27791
+127.0.0.1:57538 - - [21/Jun/2021:11:32:42] "GET /management/api/v1/analysis/fundholding/etf/?portCode=PFF003&date=2021-06-21" 200 11299
+127.0.0.1:57540 - - [21/Jun/2021:11:32:42] "GET /management/api/v1/analysis/fundholding/etf_analysis/?port_code=PFF003" 200 3438
+127.0.0.1:33484 - - [21/Jun/2021:13:09:12] "GET /questionnaire/" 200 4616
+127.0.0.1:33530 - - [21/Jun/2021:13:09:14] "GET /questionnaire/view/" 200 8659
+127.0.0.1:46906 - - [21/Jun/2021:13:24:08] "GET /management/admin/django_q/success/" 200 85216
+127.0.0.1:46912 - - [21/Jun/2021:13:24:08] "GET /management/admin/jsi18n/" 200 7732
+127.0.0.1:48380 - - [21/Jun/2021:13:57:04] "GET /management/api/v1/cta/" 200 817
+127.0.0.1:48378 - - [21/Jun/2021:13:57:04] "GET /management/api/v1/basic/all/" 200 1173
+127.0.0.1:48382 - - [21/Jun/2021:13:57:04] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:48386 - - [21/Jun/2021:13:57:04] "GET /management/api/v1/basic/all/" 200 1173
+127.0.0.1:48430 - - [21/Jun/2021:13:57:08] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:48430 - - [21/Jun/2021:13:57:08] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:48432 - - [21/Jun/2021:13:57:08] "GET /management/api/v1/overview/allocate/?portCode=PFF005" 200 288
+127.0.0.1:48434 - - [21/Jun/2021:13:57:08] "GET /management/api/v1/overview/allocate/history/?portCode=PFF005" 200 5545
+127.0.0.1:48438 - - [21/Jun/2021:13:57:08] "GET /management/api/v1/overview/compare/?portCode=PFF005" 200 2745
+127.0.0.1:48442 - - [21/Jun/2021:13:57:08] "GET /management/api/v1/overview/pos/?portCode=PFF005" 200 11062
+127.0.0.1:48444 - - [21/Jun/2021:13:57:08] "GET /management/api/v1/overview/allocate/avg/?portCode=PFF005&start=&end=" 200 277
+127.0.0.1:48440 - - [21/Jun/2021:13:57:08] "GET /management/api/v1/overview/?portCode=PFF005" 200 1852
+127.0.0.1:48450 - - [21/Jun/2021:13:57:08] "GET /management/api/v1/overview/questionnairy/?portCode=PFF005" 200 321
+127.0.0.1:48728 - - [21/Jun/2021:13:57:25] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:48728 - - [21/Jun/2021:13:57:25] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:48730 - - [21/Jun/2021:13:57:26] "GET /management/api/v1/overview/allocate/?portCode=PFF003" 200 289
+127.0.0.1:48732 - - [21/Jun/2021:13:57:26] "GET /management/api/v1/overview/allocate/history/?portCode=PFF003" 200 11215
+127.0.0.1:48734 - - [21/Jun/2021:13:57:26] "GET /management/api/v1/overview/compare/?portCode=PFF003" 200 5845
+127.0.0.1:48736 - - [21/Jun/2021:13:57:26] "GET /management/api/v1/overview/?portCode=PFF003" 200 3742
+127.0.0.1:48738 - - [21/Jun/2021:13:57:26] "GET /management/api/v1/overview/pos/?portCode=PFF003" 200 11170
+127.0.0.1:48740 - - [21/Jun/2021:13:57:26] "GET /management/api/v1/overview/allocate/avg/?portCode=PFF003&start=&end=" 200 277
+127.0.0.1:48748 - - [21/Jun/2021:13:57:26] "GET /management/api/v1/overview/questionnairy/?portCode=PFF003" 200 312
+127.0.0.1:48728 - - [21/Jun/2021:14:19:54] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:41134 - - [21/Jun/2021:14:19:54] "GET /management/api/v1/analysis/performance/?date=2021-06-21&portCode=PFF003" 200 901
+127.0.0.1:41136 - - [21/Jun/2021:14:19:54] "GET /management/api/v1/analysis/attribute/?portCode=PFF003&date=2021-06-21" 200 249
+127.0.0.1:41148 - - [21/Jun/2021:14:19:55] "GET /management/api/v1/mock/date/?portCode=PFF003" 200 444
+127.0.0.1:41158 - - [21/Jun/2021:14:19:56] "POST /management/api/v1/history/summary/" 200 50876
+127.0.0.1:41160 - - [21/Jun/2021:14:19:56] "GET /management/api/v1/history/summary/?portCode=PFF003&date" 200 138
+127.0.0.1:57378 - - [21/Jun/2021:15:13:18] "GET /management/api/v1/analysis/performance/?date=2021-06-21&portCode=PFF003" 200 901
+127.0.0.1:57380 - - [21/Jun/2021:15:13:18] "GET /management/api/v1/analysis/attribute/?portCode=PFF003&date=2021-06-21" 200 249
+127.0.0.1:57396 - - [21/Jun/2021:15:13:19] "GET /management/api/v1/cta/" 200 817
+127.0.0.1:57394 - - [21/Jun/2021:15:13:19] "GET /management/api/v1/basic/all/" 200 1173
+127.0.0.1:57398 - - [21/Jun/2021:15:13:19] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:57404 - - [21/Jun/2021:15:13:19] "GET /management/api/v1/basic/all/" 200 1173
+127.0.0.1:57632 - - [21/Jun/2021:15:13:41] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:57632 - - [21/Jun/2021:15:13:41] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:57634 - - [21/Jun/2021:15:13:41] "GET /management/api/v1/overview/allocate/?portCode=PFF005" 200 288
+127.0.0.1:57636 - - [21/Jun/2021:15:13:41] "GET /management/api/v1/overview/allocate/history/?portCode=PFF005" 200 5545
+127.0.0.1:57638 - - [21/Jun/2021:15:13:41] "GET /management/api/v1/overview/compare/?portCode=PFF005" 200 2745
+127.0.0.1:57642 - - [21/Jun/2021:15:13:41] "GET /management/api/v1/overview/pos/?portCode=PFF005" 200 11062
+127.0.0.1:57644 - - [21/Jun/2021:15:13:41] "GET /management/api/v1/overview/allocate/avg/?portCode=PFF005&start=&end=" 200 277
+127.0.0.1:57640 - - [21/Jun/2021:15:13:41] "GET /management/api/v1/overview/?portCode=PFF005" 200 1852
+127.0.0.1:57654 - - [21/Jun/2021:15:13:41] "GET /management/api/v1/overview/questionnairy/?portCode=PFF005" 200 321
+127.0.0.1:57632 - - [21/Jun/2021:15:13:42] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:57670 - - [21/Jun/2021:15:13:43] "GET /management/api/v1/analysis/performance/?date=2021-06-21&portCode=PFF005" 200 887
+127.0.0.1:57672 - - [21/Jun/2021:15:13:43] "GET /management/api/v1/analysis/attribute/?portCode=PFF005&date=2021-06-21" 200 246
+127.0.0.1:57722 - - [21/Jun/2021:15:13:47] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:57722 - - [21/Jun/2021:15:13:47] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:57722 - - [21/Jun/2021:15:13:49] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:57752 - - [21/Jun/2021:15:13:50] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:57752 - - [21/Jun/2021:15:13:50] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:57754 - - [21/Jun/2021:15:13:50] "GET /management/api/v1/overview/allocate/history/?portCode=SA3001" 200 5275
+127.0.0.1:57756 - - [21/Jun/2021:15:13:50] "GET /management/api/v1/overview/compare/?portCode=SA3001" 200 2878
+127.0.0.1:57758 - - [21/Jun/2021:15:13:50] "GET /management/api/v1/overview/?portCode=SA3001" 200 1851
+127.0.0.1:57764 - - [21/Jun/2021:15:13:50] "GET /management/api/v1/overview/questionnairy/?portCode=SA3001" 200 455
+127.0.0.1:57760 - - [21/Jun/2021:15:13:50] "GET /management/api/v1/overview/allocate/?portCode=SA3001" 200 286
+127.0.0.1:57762 - - [21/Jun/2021:15:13:50] "GET /management/api/v1/overview/pos/?portCode=SA3001" 200 11050
+127.0.0.1:57774 - - [21/Jun/2021:15:13:50] "GET /management/api/v1/overview/allocate/avg/?portCode=SA3001&start=&end=" 200 288
+127.0.0.1:57752 - - [21/Jun/2021:15:13:51] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:57786 - - [21/Jun/2021:15:13:51] "GET /management/api/v1/analysis/performance/?date=2021-06-21&portCode=SA3001" 200 892
+127.0.0.1:57788 - - [21/Jun/2021:15:13:51] "GET /management/api/v1/analysis/attribute/?portCode=SA3001&date=2021-06-21" 200 246
+127.0.0.1:48430 - - [21/Jun/2021:15:41:52] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:46512 - - [21/Jun/2021:15:41:52] "GET /management/api/v1/cta/" 200 817
+127.0.0.1:46510 - - [21/Jun/2021:15:41:52] "GET /management/api/v1/basic/all/" 200 1173
+127.0.0.1:46514 - - [21/Jun/2021:15:41:52] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:46518 - - [21/Jun/2021:15:41:52] "GET /management/api/v1/basic/all/" 200 1173
+127.0.0.1:46540 - - [21/Jun/2021:15:41:53] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:46540 - - [21/Jun/2021:15:41:53] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:46542 - - [21/Jun/2021:15:41:53] "GET /management/api/v1/overview/allocate/?portCode=PFF003" 200 289
+127.0.0.1:46544 - - [21/Jun/2021:15:41:53] "GET /management/api/v1/overview/allocate/history/?portCode=PFF003" 200 11215
+Internal Server Error: /management/api/v1/cta/
+Traceback (most recent call last):
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 330, in thread_handler
+    raise exc_info[1]
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 38, in inner
+    response = await get_response(request)
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/base.py", line 231, in _get_response_async
+    response = await wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 296, in __call__
+    ret = await asyncio.wait_for(future, timeout=None)
+  File "/usr/local/python3/lib/python3.8/asyncio/tasks.py", line 455, in wait_for
+    return await fut
+  File "/usr/local/python3/lib/python3.8/concurrent/futures/thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 334, in thread_handler
+    return func(*args, **kwargs)
+  File "./cta_fof/views.py", line 19, in cta_info
+    bl = models.Balance.objects.filter(port_code=fund.port_code).latest('date')
+  File "/home/sma/.local/lib/python3.8/site-packages/django/db/models/query.py", line 674, in latest
+    return self.reverse()._earliest(*fields)
+  File "/home/sma/.local/lib/python3.8/site-packages/django/db/models/query.py", line 668, in _earliest
+    return obj.get()
+  File "/home/sma/.local/lib/python3.8/site-packages/django/db/models/query.py", line 429, in get
+    raise self.model.DoesNotExist(
+cta_fof.models.Balance.DoesNotExist: Balance matching query does not exist.
+2021-06-21 16:01:21,636 ERROR    Internal Server Error: /management/api/v1/cta/
+Traceback (most recent call last):
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 330, in thread_handler
+    raise exc_info[1]
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 38, in inner
+    response = await get_response(request)
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/base.py", line 231, in _get_response_async
+    response = await wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 296, in __call__
+    ret = await asyncio.wait_for(future, timeout=None)
+  File "/usr/local/python3/lib/python3.8/asyncio/tasks.py", line 455, in wait_for
+    return await fut
+  File "/usr/local/python3/lib/python3.8/concurrent/futures/thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 334, in thread_handler
+    return func(*args, **kwargs)
+  File "./cta_fof/views.py", line 19, in cta_info
+    bl = models.Balance.objects.filter(port_code=fund.port_code).latest('date')
+  File "/home/sma/.local/lib/python3.8/site-packages/django/db/models/query.py", line 674, in latest
+    return self.reverse()._earliest(*fields)
+  File "/home/sma/.local/lib/python3.8/site-packages/django/db/models/query.py", line 668, in _earliest
+    return obj.get()
+  File "/home/sma/.local/lib/python3.8/site-packages/django/db/models/query.py", line 429, in get
+    raise self.model.DoesNotExist(
+cta_fof.models.Balance.DoesNotExist: Balance matching query does not exist.
+Internal Server Error: /management/api/v1/cta/
+Traceback (most recent call last):
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 330, in thread_handler
+    raise exc_info[1]
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 38, in inner
+    response = await get_response(request)
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/base.py", line 231, in _get_response_async
+    response = await wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 296, in __call__
+    ret = await asyncio.wait_for(future, timeout=None)
+  File "/usr/local/python3/lib/python3.8/asyncio/tasks.py", line 455, in wait_for
+    return await fut
+  File "/usr/local/python3/lib/python3.8/concurrent/futures/thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 334, in thread_handler
+    return func(*args, **kwargs)
+  File "./cta_fof/views.py", line 19, in cta_info
+    bl = models.Balance.objects.filter(port_code=fund.port_code).latest('date')
+  File "/home/sma/.local/lib/python3.8/site-packages/django/db/models/query.py", line 674, in latest
+    return self.reverse()._earliest(*fields)
+  File "/home/sma/.local/lib/python3.8/site-packages/django/db/models/query.py", line 668, in _earliest
+    return obj.get()
+  File "/home/sma/.local/lib/python3.8/site-packages/django/db/models/query.py", line 429, in get
+    raise self.model.DoesNotExist(
+cta_fof.models.Balance.DoesNotExist: Balance matching query does not exist.
+2021-06-21 16:01:33,462 ERROR    Internal Server Error: /management/api/v1/cta/
+Traceback (most recent call last):
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 330, in thread_handler
+    raise exc_info[1]
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 38, in inner
+    response = await get_response(request)
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/base.py", line 231, in _get_response_async
+    response = await wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 296, in __call__
+    ret = await asyncio.wait_for(future, timeout=None)
+  File "/usr/local/python3/lib/python3.8/asyncio/tasks.py", line 455, in wait_for
+    return await fut
+  File "/usr/local/python3/lib/python3.8/concurrent/futures/thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 334, in thread_handler
+    return func(*args, **kwargs)
+  File "./cta_fof/views.py", line 19, in cta_info
+    bl = models.Balance.objects.filter(port_code=fund.port_code).latest('date')
+  File "/home/sma/.local/lib/python3.8/site-packages/django/db/models/query.py", line 674, in latest
+    return self.reverse()._earliest(*fields)
+  File "/home/sma/.local/lib/python3.8/site-packages/django/db/models/query.py", line 668, in _earliest
+    return obj.get()
+  File "/home/sma/.local/lib/python3.8/site-packages/django/db/models/query.py", line 429, in get
+    raise self.model.DoesNotExist(
+cta_fof.models.Balance.DoesNotExist: Balance matching query does not exist.
+Internal Server Error: /management/api/v1/cta/
+Traceback (most recent call last):
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 330, in thread_handler
+    raise exc_info[1]
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 38, in inner
+    response = await get_response(request)
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/base.py", line 231, in _get_response_async
+    response = await wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 296, in __call__
+    ret = await asyncio.wait_for(future, timeout=None)
+  File "/usr/local/python3/lib/python3.8/asyncio/tasks.py", line 455, in wait_for
+    return await fut
+  File "/usr/local/python3/lib/python3.8/concurrent/futures/thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 334, in thread_handler
+    return func(*args, **kwargs)
+  File "./cta_fof/views.py", line 19, in cta_info
+    bl = models.Balance.objects.filter(port_code=fund.port_code).latest('date')
+  File "/home/sma/.local/lib/python3.8/site-packages/django/db/models/query.py", line 674, in latest
+    return self.reverse()._earliest(*fields)
+  File "/home/sma/.local/lib/python3.8/site-packages/django/db/models/query.py", line 668, in _earliest
+    return obj.get()
+  File "/home/sma/.local/lib/python3.8/site-packages/django/db/models/query.py", line 429, in get
+    raise self.model.DoesNotExist(
+cta_fof.models.Balance.DoesNotExist: Balance matching query does not exist.
+2021-06-21 16:12:24,226 ERROR    Internal Server Error: /management/api/v1/cta/
+Traceback (most recent call last):
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 330, in thread_handler
+    raise exc_info[1]
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 38, in inner
+    response = await get_response(request)
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/base.py", line 231, in _get_response_async
+    response = await wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 296, in __call__
+    ret = await asyncio.wait_for(future, timeout=None)
+  File "/usr/local/python3/lib/python3.8/asyncio/tasks.py", line 455, in wait_for
+    return await fut
+  File "/usr/local/python3/lib/python3.8/concurrent/futures/thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 334, in thread_handler
+    return func(*args, **kwargs)
+  File "./cta_fof/views.py", line 19, in cta_info
+    bl = models.Balance.objects.filter(port_code=fund.port_code).latest('date')
+  File "/home/sma/.local/lib/python3.8/site-packages/django/db/models/query.py", line 674, in latest
+    return self.reverse()._earliest(*fields)
+  File "/home/sma/.local/lib/python3.8/site-packages/django/db/models/query.py", line 668, in _earliest
+    return obj.get()
+  File "/home/sma/.local/lib/python3.8/site-packages/django/db/models/query.py", line 429, in get
+    raise self.model.DoesNotExist(
+cta_fof.models.Balance.DoesNotExist: Balance matching query does not exist.
+Internal Server Error: /management/api/v1/cta/
+Traceback (most recent call last):
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 330, in thread_handler
+    raise exc_info[1]
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 38, in inner
+    response = await get_response(request)
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/base.py", line 231, in _get_response_async
+    response = await wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 296, in __call__
+    ret = await asyncio.wait_for(future, timeout=None)
+  File "/usr/local/python3/lib/python3.8/asyncio/tasks.py", line 455, in wait_for
+    return await fut
+  File "/usr/local/python3/lib/python3.8/concurrent/futures/thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 334, in thread_handler
+    return func(*args, **kwargs)
+  File "./cta_fof/views.py", line 19, in cta_info
+    bl = models.Balance.objects.filter(port_code=fund.port_code).latest('date')
+  File "/home/sma/.local/lib/python3.8/site-packages/django/db/models/query.py", line 674, in latest
+    return self.reverse()._earliest(*fields)
+  File "/home/sma/.local/lib/python3.8/site-packages/django/db/models/query.py", line 668, in _earliest
+    return obj.get()
+  File "/home/sma/.local/lib/python3.8/site-packages/django/db/models/query.py", line 429, in get
+    raise self.model.DoesNotExist(
+cta_fof.models.Balance.DoesNotExist: Balance matching query does not exist.
+2021-06-21 16:45:40,106 ERROR    Internal Server Error: /management/api/v1/cta/
+Traceback (most recent call last):
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 330, in thread_handler
+    raise exc_info[1]
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/exception.py", line 38, in inner
+    response = await get_response(request)
+  File "/home/sma/.local/lib/python3.8/site-packages/django/core/handlers/base.py", line 231, in _get_response_async
+    response = await wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 296, in __call__
+    ret = await asyncio.wait_for(future, timeout=None)
+  File "/usr/local/python3/lib/python3.8/asyncio/tasks.py", line 455, in wait_for
+    return await fut
+  File "/usr/local/python3/lib/python3.8/concurrent/futures/thread.py", line 57, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/usr/local/python3/lib/python3.8/site-packages/asgiref/sync.py", line 334, in thread_handler
+    return func(*args, **kwargs)
+  File "./cta_fof/views.py", line 19, in cta_info
+    bl = models.Balance.objects.filter(port_code=fund.port_code).latest('date')
+  File "/home/sma/.local/lib/python3.8/site-packages/django/db/models/query.py", line 674, in latest
+    return self.reverse()._earliest(*fields)
+  File "/home/sma/.local/lib/python3.8/site-packages/django/db/models/query.py", line 668, in _earliest
+    return obj.get()
+  File "/home/sma/.local/lib/python3.8/site-packages/django/db/models/query.py", line 429, in get
+    raise self.model.DoesNotExist(
+cta_fof.models.Balance.DoesNotExist: Balance matching query does not exist.
+127.0.0.1:46546 - - [21/Jun/2021:15:41:53] "GET /management/api/v1/overview/compare/?portCode=PFF003" 200 5845
+127.0.0.1:46550 - - [21/Jun/2021:15:41:53] "GET /management/api/v1/overview/pos/?portCode=PFF003" 200 11170
+127.0.0.1:46552 - - [21/Jun/2021:15:41:53] "GET /management/api/v1/overview/allocate/avg/?portCode=PFF003&start=&end=" 200 277
+127.0.0.1:46548 - - [21/Jun/2021:15:41:53] "GET /management/api/v1/overview/?portCode=PFF003" 200 3742
+127.0.0.1:46560 - - [21/Jun/2021:15:41:53] "GET /management/api/v1/overview/questionnairy/?portCode=PFF003" 200 312
+127.0.0.1:46672 - - [21/Jun/2021:15:42:05] "GET /management/api/v1/basic/all/" 200 1173
+127.0.0.1:46674 - - [21/Jun/2021:15:42:05] "GET /management/api/v1/cta/" 200 817
+127.0.0.1:46676 - - [21/Jun/2021:15:42:05] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:46682 - - [21/Jun/2021:15:42:05] "GET /management/api/v1/basic/all/" 200 1173
+127.0.0.1:46706 - - [21/Jun/2021:15:42:06] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:46706 - - [21/Jun/2021:15:42:07] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:46708 - - [21/Jun/2021:15:42:07] "GET /management/api/v1/overview/allocate/?portCode=SA5001" 200 289
+127.0.0.1:46710 - - [21/Jun/2021:15:42:07] "GET /management/api/v1/overview/allocate/history/?portCode=SA5001" 200 22150
+127.0.0.1:46712 - - [21/Jun/2021:15:42:07] "GET /management/api/v1/overview/compare/?portCode=SA5001" 200 12127
+127.0.0.1:46714 - - [21/Jun/2021:15:42:07] "GET /management/api/v1/overview/?portCode=SA5001" 200 7327
+127.0.0.1:46718 - - [21/Jun/2021:15:42:07] "GET /management/api/v1/overview/questionnairy/?portCode=SA5001" 200 478
+127.0.0.1:46716 - - [21/Jun/2021:15:42:07] "GET /management/api/v1/overview/pos/?portCode=SA5001" 200 11170
+127.0.0.1:46728 - - [21/Jun/2021:15:42:07] "GET /management/api/v1/overview/allocate/avg/?portCode=SA5001&start=&end=" 200 287
+127.0.0.1:46706 - - [21/Jun/2021:15:42:25] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:46952 - - [21/Jun/2021:15:42:27] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:46952 - - [21/Jun/2021:15:42:27] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:46954 - - [21/Jun/2021:15:42:27] "GET /management/api/v1/overview/allocate/?portCode=SA3001" 200 286
+127.0.0.1:46956 - - [21/Jun/2021:15:42:27] "GET /management/api/v1/overview/allocate/history/?portCode=SA3001" 200 5275
+127.0.0.1:46964 - - [21/Jun/2021:15:42:27] "GET /management/api/v1/overview/questionnairy/?portCode=SA3001" 200 455
+127.0.0.1:46958 - - [21/Jun/2021:15:42:27] "GET /management/api/v1/overview/compare/?portCode=SA3001" 200 2878
+127.0.0.1:46962 - - [21/Jun/2021:15:42:27] "GET /management/api/v1/overview/allocate/avg/?portCode=SA3001&start=&end=" 200 288
+127.0.0.1:46960 - - [21/Jun/2021:15:42:27] "GET /management/api/v1/overview/?portCode=SA3001" 200 1851
+127.0.0.1:46974 - - [21/Jun/2021:15:42:27] "GET /management/api/v1/overview/pos/?portCode=SA3001" 200 11050
+127.0.0.1:46952 - - [21/Jun/2021:15:42:41] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:47128 - - [21/Jun/2021:15:42:42] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:47128 - - [21/Jun/2021:15:42:42] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:47130 - - [21/Jun/2021:15:42:42] "GET /management/api/v1/overview/allocate/?portCode=PFF003" 200 289
+127.0.0.1:47132 - - [21/Jun/2021:15:42:42] "GET /management/api/v1/overview/allocate/history/?portCode=PFF003" 200 11215
+127.0.0.1:47134 - - [21/Jun/2021:15:42:42] "GET /management/api/v1/overview/compare/?portCode=PFF003" 200 5845
+127.0.0.1:47138 - - [21/Jun/2021:15:42:42] "GET /management/api/v1/overview/pos/?portCode=PFF003" 200 11170
+127.0.0.1:47140 - - [21/Jun/2021:15:42:42] "GET /management/api/v1/overview/allocate/avg/?portCode=PFF003&start=&end=" 200 277
+127.0.0.1:47136 - - [21/Jun/2021:15:42:42] "GET /management/api/v1/overview/?portCode=PFF003" 200 3742
+127.0.0.1:47148 - - [21/Jun/2021:15:42:42] "GET /management/api/v1/overview/questionnairy/?portCode=PFF003" 200 312
+127.0.0.1:46540 - - [21/Jun/2021:16:01:21] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:58466 - - [21/Jun/2021:16:01:21] "GET /management/api/v1/basic/all/" 200 1173
+127.0.0.1:58470 - - [21/Jun/2021:16:01:21] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:58468 - - [21/Jun/2021:16:01:21] "GET /management/api/v1/cta/" 500 92416
+127.0.0.1:58478 - - [21/Jun/2021:16:01:21] "GET /management/api/v1/basic/all/" 200 1173
+127.0.0.1:58498 - - [21/Jun/2021:16:01:23] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:58498 - - [21/Jun/2021:16:01:23] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:58500 - - [21/Jun/2021:16:01:23] "GET /management/api/v1/overview/allocate/?portCode=PFF005" 200 288
+127.0.0.1:58502 - - [21/Jun/2021:16:01:23] "GET /management/api/v1/overview/allocate/history/?portCode=PFF005" 200 5545
+127.0.0.1:58504 - - [21/Jun/2021:16:01:23] "GET /management/api/v1/overview/compare/?portCode=PFF005" 200 2745
+127.0.0.1:58508 - - [21/Jun/2021:16:01:23] "GET /management/api/v1/overview/pos/?portCode=PFF005" 200 11062
+127.0.0.1:58510 - - [21/Jun/2021:16:01:23] "GET /management/api/v1/overview/allocate/avg/?portCode=PFF005&start=&end=" 200 277
+127.0.0.1:58506 - - [21/Jun/2021:16:01:23] "GET /management/api/v1/overview/?portCode=PFF005" 200 1852
+127.0.0.1:58516 - - [21/Jun/2021:16:01:23] "GET /management/api/v1/overview/questionnairy/?portCode=PFF005" 200 321
+127.0.0.1:47128 - - [21/Jun/2021:16:01:33] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:58620 - - [21/Jun/2021:16:01:33] "GET /management/api/v1/basic/all/" 200 1173
+127.0.0.1:58624 - - [21/Jun/2021:16:01:33] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:58622 - - [21/Jun/2021:16:01:33] "GET /management/api/v1/cta/" 500 92962
+127.0.0.1:58630 - - [21/Jun/2021:16:01:33] "GET /management/api/v1/basic/all/" 200 1173
+127.0.0.1:58498 - - [21/Jun/2021:16:01:41] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:58716 - - [21/Jun/2021:16:01:41] "POST /management/api/v1/history/summary/" 200 30101
+127.0.0.1:58718 - - [21/Jun/2021:16:01:41] "GET /management/api/v1/history/summary/?portCode=PFF005&date" 200 158
+127.0.0.1:37004 - - [21/Jun/2021:16:12:24] "GET /management/api/v1/basic/all/" 200 1173
+127.0.0.1:37008 - - [21/Jun/2021:16:12:24] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:37006 - - [21/Jun/2021:16:12:24] "GET /management/api/v1/cta/" 500 92416
+127.0.0.1:37014 - - [21/Jun/2021:16:12:24] "GET /management/api/v1/basic/all/" 200 1173
+127.0.0.1:37040 - - [21/Jun/2021:16:12:25] "WSCONNECTING /ws/prevaluation/" - -
+127.0.0.1:37040 - - [21/Jun/2021:16:12:25] "WSCONNECT /ws/prevaluation/" - -
+127.0.0.1:37044 - - [21/Jun/2021:16:12:25] "GET /management/api/v1/overview/allocate/?portCode=PFF005" 200 288
+127.0.0.1:37046 - - [21/Jun/2021:16:12:25] "GET /management/api/v1/overview/allocate/history/?portCode=PFF005" 200 5545
+127.0.0.1:37048 - - [21/Jun/2021:16:12:25] "GET /management/api/v1/overview/compare/?portCode=PFF005" 200 2745
+127.0.0.1:37052 - - [21/Jun/2021:16:12:25] "GET /management/api/v1/overview/pos/?portCode=PFF005" 200 11062
+127.0.0.1:37054 - - [21/Jun/2021:16:12:25] "GET /management/api/v1/overview/allocate/avg/?portCode=PFF005&start=&end=" 200 277
+127.0.0.1:37050 - - [21/Jun/2021:16:12:25] "GET /management/api/v1/overview/?portCode=PFF005" 200 1852
+127.0.0.1:37062 - - [21/Jun/2021:16:12:25] "GET /management/api/v1/overview/questionnairy/?portCode=PFF005" 200 321
+127.0.0.1:37040 - - [21/Jun/2021:16:45:39] "WSDISCONNECT /ws/prevaluation/" - -
+127.0.0.1:57358 - - [21/Jun/2021:16:45:40] "GET /management/api/v1/basic/all/" 200 1173
+127.0.0.1:57364 - - [21/Jun/2021:16:45:40] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:57362 - - [21/Jun/2021:16:45:40] "GET /management/api/v1/cta/" 500 92418
+127.0.0.1:57368 - - [21/Jun/2021:16:45:40] "GET /management/api/v1/basic/all/" 200 1173
+127.0.0.1:59910 - - [21/Jun/2021:16:49:50] "GET /management/api/v1/basic/all/" 200 1173
+127.0.0.1:59912 - - [21/Jun/2021:16:49:50] "GET /management/api/v1/cta/" 200 817
+127.0.0.1:59914 - - [21/Jun/2021:16:49:50] "GET /management/api/v1/basic/announcement/?num=6" 200 1223
+127.0.0.1:59920 - - [21/Jun/2021:16:49:50] "GET /management/api/v1/basic/all/" 200 1173
+127.0.0.1:60060 - - [21/Jun/2021:16:50:03] "GET /management/api/v1/cta/holding?port_code=PFF006" 200 2356
+2021-06-21 16:52:16,025 WARNING  Application instance <Task pending name='Task-1015' coro=<ProtocolTypeRouter.__call__() running at /home/sma/.local/lib/python3.8/site-packages/channels/routing.py:71> wait_for=<Future pending cb=[<TaskWakeupMethWrapper object at 0x7f657e960f10>()]>> for connection <WebSocketProtocol client=['127.0.0.1', 33052] path=b'/ws/prevaluation/'> took too long to shut down and was killed.

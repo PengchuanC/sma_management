@@ -5,6 +5,10 @@ parsing_valuation
 @date: 2020-06-28
 @desc: 解析估值表
 """
+from typing import Dict
+
+import pandas as pd
+from dateutil.parser import parse
 
 
 def rstrip(text: str):
@@ -30,7 +34,7 @@ def locate(data, row_label, col_label="市值"):
     except KeyError:
         ret = 0
     except Exception as e:
-        logger.error(f"估值表数据解析错误，行列标签为“{row_label}”、”{col_label}“，" + str(e))
+        print(f"估值表数据解析错误，行列标签为“{row_label}”、”{col_label}“，" + str(e))
         raise e
     ret = round(float(ret), 4)
     return ret
@@ -76,3 +80,44 @@ def analyze(data):
         'profit_pay': profit_pay, 'cash_dividend': cash_dividend
     }
     return ret
+
+
+def locate_new(data, row, col='EN_SZ'):
+    v = data[data['VC_KMDM'] == row]
+    v = v[[col, 'L_ZTBH', 'D_YWRQ']]
+    v.columns = ['value', 'o32', 'date']
+    return v
+
+
+def analyze_new(data: pd.DataFrame) -> Dict[str, pd.DataFrame]:
+    data = data[data['VC_KMDM'].notnull()].copy()
+    data['EN_SZ'] = data['EN_SZ'].fillna(method='bfill')
+    data = data.fillna(0)
+    data['VC_KMDM'] = data['VC_KMDM'].apply(rstrip)
+    mapping = {
+        'asset': ('资产类合计',), 'debt': ('负债类合计',), 'net_asset': ('基金资产净值',), 'shares': ('实收资本', 'L_SL'),
+        'unit_nav': ('基金单位净值',), 'acc_nav': ('累计单位净值',), 'savings': ('1002',), 'fund_invest': ('1105',),
+        'dividend_rec': ('1203',), 'interest_rec': ('1204',), 'purchase_rec': ('1207',), 'redemption_pay': ('2203',),
+        'redemption_fee_pay': ('2204',), 'management_pay': ('2206',), 'custodian_pay': ('2207',),
+        'profit_pay': ('223201',), 'withholding_pay': ('2501',), 'liquidation': ('3003',),
+        'value_added': ('基金资产净值', 'EN_GZZZ',), 'cash_dividend': ('累计派现金额', 'VC_KMMC',)
+    }
+    ret = []
+    for name, location in mapping.items():
+        r = locate_new(data, *location)
+        r['attr'] = name
+        ret.append(r)
+    ret = pd.concat(ret)
+    ret = ret.reset_index(drop=True)
+    ret['value'] = ret['value'].astype('float')
+    ret['date'] = ret['date'].apply(lambda x: parse(x).date())
+    group = ret.groupby('o32')
+    data = {}
+    for code, g in group:
+        g = g.pivot_table(index='date', columns='attr', values='value')
+        columns = g.columns
+        for x in mapping:
+            if x not in columns:
+                g[x] = 0
+        data[code] = g
+    return data

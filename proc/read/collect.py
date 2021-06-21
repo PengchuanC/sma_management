@@ -3,8 +3,6 @@ from typing import List
 from pathlib import Path
 from dateutil.parser import parse
 
-from proc.configs import FileStoragePath
-
 
 VF = namedtuple('ValuationFile', 'name date absolute')
 
@@ -26,6 +24,3 @@ def collect_files(path: str, file_type: str, keywords=None) -> List[VF]:
     else:
         files = [analyze_path(x) for x in files]
     return files
-
-
-
