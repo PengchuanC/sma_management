@@ -27,7 +27,8 @@ def three_days_ago():
     """三个交易日之前"""
     t = datetime.date.today()
     month_ago = t - datetime.timedelta(days=30)
-    days = TradingDays.objects.filter(date__in=(month_ago, t)).values('date').order_by('date')
+    days = TradingDays.objects.filter(date__range=(
+        month_ago, t)).values('date').order_by('date')
     days = [x['date'] for x in days]
     day = days[-3]
     return day
@@ -43,7 +44,8 @@ def commit_valuation():
 def commit_single_cta(portfolio: models.Portfolio):
     """同步单只CTA的估值表数据"""
     latest = latest_update_date(portfolio)
-    name = models.PortfolioExpanded.objects.get(port_code=portfolio.port_code).valuation
+    name = models.PortfolioExpanded.objects.get(
+        port_code=portfolio.port_code).valuation
     vfs = collect_files(FileStoragePath.valuation, 'xls', name)
     vfs = [x for x in vfs if x.date > latest]
     for vf in vfs:
