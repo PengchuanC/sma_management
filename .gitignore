@@ -1,2 +1,5 @@
 /download/
 /shu/sma_export/data/
+*.log
+.*
+/__pycache__/*
