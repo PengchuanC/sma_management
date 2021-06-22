@@ -62,7 +62,10 @@ class PreValuationConsumer(AsyncJsonWebsocketConsumer):
         self.holding = holding
         self.etf = etf
         stocks = holding.stockcode
-        stocks = models.StockRealtimePrice.objects.filter(secucode__in=list(stocks)+list(etf.stockcode)).values(
+        need = list(stocks)
+        if not etf.empty:
+            need += list(etf.stockcode)
+        stocks = models.StockRealtimePrice.objects.filter(secucode__in=need).values(
             'secucode', 'prev_close', 'price', 'time'
         )
         stocks = pd.DataFrame(stocks)
@@ -104,7 +107,7 @@ class PreValuationConsumer(AsyncJsonWebsocketConsumer):
         last = models.StockRealtimePrice.objects.last().time
         last = models.StockRealtimePrice.objects.filter(time__lt=last).last().time
         stocks = holding.stockcode
-        etfs = etf.stockcode
+        etfs = etf.stockcode if not etf.empty else []
         codes = list(stocks) + list(etfs)
         stocks = models.StockRealtimePrice.objects.filter(
             secucode__in=codes, time=last
