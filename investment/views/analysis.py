@@ -340,8 +340,10 @@ class FundHoldingView(APIView):
     @staticmethod
     def fund_ratio(port_code: str, date: datetime.date):
         """组合持有基金的比例"""
+        cannot_resolve = ['国债标准券']
         holding = Holding.objects.filter(
-            port_code=port_code, date=date, category='开放式基金').values('secucode', 'mkt_cap', 'total_profit')
+            port_code=port_code, date=date).exclude(category__in=cannot_resolve).values(
+            'secucode', 'mkt_cap', 'total_profit')
         na = Balance.objects.get(port_code=port_code, date=date).net_asset
         holding = pd.DataFrame(holding)
 
@@ -356,7 +358,7 @@ class FundHoldingView(APIView):
         holding = models.Holding.objects.filter(
             port_code=port_code, date=date, category='开放式基金').values('secucode', 'trade_market')
         cw = [x['secucode'] for x in holding if x['trade_market'] == 6]
-        cn = [x['secucode'] for x in holding if x['trade_market'] == 1]
+        cn = [x['secucode'] for x in holding if x['trade_market'] in (1, 2)]
         cw_data = FundHoldingView.period_return(cw, date, 6)
         cn_data = FundHoldingView.period_return(cn, date, 1)
         data = cw_data.append(cn_data)
