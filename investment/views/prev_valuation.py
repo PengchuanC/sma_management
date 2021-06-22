@@ -54,7 +54,8 @@ class PreValuationConsumer(AsyncJsonWebsocketConsumer):
         date = models.Balance.objects.filter(port_code=port_code).last().date
         holding = fund_holding_stock(port_code, date, in_exchange=False)
         etf = holding_etf_in_exchange(port_code, date)
-        etf = pd.DataFrame([{'stockcode': x, 'ratio': y} for x, y in etf.items()])
+        etf = pd.DataFrame([{'stockcode': x, 'ratio': y}
+                           for x, y in etf.items()])
         ratio = FundHoldingView.asset_allocate(port_code, date)
         stock = ratio['stock']
         equity = holding.ratio.sum() / stock
@@ -69,13 +70,15 @@ class PreValuationConsumer(AsyncJsonWebsocketConsumer):
         stocks.time = stocks.time.apply(lambda x: x.strftime('%H:%M:%S'))
         stocks = stocks[stocks['price'] != 0]
         stocks['change'] = stocks.price / stocks.prev_close - 1
-        data = holding.merge(stocks, left_on='stockcode', right_on='secucode', how='inner')
+        data = holding.merge(stocks, left_on='stockcode',
+                             right_on='secucode', how='inner')
         data['real_change'] = (data.ratio * data.change).astype('float')
         data = data.groupby('time')['real_change'].sum().reset_index()
         data['real_change'] /= float(equity)
         data = data.rename(columns={'time': 'name', 'real_change': 'value'})
         if not etf.empty:
-            etf_d = etf.merge(stocks, left_on='stockcode', right_on='secucode', how='inner')
+            etf_d = etf.merge(stocks, left_on='stockcode',
+                              right_on='secucode', how='inner')
             etf_d['real_change'] = etf_d.ratio * etf_d.change.astype('float')
             etf_d = etf_d.groupby('time')['real_change'].sum().reset_index()
             etf_d = etf_d.rename(columns={'time': 'name'})
@@ -102,7 +105,8 @@ class PreValuationConsumer(AsyncJsonWebsocketConsumer):
     def calc(holding, etf, equity):
         """计算实时涨跌幅"""
         last = models.StockRealtimePrice.objects.last().time
-        last = models.StockRealtimePrice.objects.filter(time__lt=last).last().time
+        last = models.StockRealtimePrice.objects.filter(
+            time__lt=last).last().time
         stocks = holding.stockcode
         etfs = etf.stockcode
         codes = list(stocks) + list(etfs)
@@ -112,12 +116,14 @@ class PreValuationConsumer(AsyncJsonWebsocketConsumer):
         stocks = pd.DataFrame(stocks)
         stocks = stocks[stocks['price'] != 0]
         stocks['change'] = stocks.price / stocks.prev_close - 1
-        data = holding.merge(stocks, left_on='stockcode', right_on='secucode', how='inner')
+        data = holding.merge(stocks, left_on='stockcode',
+                             right_on='secucode', how='inner')
         data['real_change'] = data.ratio * data.change
         data['real_change'] = data['real_change'].astype('float') / equity
         value = data.real_change.sum()
         if not etf.empty:
-            etf_d = etf.merge(stocks, left_on='stockcode', right_on='secucode', how='inner')
+            etf_d = etf.merge(stocks, left_on='stockcode',
+                              right_on='secucode', how='inner')
             etf_d['real_change'] = etf_d.ratio * etf_d.change.astype('float')
             value += etf_d.real_change.sum()
         return [{'name': last.strftime('%H:%M:%S'), 'value': value}]
@@ -181,7 +187,8 @@ class BulkFundValuationConsumer(AsyncJsonWebsocketConsumer):
     @database_sync_to_async
     def target_funds(self):
         last = models.Holding.objects.aggregate(mdate=Max('date'))['mdate']
-        funds = models.Holding.objects.filter(date=last).values('secucode').distinct()
+        funds = models.Holding.objects.filter(
+            date=last).values('secucode').distinct()
         funds = [x['secucode'] for x in funds]
 
         observe = models.ObservePool.objects.values('secucode').distinct()
@@ -198,18 +205,21 @@ class BulkFundValuationConsumer(AsyncJsonWebsocketConsumer):
         # 最新持仓
         holding = fund_holding_stock_by_fund(funds)
         funds = list(set(list(holding.secucode)))
-        names = models.Funds.objects.filter(secucode__in=funds).values('secucode', 'secuname')
+        names = models.Funds.objects.filter(
+            secucode__in=funds).values('secucode', 'secuname')
         names = pd.DataFrame(names)
         holding = names.merge(holding, on='secucode', how='outer')
         self.holding = holding
         names = holding[['secucode', 'secuname']].drop_duplicates()
-        names['hold'] = names['secucode'].apply(lambda x: '是' if x in self.holding_fund else '否')
+        names['hold'] = names['secucode'].apply(
+            lambda x: '是' if x in self.holding_fund else '否')
         self.names = names
 
     @database_sync_to_async
     def stock_price(self, stocks: list, tick=True):
         last = models.StockRealtimePrice.objects.last().time
-        last = models.StockRealtimePrice.objects.filter(time__lt=last).last().time
+        last = models.StockRealtimePrice.objects.filter(
+            time__lt=last).last().time
         if tick:
             stocks = models.StockRealtimePrice.objects.filter(
                 secucode__in=stocks, time=last
