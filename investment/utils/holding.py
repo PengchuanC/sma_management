@@ -11,9 +11,15 @@ from django.db.models import Max
 from .. import models
 
 
-def fund_holding_stock(port_code: str, date: str or datetime.date):
+def fund_holding_stock(port_code: str, date: str or datetime.date, in_exchange=True):
     """获取组合在给定日期的持股情况"""
-    funds = models.Holding.objects.filter(port_code=port_code, date=date).values('secucode', 'mkt_cap')
+    if in_exchange:
+        market = [1, 2, 6]
+    else:
+        market = [6]
+    funds = models.Holding.objects.filter(
+        port_code=port_code, date=date, trade_market__in=market
+    ).values('secucode', 'mkt_cap')
     funds = [x for x in funds]
     if not funds:
         return
@@ -118,4 +124,18 @@ def fund_top_ten_scale(fund_code: str, scale=True):
     if scale:
         holding['ratio'] = holding['ratio'] / holding['ratio'].sum()
     holding['secucode'] = fund_code
+    return holding
+
+
+def holding_etf_in_exchange(port_code, date) -> dict:
+    """
+    组合持有场内基金及占比
+    Args:
+        port_code: 证券代码
+        date: 指定日期
+    """
+    holding = models.Holding.objects.filter(
+        port_code=port_code, date=date, trade_market__in=(1, 2), mkt_cap__gt=0).values('secucode', 'mkt_cap')
+    na = models.Balance.objects.get(port_code=port_code, date=date).net_asset
+    holding = {x['secucode']: x['mkt_cap'] / na for x in holding}
     return holding

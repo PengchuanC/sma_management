@@ -15,13 +15,14 @@ from channels.db import database_sync_to_async
 from django.db.models import Max
 
 from investment import models
-from investment.utils.holding import fund_holding_stock, fund_holding_stock_by_fund
+from investment.utils.holding import fund_holding_stock, fund_holding_stock_by_fund, holding_etf_in_exchange
 from investment.views.analysis import FundHoldingView
 
 
 class PreValuationConsumer(AsyncJsonWebsocketConsumer):
     connected = False
     holding = None
+    etf = None
     equity = 0
     time = datetime.datetime.now().time().strftime('%H:%M:%S')
 
@@ -51,25 +52,38 @@ class PreValuationConsumer(AsyncJsonWebsocketConsumer):
         if datetime.datetime.now().time() < datetime.time(9, 30, 0):
             return
         date = models.Balance.objects.filter(port_code=port_code).last().date
-        holding = fund_holding_stock(port_code, date)
+        holding = fund_holding_stock(port_code, date, in_exchange=False)
+        etf = holding_etf_in_exchange(port_code, date)
+        etf = pd.DataFrame([{'stockcode': x, 'ratio': y} for x, y in etf.items()])
         ratio = FundHoldingView.asset_allocate(port_code, date)
         stock = ratio['stock']
-        equity = float(holding.ratio.sum()) / stock
+        equity = holding.ratio.sum() / stock
         self.equity = equity
         self.holding = holding
+        self.etf = etf
         stocks = holding.stockcode
-        stocks = models.StockRealtimePrice.objects.filter(secucode__in=stocks).values(
+        stocks = models.StockRealtimePrice.objects.filter(secucode__in=list(stocks)+list(etf.stockcode)).values(
             'secucode', 'prev_close', 'price', 'time'
         )
         stocks = pd.DataFrame(stocks)
+        stocks.time = stocks.time.apply(lambda x: x.strftime('%H:%M:%S'))
         stocks = stocks[stocks['price'] != 0]
         stocks['change'] = stocks.price / stocks.prev_close - 1
         data = holding.merge(stocks, left_on='stockcode', right_on='secucode', how='inner')
         data['real_change'] = (data.ratio * data.change).astype('float')
-        data.time = data.time.apply(lambda x: x.strftime('%H:%M:%S'))
         data = data.groupby('time')['real_change'].sum().reset_index()
-        data['real_change'] = data['real_change'] / equity
-        data = data.rename(columns={'time': 'name', 'real_change': 'value'}).to_dict(orient='records')
+        data['real_change'] /= float(equity)
+        data = data.rename(columns={'time': 'name', 'real_change': 'value'})
+        if not etf.empty:
+            etf_d = etf.merge(stocks, left_on='stockcode', right_on='secucode', how='inner')
+            etf_d['real_change'] = etf_d.ratio * etf_d.change.astype('float')
+            etf_d = etf_d.groupby('time')['real_change'].sum().reset_index()
+            etf_d = etf_d.rename(columns={'time': 'name'})
+            data = data.merge(etf_d, on='name', how='left')
+            data = data.fillna(0)
+            data['value'] += data['real_change']
+            data = data[['name', 'value']]
+        data = data.to_dict(orient='records')
         return data[:-1]
 
     @database_sync_to_async
@@ -81,17 +95,19 @@ class PreValuationConsumer(AsyncJsonWebsocketConsumer):
         if datetime.datetime.now().time() > datetime.time(15, 0, 20):
             self.disconnect(0)
             return
-        ret = self.calc(holding, self.equity)
+        ret = self.calc(holding, self.etf, self.equity)
         return ret
 
     @staticmethod
-    def calc(holding, equity):
+    def calc(holding, etf, equity):
         """计算实时涨跌幅"""
         last = models.StockRealtimePrice.objects.last().time
         last = models.StockRealtimePrice.objects.filter(time__lt=last).last().time
         stocks = holding.stockcode
+        etfs = etf.stockcode
+        codes = list(stocks) + list(etfs)
         stocks = models.StockRealtimePrice.objects.filter(
-            secucode__in=stocks, time=last
+            secucode__in=codes, time=last
         ).values('secucode', 'prev_close', 'price')
         stocks = pd.DataFrame(stocks)
         stocks = stocks[stocks['price'] != 0]
@@ -99,7 +115,12 @@ class PreValuationConsumer(AsyncJsonWebsocketConsumer):
         data = holding.merge(stocks, left_on='stockcode', right_on='secucode', how='inner')
         data['real_change'] = data.ratio * data.change
         data['real_change'] = data['real_change'].astype('float') / equity
-        return [{'name': last.strftime('%H:%M:%S'), 'value': data.real_change.sum()}]
+        value = data.real_change.sum()
+        if not etf.empty:
+            etf_d = etf.merge(stocks, left_on='stockcode', right_on='secucode', how='inner')
+            etf_d['real_change'] = etf_d.ratio * etf_d.change.astype('float')
+            value += etf_d.real_change.sum()
+        return [{'name': last.strftime('%H:%M:%S'), 'value': value}]
 
 
 class BulkFundValuationConsumer(AsyncJsonWebsocketConsumer):

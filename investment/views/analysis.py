@@ -338,11 +338,16 @@ class FundHoldingView(APIView):
         return ret
 
     @staticmethod
-    def fund_ratio(port_code: str, date: datetime.date):
+    def fund_ratio(port_code: str, date: datetime.date, otc=False):
         """组合持有基金的比例"""
         cannot_resolve = ['国债标准券']
+        if otc:
+            market = [6]
+        else:
+            market = (1, 2, 6)
         holding = Holding.objects.filter(
-            port_code=port_code, date=date).exclude(category__in=cannot_resolve).values(
+            port_code=port_code, date=date, trade_market__in=market
+        ).exclude(category__in=cannot_resolve).values(
             'secucode', 'mkt_cap', 'total_profit')
         na = Balance.objects.get(port_code=port_code, date=date).net_asset
         holding = pd.DataFrame(holding)
@@ -418,7 +423,8 @@ class FundHoldingView(APIView):
         """获取组合的资产配置情况
         :return: {'stock': 0, 'bond': 0, 'fund': 0, 'metals': 0, 'monetary': 0}
         """
-        holding = FundHoldingView.fund_ratio(port_code, date)
+        holding = FundHoldingView.fund_ratio(port_code, date, otc=True)
+        holding = holding[holding.ratio > 0]
         funds = list(holding.secucode)
         relate = FundAssociate.objects.filter(
             relate__in=funds).order_by('define').all()
@@ -432,7 +438,10 @@ class FundHoldingView(APIView):
             date = dates.get(secucode)
             if not date:
                 # 处理联接基金及LOF
-                date = FAA.objects.filter(secucode=relate.get(x)).latest().date
+                try:
+                    date = FAA.objects.filter(secucode=relate.get(x)).latest().date
+                except FAA.DoesNotExist:
+                    continue
                 d = FAA.objects.filter(secucode=relate.get(secucode), date=date).values(
                     'secucode', 'stock', 'bond', 'fund', 'metals', 'monetary', 'other'
                 )[0]

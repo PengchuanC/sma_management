@@ -44,7 +44,9 @@ Holding = sa.Table(
     'sma_holding_fund',
     metadata,
     sa.Column('secucode', sa.String(12)),
-    sa.Column('date', sa.DATE())
+    sa.Column('date', sa.DATE()),
+    sa.Column('category', sa.String(50)),
+    sa.Column('trade_market', sa.INTEGER)
 )
 
 Stock = sa.Table(
@@ -72,8 +74,20 @@ Observe = sa.Table(
 )
 
 
+async def etf_in_portfolio() -> list:
+    """获取持仓中的etf"""
+    await database.connect()
+    query = sa.select([Holding.c.secucode]).where(
+        Holding.columns.date == sa.select([sa.func.max(Holding.columns.date)]),
+        Holding.c.trade_market.in_([1, 2])
+    )
+    funds = await database.fetch_all(query)
+    funds = {x[0] for x in funds}
+    return list(funds)
+
+
 async def stocks_in_portfolio() -> list:
-    """获取基金组合中的全部股票
+    """获取基金组合中的全部股票和etf
 
     Returns:
         股票列表
@@ -102,6 +116,8 @@ async def stocks_in_portfolio() -> list:
         date = max(x[2] for x in val)
         stocks.extend([x[1] for x in val if x[2] == date])
     stocks = list(set(stocks))
+    etf = await etf_in_portfolio()
+    stocks += etf
     await database.disconnect()
     return stocks
 

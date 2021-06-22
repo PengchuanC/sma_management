@@ -1,9 +1,10 @@
 import datetime
 
+import pandas as pd
 from pandas import DataFrame
 
 from tasks import models
-from investment.utils.holding import fund_holding_stock
+from investment.utils.holding import fund_holding_stock, holding_etf_in_exchange
 from investment.views import FundHoldingView
 from investment.views.prev_valuation import PreValuationConsumer
 
@@ -45,7 +46,9 @@ def _pre_valuation_gil(port_code: str, date: datetime.date):
     date = models.Balance.objects.filter(port_code=port_code, date__lte=date).last().date
     ratio = FundHoldingView.asset_allocate(port_code, date)
     stock = ratio['stock']
-    holding = fund_holding_stock(port_code, date)
+    holding = fund_holding_stock(port_code, date, in_exchange=False)
+    etf = holding_etf_in_exchange(port_code, date)
+    etf_df = pd.DataFrame([{'stockcode': x, 'ratio': y} for x, y in etf.items()])
     # 计算前十大在权益持仓中的占比
     equity = float(holding.ratio.sum()) / float(stock)
 
@@ -53,13 +56,22 @@ def _pre_valuation_gil(port_code: str, date: datetime.date):
     stocks = list(holding.stockcode)
     price = models.StockDailyQuote.objects.filter(
         secucode__in=stocks, date=date).values('secucode', 'closeprice', 'prevcloseprice')
+    price_etf = models.FundQuote.objects.filter(
+        secucode__in=list(etf.keys()), date=date).values('secucode', 'closeprice', 'prevcloseprice')
+    price = [*price, *price_etf]
     price = DataFrame(price)
     price['change'] = price['closeprice'] / price['prevcloseprice'] - 1
     price = price[['secucode', 'change']]
     price = price.dropna()
 
-    data = holding.merge(price, left_on='stockcode', right_on='secucode', how='left')
-    change = float((data['ratio'] * data['change']).sum()) / equity
+    stock = holding.merge(price, left_on='stockcode', right_on='secucode', how='left')
+    change_stock = float((stock['ratio'] * stock['change']).sum()) / equity
+    if etf_df.empty:
+        change_etf = 0
+    else:
+        etf = etf_df.merge(price, left_on='stockcode', right_on='secucode', how='left')
+        change_etf = float((etf['ratio'].astype('float') * etf['change']).sum())
+    change = change_etf + change_stock
     return {'date': date, 'value': change}
 
 
