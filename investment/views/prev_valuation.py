@@ -122,7 +122,7 @@ class PreValuationConsumer(AsyncJsonWebsocketConsumer):
         data = holding.merge(stocks, left_on='stockcode',
                              right_on='secucode', how='inner')
         data['real_change'] = data.ratio * data.change
-        data['real_change'] = data['real_change'].astype('float') / equity
+        data['real_change'] = data['real_change'].astype('float') / float(equity)
         value = data.real_change.sum()
         if not etf.empty:
             etf_d = etf.merge(stocks, left_on='stockcode',
