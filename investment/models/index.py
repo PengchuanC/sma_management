@@ -71,3 +71,23 @@ class IndexComponent(models.Model):
         verbose_name = '指数成分'
         verbose_name_plural = verbose_name
         get_latest_by = 'date'
+
+
+class IndustryCF(models.Model):
+    secucode = models.CharField(verbose_name='指数代码', max_length=20)
+    secuabbr = models.CharField(verbose_name='指数名称', max_length=50)
+    date = models.DateField(verbose_name='交易日')
+    netvalue = models.FloatField(verbose_name='流入金额')
+    ma3 = models.FloatField(verbose_name='三日均值')
+    ma5 = models.FloatField(verbose_name='三日均值')
+    ma10 = models.FloatField(verbose_name='三日均值')
+    sigma5 = models.FloatField(verbose_name='五日标准差')
+    ma5_high = models.FloatField(verbose_name='上沿')
+    ma5_low = models.FloatField(verbose_name='下沿')
+
+    class Meta:
+        db_table = 'sma_industry_capital_flow'
+        verbose_name = '行业资金流向'
+        verbose_name_plural = verbose_name
+        get_latest_by = 'date'
+        index_together = ('secucode', 'date')

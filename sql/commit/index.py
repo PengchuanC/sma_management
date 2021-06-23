@@ -63,12 +63,13 @@ def get_index_quote(secucode):
             date = datetime.date(2005, 1, 1)
         else:
             date = date.date()
-    for tmpl in [template.quote, template.quote_cb, template.quote_os]:
+    for tmpl in [template.quote, template.quote_cb, template.quote_os, template.quote_sw]:
         sql = render(tmpl, '<code>', secucode)
         sql = render(sql, '<date>', date.strftime('%Y-%m-%d'))
         data = read_oracle(sql)
         if not data.empty:
             data.columns = [x.lower() for x in data.columns]
+            data = data.dropna(how='any')
             return data.to_dict(orient='records')
 
 

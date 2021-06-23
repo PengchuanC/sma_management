@@ -70,4 +70,5 @@ urlpatterns = [
 
     path('capital/', views.CapitalFlowView.as_view()),
     path('capital/category/', views.CapitalFlowView.category),
+    path('capital/outlook/', views.CapitalFlowOutlookView.as_view()),
 ]

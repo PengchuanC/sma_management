@@ -31,6 +31,7 @@ def commit_capital():
     tools.commit_basic_info()
     tools.commit_index_gil()
     tools.commit_stock_capital_flow()
+    tools.commit_capital_flow()
 
 
 def commit_portfolio_allocate():

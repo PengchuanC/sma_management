@@ -76,6 +76,20 @@ quote_os = """
       AND qo.TRADINGDAY > TO_DATE('<date>', 'yyyy-MM-dd')
 """
 
+# 申万
+quote_sw = """
+    SELECT s.SECUCODE,
+           qi.PREVCLOSEPRICE AS PRE_CLOSE,
+           qi.CLOSEPRICE     AS "CLOSE",
+           qi.CHANGEPCT      AS "CHANGE",
+           qi.TRADINGDAY     AS "DATE"
+    FROM jydb.QT_SYWGIndexQuote qi
+             JOIN jydb.SECUMAIN s ON
+        qi.INNERCODE = s.INNERCODE
+    WHERE s.SECUCODE = '<code>'
+      AND qi.TRADINGDAY > TO_DATE('<date>', 'yyyy-MM-dd')
+"""
+
 
 # 指数成分
 component = """

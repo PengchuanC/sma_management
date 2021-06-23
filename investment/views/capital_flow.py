@@ -33,7 +33,7 @@ class CapitalFlowView(APIView):
         start = end - relativedelta(months=3, days=15)
         ret = cf.category_capital_flow(category, start)
 
-        code = cf.index_code_by_name(category)
+        code = category
         pct = models.IndexQuote.objects.filter(secucode=code, date__range=(start, end)).values('date', 'change')
         pct = pd.DataFrame(pct)
         pct['change'] = round(pct['change'].astype('float'), 2)
@@ -55,5 +55,41 @@ class CapitalFlowView(APIView):
     @staticmethod
     def category(request):
         """获取全部申万行业分类"""
-        cate = cf.sw_categories()
+        cate = cf.sw_first_categories()
         return JsonResponse({'data': cate})
+
+
+class CapitalFlowOutlookView(APIView):
+    def get(self, request):
+        categories = cf.sw_first_categories()
+        info = self.formatter(categories
+                              )
+        return JsonResponse(info, safe=False)
+
+    def post(self, request):
+        secucode = request.data['secucode']
+        categories = cf.sw_second_categories(secucode) or [{'secucode': secucode}]
+        info = self.formatter(categories)
+        return JsonResponse(info, safe=False)
+
+    def formatter(self, categories):
+        indexes = [x['secucode'] for x in categories]
+        latest = models.IndustryCF.objects.last().date
+        info = models.IndustryCF.objects.filter(secucode__in=indexes, date=latest).values()
+        info = self.sort(info)
+        return info
+
+    @staticmethod
+    def sort(data):
+        data = pd.DataFrame(data)
+
+        def status(ma3, high, low):
+            if ma3 > high:
+                return (ma3 - low) / (high - low)
+            elif ma3 < low:
+                return (ma3 - high) / (high - low)
+            return (ma3 - low) / (high - low)
+
+        data['rank'] = data.agg(lambda x: status(x.ma3, x.ma5_high, x.ma5_low), axis=1)
+        data = data.sort_values('rank', ascending=False)
+        return data.to_dict(orient='records')

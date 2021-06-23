@@ -16,8 +16,7 @@ from sql.commit.tradingday import commit_tradingdays
 from sql.commit.stock import (
     commit_stock, commit_industry_sw, commit_stock_expose, commit_stock_daily_quote, commit_stock_capital_flow
 )
-from sql.commit import commit_style
-from sql.commit import commit_brinson
+from sql.commit import commit_style, commit_brinson, commit_capital_flow
 from crawl.fund_limit import commit_fund_limit
 
 
@@ -81,9 +80,10 @@ def commit_preprocess():
     """
     commit_style()
     commit_brinson()
+    commit_capital_flow()
 
 
 __all__ = (
     'commit_index', 'commit_index_gil', 'commit_index_wind', 'commit_fund', 'commit_trading_day', 'commit_stocks',
-    'commit_preprocess'
+    'commit_preprocess', 'commit_capital_flow'
 )
