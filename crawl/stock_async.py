@@ -6,8 +6,9 @@ from math import ceil
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 import aiohttp
-import databases
 import sqlalchemy as sa
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.orm import sessionmaker
 
 from itertools import groupby
 from typing import List
@@ -22,7 +23,7 @@ TIME = datetime.datetime.now().time()
 
 # 数据库默认配置
 default = DATABASES['default']
-URI = f"mysql://{default['USER']}:{default['PASSWORD']}@{default['HOST']}:{default['PORT']}/{default['NAME']}" \
+URI = f"mysql+aiomysql://{default['USER']}:{default['PASSWORD']}@{default['HOST']}:{default['PORT']}/{default['NAME']}" \
       f"?charset=utf8mb4"
 metadata = sa.MetaData()
 
@@ -33,7 +34,8 @@ scheduler = AsyncIOScheduler()
 basicUrl = "http://hq.sinajs.cn/"
 
 # 数据库
-database = databases.Database(URI)
+engine = create_async_engine(URI)
+database: AsyncSession = sessionmaker(bind=engine, class_=AsyncSession)()
 
 # 证券代码模板
 code_pattern = re.compile(r'\d{5,6}')
@@ -60,7 +62,7 @@ Stock = sa.Table(
 Price = sa.Table(
     'sma_stocks_realtime_price',
     metadata,
-    sa.Column('secucode_id', sa.String(12)),
+    sa.Column('secucode', sa.String(12)),
     sa.Column('price', sa.DECIMAL(10, 2)),
     sa.Column('prev_close', sa.DECIMAL(10, 2)),
     sa.Column('date', sa.DATE()),
@@ -76,12 +78,12 @@ Observe = sa.Table(
 
 async def etf_in_portfolio() -> list:
     """获取持仓中的etf"""
-    await database.connect()
     query = sa.select([Holding.c.secucode]).where(
-        Holding.columns.date == sa.select([sa.func.max(Holding.columns.date)]),
+        Holding.columns.date == sa.select([sa.func.max(Holding.columns.date)]).scalar_subquery(),
         Holding.c.trade_market.in_([1, 2])
     )
-    funds = await database.fetch_all(query)
+    funds = await database.stream(query)
+    funds = await funds.all()
     funds = {x[0] for x in funds}
     return list(funds)
 
@@ -93,21 +95,23 @@ async def stocks_in_portfolio() -> list:
         股票列表
 
     """
-    await database.connect()
     query = sa.select([Holding.columns.secucode]).where(
-        Holding.columns.date == sa.select([sa.func.max(Holding.columns.date)])
+        Holding.columns.date == sa.select([sa.func.max(Holding.columns.date)]).scalar_subquery()
     )
-    funds = await database.fetch_all(query)
+    funds = await database.stream(query)
+    funds = await funds.scalars().all()
     funds = [x[0] for x in funds]
 
     query = sa.select([Observe.columns.secucode_id])
-    observe = await database.fetch_all(query)
+    observe = await database.stream(query)
+    observe = await observe.all()
     funds = funds + [x[0] for x in observe]
     funds = list(set(funds))
     query = sa.select([Stock]).where(
         Stock.columns.secucode_id.in_(funds)
     )
-    ret = await database.fetch_all(query)
+    ret = await database.stream(query)
+    ret = await ret.all()
     ret = sorted(ret, key=lambda x: (x[0]))
     group = groupby(ret, key=lambda x: x[0])
     stocks = []
@@ -118,7 +122,6 @@ async def stocks_in_portfolio() -> list:
     stocks = list(set(stocks))
     etf = await etf_in_portfolio()
     stocks += etf
-    await database.disconnect()
     return stocks
 
 
@@ -133,7 +136,7 @@ def format_stock(code: str):
 
     """
     if len(code) == 6:
-        return 'sh' + code if code.startswith('6') else 'sz' + code
+        return 'sh' + code if any([code.startswith('6'), code.startswith('5')]) else 'sz' + code
     return 'hk' + code
 
 
@@ -163,7 +166,7 @@ def format_response(response: str):
     """
     items = response.split(';')
     for row in items:
-        if len(row) < 20:
+        if len(row) < 30:
             continue
         row: str = row.strip('\n').strip('"').strip(',')
         item: List = row.split(',')
@@ -176,7 +179,7 @@ def format_response(response: str):
         else:
             price = float(item[6])
             prev = float(item[3])
-        yield {'secucode_id': code, 'date': date, 'time': TIME, 'price': price, 'prev_close': prev}
+        yield {'secucode': code, 'date': date, 'time': TIME, 'price': price, 'prev_close': prev}
 
 
 async def insert(values: List[dict]):
@@ -190,7 +193,8 @@ async def insert(values: List[dict]):
     """
     sql = Price.insert()
     async with database as db:
-        await db.execute_many(sql, values)
+        await db.execute(sql, values)
+        await db.commit()
 
 
 def chunk(array, size=1):
@@ -220,8 +224,7 @@ async def main():
 async def clear():
     """清除历史交易日数据"""
     sql = 'truncate table sma_stocks_realtime_price;'
-    async with database as db:
-        await db.execute(sql)
+    await database.execute(sql)
 
 
 def schedule():
@@ -237,6 +240,11 @@ def executor():
     schedule()
     pool = asyncio.get_event_loop()
     pool.run_forever()
+
+
+def test():
+    pool = asyncio.get_event_loop()
+    pool.run_until_complete(main())
 
 
 if __name__ == '__main__':

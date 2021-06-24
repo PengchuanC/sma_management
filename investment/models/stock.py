@@ -37,7 +37,7 @@ class StockIndustrySW(models.Model):
 
 
 class StockRealtimePrice(models.Model):
-    secucode = models.ForeignKey(Stock, to_field='secucode', on_delete=models.CASCADE, verbose_name="股票代码")
+    secucode = models.CharField(max_length=12, primary_key=True, verbose_name='股票代码')
     prev_close = models.DecimalField(verbose_name='昨收', max_digits=10, decimal_places=4, null=True)
     price = models.DecimalField(verbose_name='实时价格', max_digits=10, decimal_places=4, null=True)
     date = models.DateField(verbose_name='日期', null=False)
