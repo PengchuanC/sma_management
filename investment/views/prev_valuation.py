@@ -82,7 +82,7 @@ class PreValuationConsumer(AsyncJsonWebsocketConsumer):
         if not etf.empty:
             etf_d = etf.merge(stocks, left_on='stockcode',
                               right_on='secucode', how='inner')
-            etf_d['real_change'] = etf_d.ratio * etf_d.change.astype('float')
+            etf_d['real_change'] = etf_d.ratio.astype('float') * etf_d.change.astype('float')
             etf_d = etf_d.groupby('time')['real_change'].sum().reset_index()
             etf_d = etf_d.rename(columns={'time': 'name'})
             data = data.merge(etf_d, on='name', how='left')
@@ -107,9 +107,10 @@ class PreValuationConsumer(AsyncJsonWebsocketConsumer):
     @staticmethod
     def calc(holding, etf, equity):
         """计算实时涨跌幅"""
-        last = models.StockRealtimePrice.objects.last().time
+        last = models.StockRealtimePrice.objects.latest()
+        time = last.time
         last = models.StockRealtimePrice.objects.filter(
-            time__lt=last).last().time
+            time__lt=time).last().time
         stocks = holding.stockcode
         etfs = etf.stockcode if not etf.empty else []
         codes = list(stocks) + list(etfs)
@@ -127,7 +128,7 @@ class PreValuationConsumer(AsyncJsonWebsocketConsumer):
         if not etf.empty:
             etf_d = etf.merge(stocks, left_on='stockcode',
                               right_on='secucode', how='inner')
-            etf_d['real_change'] = etf_d.ratio * etf_d.change.astype('float')
+            etf_d['real_change'] = etf_d.ratio.astype('float') * etf_d.change.astype('float')
             value += etf_d.real_change.sum()
         return [{'name': last.strftime('%H:%M:%S'), 'value': value}]
 
