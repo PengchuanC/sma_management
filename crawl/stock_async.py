@@ -34,7 +34,7 @@ scheduler = AsyncIOScheduler()
 basicUrl = "http://hq.sinajs.cn/"
 
 # 数据库
-engine = create_async_engine(URI)
+engine = create_async_engine(URI, pool_recycle=1800)
 database: AsyncSession = sessionmaker(bind=engine, class_=AsyncSession)()
 
 # 证券代码模板
@@ -85,6 +85,7 @@ async def etf_in_portfolio() -> list:
     funds = await database.stream(query)
     funds = await funds.all()
     funds = {x[0] for x in funds}
+    await database.close()
     return list(funds)
 
 
@@ -122,6 +123,7 @@ async def stocks_in_portfolio() -> list:
     stocks = list(set(stocks))
     etf = await etf_in_portfolio()
     stocks += etf
+    await database.close()
     return stocks
 
 
