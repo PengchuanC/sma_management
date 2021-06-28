@@ -227,6 +227,8 @@ async def clear():
     """清除历史交易日数据"""
     sql = 'truncate table sma_stocks_realtime_price;'
     await database.execute(sql)
+    await database.commit()
+    await database.close()
 
 
 def schedule():
