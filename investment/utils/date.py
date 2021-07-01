@@ -1,5 +1,4 @@
 import datetime
-
 from typing import Any, List
 from itertools import groupby
 

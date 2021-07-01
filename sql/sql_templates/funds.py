@@ -51,7 +51,7 @@ adj_nav = """
         m.UnitNVRestored AS adj_nav
     FROM
         jydb.secumain s
-    JOIN jydb.MF_FundNetValueRe m ON
+    JOIN jydb.MF_FundNetValueReTrans m ON
         s.innercode = m.innercode
     WHERE
         s.secucode = '<code>'
