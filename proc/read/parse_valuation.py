@@ -83,9 +83,11 @@ def analyze(data):
 
 
 def locate_new(data, row, col='EN_SZ'):
-    v = data[data['VC_KMDM'] == row]
+    v = data[data['VC_KMDM'].apply(lambda x: row in x)]
     v = v[[col, 'L_ZTBH', 'D_YWRQ']]
     v.columns = ['value', 'o32', 'date']
+    if row == '累计单位净值':
+        v = v.fillna(method='bfill')
     return v
 
 
@@ -96,10 +98,10 @@ def analyze_new(data: pd.DataFrame) -> Dict[str, pd.DataFrame]:
     data['VC_KMDM'] = data['VC_KMDM'].apply(rstrip)
     mapping = {
         'asset': ('资产类合计',), 'debt': ('负债类合计',), 'net_asset': ('基金资产净值',), 'shares': ('实收资本', 'L_SL'),
-        'unit_nav': ('基金单位净值',), 'acc_nav': ('累计单位净值',), 'savings': ('1002',), 'fund_invest': ('1105',),
-        'dividend_rec': ('1203',), 'interest_rec': ('1204',), 'purchase_rec': ('1207',), 'redemption_pay': ('2203',),
-        'redemption_fee_pay': ('2204',), 'management_pay': ('2206',), 'custodian_pay': ('2207',),
-        'profit_pay': ('223201',), 'withholding_pay': ('2501',), 'liquidation': ('3003',),
+        'unit_nav': ('基金单位净值', 'VC_KMMC'), 'acc_nav': ('累计单位净值', 'VC_KMMC'), 'savings': ('1002',),
+        'fund_invest': ('1105',), 'dividend_rec': ('1203',), 'interest_rec': ('1204',), 'purchase_rec': ('1207',),
+        'redemption_pay': ('2203',), 'redemption_fee_pay': ('2204',), 'management_pay': ('2206',),
+        'custodian_pay': ('2207',), 'profit_pay': ('223201',), 'withholding_pay': ('2501',), 'liquidation': ('3003',),
         'value_added': ('基金资产净值', 'EN_GZZZ',), 'cash_dividend': ('累计派现金额', 'VC_KMMC',),
         'security_deposit': ('1031',), 'interest_pay': ('2221',)
     }
@@ -112,6 +114,7 @@ def analyze_new(data: pd.DataFrame) -> Dict[str, pd.DataFrame]:
     ret = ret.reset_index(drop=True)
     ret['value'] = ret['value'].astype('float')
     ret['date'] = ret['date'].apply(lambda x: parse(x).date())
+    ret = ret.drop_duplicates(['attr', 'o32', 'date'])
     group = ret.groupby('o32')
     data = {}
     for code, g in group:
