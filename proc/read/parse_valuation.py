@@ -100,7 +100,8 @@ def analyze_new(data: pd.DataFrame) -> Dict[str, pd.DataFrame]:
         'dividend_rec': ('1203',), 'interest_rec': ('1204',), 'purchase_rec': ('1207',), 'redemption_pay': ('2203',),
         'redemption_fee_pay': ('2204',), 'management_pay': ('2206',), 'custodian_pay': ('2207',),
         'profit_pay': ('223201',), 'withholding_pay': ('2501',), 'liquidation': ('3003',),
-        'value_added': ('基金资产净值', 'EN_GZZZ',), 'cash_dividend': ('累计派现金额', 'VC_KMMC',)
+        'value_added': ('基金资产净值', 'EN_GZZZ',), 'cash_dividend': ('累计派现金额', 'VC_KMMC',),
+        'security_deposit': ('1031',), 'interest_pay': ('2221',)
     }
     ret = []
     for name, location in mapping.items():

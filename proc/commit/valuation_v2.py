@@ -17,10 +17,10 @@ def commit_valuation():
     """逐一同步数据"""
     whole = whole_cta_fof()
     for cta in whole:
-        commit_singal_cta_fof(cta)
+        commit_single_cta_fof(cta)
 
 
-def commit_singal_cta_fof(cta: models.Portfolio):
+def commit_single_cta_fof(cta: models.Portfolio):
     """同步单只CTA FOF数据"""
     o32 = models.PortfolioExpanded.objects.get(
         port_code=cta.port_code).o32_code
@@ -28,9 +28,11 @@ def commit_singal_cta_fof(cta: models.Portfolio):
     vfs = collect.collect_files(FileStoragePath.o32, 'xls', 'guzhibiao')
     vfs = [x for x in vfs if x.date > latest]
     balance = ['asset', 'debt', 'net_asset', 'shares', 'unit_nav',
-               'acc_nav', 'savings', 'fund_invest', 'liquidation', 'value_added', 'profit_pay', 'cash_dividend', 'date', 'port_code']
+               'acc_nav', 'savings', 'fund_invest', 'liquidation', 'value_added', 'profit_pay', 'cash_dividend',
+               'security_deposit', 'date', 'port_code']
     expanded = ['dividend_rec', 'interest_rec', 'purchase_rec', 'redemption_pay',
-                'redemption_fee_pay', 'management_pay', 'custodian_pay', 'withholding_pay', 'date', 'port_code']
+                'redemption_fee_pay', 'management_pay', 'custodian_pay', 'withholding_pay', 'interest_pay',
+                'date', 'port_code']
     for vf in vfs:
         date = vf.date
         tradingday = TradingDays.objects.filter(date=date)

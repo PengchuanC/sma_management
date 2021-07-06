@@ -61,6 +61,8 @@ class Balance(models.Model):
         verbose_name='应付利润(红利)', max_digits=18, decimal_places=4, default=0)
     cash_dividend = models.DecimalField(
         verbose_name='分红', max_digits=18, decimal_places=4, default=0)
+    security_deposit = models.DecimalField(
+        verbose_name='存出保证金', max_digits=18, decimal_places=4, default=0)
     date = models.DateField(verbose_name='日期', null=False)
 
     class Meta:
@@ -89,6 +91,8 @@ class BalanceExpanded(models.Model):
         verbose_name='应付托管费', max_digits=18, decimal_places=4, default=0)
     withholding_pay = models.DecimalField(
         verbose_name='预提费用', max_digits=18, decimal_places=4, default=0)
+    interest_pay = models.DecimalField(
+        verbose_name='应付利息税', max_digits=18, decimal_places=4, default=0)
     date = models.DateField(verbose_name='日期', null=False)
 
     class Meta:
