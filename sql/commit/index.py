@@ -12,7 +12,7 @@ from typing import List, Dict
 from sql import models
 from sql.commit.wind_wrapper import use_wind
 from sql.sql_templates import index as template
-from sql.utils import read_oracle, render
+from sql.utils import read_oracle, render, latest_update_date, commit_by_chunk
 
 
 def get_indexes():
@@ -192,11 +192,11 @@ def commit_index_component():
     indexes: List[models.Index] = [x.secucode for x in indexes]
     indexes_code: List[str] = [x.secucode for x in indexes]
     data = _commit_index_component(indexes_code)
+    latest = latest_update_date(models.IndexComponent)
+    data = data[data.agg(lambda x: x.date > latest.get(x.secucode, datetime.date(2021, 1, 1)), axis=1)]
     indexes: Dict[str, models.Index] = {x.secucode: x for x in indexes}
     data.secucode = data.secucode.apply(lambda x: indexes.get(x))
-    for _, r in data.iterrows():
-        r = r.to_dict()
-        models.IndexComponent.objects.update_or_create(secucode=r['secucode'], stockcode=r['stockcode'], date=r['date'], defaults=r)
+    commit_by_chunk(data, models.IndexComponent)
 
 
 __all__ = [

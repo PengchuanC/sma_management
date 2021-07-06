@@ -79,7 +79,6 @@ def run_all():
     tools.commit_index_gil()
     tools.commit_tradingdays()
     tools.commit_preprocess()
-    fund_limit.commit_fund_limit()
 
     proc_commit.commit_valuation()
     proc_commit.commit_transaction()
