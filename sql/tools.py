@@ -6,11 +6,13 @@ commit
 @desc:
 """
 
+from concurrent.futures import ThreadPoolExecutor
+
 from django.db.transaction import atomic
 from sql.commit.index import (
     commit_basic_info, commit_index_quote, commit_basic_info_wind, commit_index_quote_wind, commit_index_component
 )
-from sql.commit.funds import commit_funds, commit_fund_data, commit_fund_associate, commit_fund_asset_allocate
+from sql.commit.funds import *
 from sql.commit.funds_extend import *
 from sql.commit.tradingday import commit_tradingdays
 from sql.commit.stock import (
@@ -48,17 +50,15 @@ def commit_fund():
     """提交规模基金相关数据"""
     commit_funds()
     # commit_fund_fee()
-    commit_fund_quote()
-    commit_fund_limit()
-    commit_fund_associate()
-    commit_fund_data()
-    commit_fund_asset_allocate()
-    commit_holding_top_ten()
-    commit_holding_stock_detail()
-    commit_announcement()
-    commit_fund_advisor()
-    commit_asset_allocate_hk()
-    commit_fund_holding_stock_hk()
+    pool = ThreadPoolExecutor(max_workers=4)
+    targets = (
+        commit_fund_quote, commit_fund_limit, commit_fund_associate, commit_fund_asset_allocate, commit_fund_acc_nav,
+        commit_fund_adj_nav, commit_holding_top_ten, commit_holding_stock_detail, commit_announcement,
+        commit_fund_advisor, commit_asset_allocate_hk, commit_fund_holding_stock_hk
+    )
+
+    for target in targets:
+        pool.submit(target)
 
 
 def commit_trading_day():

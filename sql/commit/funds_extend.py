@@ -7,9 +7,10 @@ import datetime
 import math
 
 from django.db.models import Max
+from dateutil.parser import parse
 from sql import models
 from sql.sql_templates import funds
-from sql.utils import read_oracle, render
+from sql.utils import read_oracle, render, chunk, commit_by_chunk
 
 
 def commit_holding_stock_detail():
@@ -57,13 +58,12 @@ def commit_fund_advisor():
     data = read_oracle(funds.fund_advisor)
     fund = models.Funds.objects.all()
     fund = {x.secucode: x for x in fund}
-    exists = models.FundAdvisor.objects.all()
-    exists = [x.secucode for x in exists]
+    exists = models.FundAdvisor.objects.values('secucode')
+    exists = [x['secucode'] for x in exists]
     data = data[~data.secucode.isin(exists)]
     data.secucode = data.secucode.apply(lambda x: fund.get(x))
     data = data[data.secucode.notnull()]
-    model = [models.FundAdvisor(**x) for _, x in data.iterrows()]
-    models.FundAdvisor.objects.bulk_create(model)
+    commit_by_chunk(data, models.FundAdvisor)
 
 
 def _commit_holding_stocks(publish: str, sql):
@@ -89,11 +89,7 @@ def _commit_holding_stocks(publish: str, sql):
     data = data[data.secucode.notnull()]
     data.ratio = data.ratio.fillna(0)
     data = data.where(data.notnull(), None)
-    data = data.to_dict(orient='records')
-    data = [models.FundHoldingStock(**x) for x in data]
-    split = math.ceil(len(data) / 10000)
-    for i in range(split):
-        models.FundHoldingStock.objects.bulk_create(data[i*10000: (i+1)*10000])
+    commit_by_chunk(data, models.FundHoldingStock)
 
 
 def commit_asset_allocate_hk():
@@ -121,10 +117,14 @@ def commit_asset_allocate_hk():
     ratio['date'] = ratio.secucode.apply(lambda x: date.get(x))
     fund = models.Funds.objects.filter(secucode__in=list(ratio.secucode)).all()
     fund = {x.secucode: x for x in fund}
+    this_year = datetime.date.today().year
+    latest = models.FundAssetAllocate.objects.values('secucode').annotate(mdate=Max('date'))
+    latest = {x['secucode']: x['mdate'] for x in latest}
+    ratio = ratio[ratio.agg(lambda x: x.date > latest.get(x.secucode, datetime.date(this_year - 1, 1, 1)), axis=1)]
     ratio['secucode'] = ratio['secucode'].apply(lambda x: fund.get(x))
-    ratio = ratio.to_dict(orient='records')
-    for x in ratio:
-        models.FundAssetAllocate.objects.update_or_create(secucode=x['secucode'], date=x['date'], defaults=x)
+    if ratio.empty:
+        return
+    commit_by_chunk(data, models.FundAssetAllocate)
 
 
 def commit_fund_holding_stock_hk():
@@ -140,12 +140,14 @@ def commit_fund_holding_stock_hk():
     fund = list(set(list(data.secucode)))
     fund = models.Funds.objects.filter(secucode__in=fund).all()
     fund = {x.secucode: x for x in fund}
+    latest = models.FundHoldingStock.objects.values('secucode').annotate(mdate=Max('date'))
+    latest = {x['secucode']: x['mdate'] for x in latest}
+    this_year = datetime.date.today().year
+    data = data[data.agg(lambda x: x.date > latest.get(x.secucode, datetime.date(this_year-1, 1, 1)), axis=1)]
     data['secucode'] = data.secucode.apply(lambda x: fund.get(x))
-    data = data.to_dict(orient='records')
-    for x in data:
-        models.FundHoldingStock.objects.update_or_create(
-            secucode=x.pop('secucode'), date=x.pop('date'), stockcode=x.pop('stockcode'), defaults=x
-        )
+    if data.empty:
+        return
+    commit_by_chunk(data, models.FundHoldingStock)
 
 
 def commit_fund_quote():
@@ -165,12 +167,11 @@ def commit_fund_quote():
     data.secucode = data.secucode.apply(lambda x: instance.get(x))
     data = data[data.secucode.notnull()]
     data = data.dropna(how='any')
-    m = [models.FundQuote(**x) for _, x in data.iterrows()]
-    models.FundQuote.objects.bulk_create(m)
+    commit_by_chunk(data, models.FundQuote)
 
 
 if __name__ == '__main__':
-    commit_holding_stock_detail()
+    commit_fund_advisor()
     # commit_fund_holding_stock_hk()
     # commit_holding_top_ten()
     # commit_asset_allocate_hk()

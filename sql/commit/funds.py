@@ -9,17 +9,20 @@ index
 import datetime
 
 from django.db.models import Max
-from math import ceil
 from itertools import groupby
 import pandas as pd
-from concurrent.futures import ThreadPoolExecutor, wait, ALL_COMPLETED
 from typing import List, Dict
 from sql import models
 from sql.sql_templates import funds as template
-from sql.utils import read_oracle, render
+from sql.utils import read_oracle, render, latest_update_date, commit_by_chunk, replace_fund_instance
 
 
-__all__ = ('commit_funds', 'commit_fund_associate', 'commit_fund_data', 'commit_fund_asset_allocate')
+__all__ = (
+    'commit_funds', 'commit_fund_associate', 'commit_fund_adj_nav', 'commit_fund_acc_nav', 'commit_fund_asset_allocate'
+)
+
+
+ThisYear = datetime.date(datetime.date.today().year, 1, 1)
 
 
 def get_funds():
@@ -34,8 +37,19 @@ def commit_funds():
     sql = template.fund
     funds_jy = read_oracle(sql)
     funds_jy = funds_jy.to_dict(orient='records')
+    local = models.Funds.objects.all()
+    local = {x.secucode: x for x in local}
+    add = []
     for f in funds_jy:
-        models.Funds.objects.update_or_create(secucode=f.pop('secucode'), defaults=f)
+        local_ = local.get(f['secucode'])
+        if not local_:
+            add.append(models.Funds(**f))
+            continue
+        if f['secuname'] == local_.secuname:
+            continue
+        local_.secuname = f['secuname']
+        local_.save()
+    models.Funds.objects.bulk_create(add)
 
 
 def commit_fund_associate():
@@ -53,27 +67,17 @@ def commit_fund_associate():
 
 
 def commit_fund_asset_allocate():
-    """更新基金资产配置比例"""
+    """更新基金资产配置比例
+       @updated: 20210706
+       @desc: 原有更新方式速度过慢，采用新的更新逻辑
+    """
     sql = template.fund_allocate
     data = read_oracle(sql)
     data = data.fillna(0)
-    codes = models.Funds.objects.filter(secucode__in=list(data.secucode)).all()
-    codes = {x.secucode: x for x in codes}
-    data = data.to_dict(orient='records')
-    executor = ThreadPoolExecutor(max_workers=8)
-
-    def target(r):
-        if r['secucode'] in codes.keys():
-            fund = codes.get(r.pop('secucode'))
-            models.FundAssetAllocate.objects.update_or_create(
-                secucode=fund, date=r['date'], defaults=r
-            )
-
-    tasks = []
-    for row in data:
-        ret = executor.submit(target, row)
-        tasks.append(ret)
-    wait(tasks, return_when=ALL_COMPLETED)
+    latest = latest_update_date(models.FundAssetAllocate)
+    data = data[data.agg(lambda x: x.date > latest.get(x.secucode, datetime.date(2020, 1, 1)), axis=1)]
+    data = replace_fund_instance(data)
+    commit_by_chunk(data, models.FundAssetAllocate)
 
 
 def get_fund_last_update_date(model):
@@ -82,133 +86,39 @@ def get_fund_last_update_date(model):
     return dates
 
 
-def chunk(array, size=1):
+def commit_fund_adj_nav():
     """
-    Example:
-
-        >>> chunk([1, 2, 3, 4, 5], 2)
-        [[1, 2], [3, 4], [5]]
-
-    .. versionadded:: 1.1.0
+    同步基金复权单位净值
+    Returns:
     """
-    chunks = int(ceil(len(array) / float(size)))
-    return [array[i * size:(i + 1) * size] for i in range(chunks)]
+    if not models.FundAdjPrice.objects.exists():
+        sql = template.adj_nav_bulk
+    else:
+        sql = template.adj_nav
+    data = read_oracle(sql)
+    latest = latest_update_date(models.FundAdjPrice)
+    data = data[data.agg(lambda x: x.date > latest.get(x.secucode, ThisYear), axis=1)]
+    data = replace_fund_instance(data)
+    commit_by_chunk(data, models.FundAdjPrice)
 
 
-class DataGetter(object):
-    """数据获取
-
-    如果当日数据出现遗漏，需要在下次同步时补足数据，因此将本地每只基金的最新同步日期分组，
-    相同日期的分为一组，按组获取最新数据
-    Attributes:
-        model: 模型
-
+def commit_fund_acc_nav():
     """
-
-    model_mapping = {
-        models.FundPrice: template.acc_nav_multi,
-        models.FundAdjPrice: template.adj_nav_multi
-    }
-
-    dates: Dict[datetime.date, List[str]] = {}
-
-    def __init__(self, model):
-        self.m = model
-        self._max_date_group()
-
-    def _max_date_group(self):
-        """每个最新同步日期下的基金列表
-
-        Returns:
-            {
-                '2005-7-14': ['000001',...],
-                ...,
-                '2021-02-04': ['110011',...]
-            }
-        """
-        max_dates = get_fund_last_update_date(self.m)
-        sorted_dates = [(secucode, date) for secucode, date in max_dates.items()]
-        sorted_dates = sorted(sorted_dates, key=lambda x: x[1], reverse=True)
-        group_dates = groupby(sorted_dates, key=lambda x: x[1])
-        group_dates = {x[0]: [y[0] for y in x[1]]for x in group_dates}
-        recent = self._recent_launched_funds()
-        date = datetime.date.today() - datetime.timedelta(days=30)
-        if date in group_dates.keys():
-            group_dates[date].extend(recent)
-        else:
-            group_dates[date] = recent
-        self.dates = group_dates
-
-    def _recent_launched_funds(self) -> List[str]:
-        """部分新成立基金没有最大日期
-
-        Returns:
-            [001428, ...]
-        """
-        funds = models.Funds.objects.values('secucode').distinct()
-        funds = [x['secucode'] for x in funds]
-        funds2 = self.m.objects.values('secucode').distinct()
-        funds2 = [x['secucode'] for x in funds2]
-        funds = [x for x in funds if x not in funds2]
-        return funds
-
-    def get_data(self, date: datetime.date):
-        """从远程获取增量数据
-
-        Args:
-            date: 本地最新更新日期
-
-        Returns:
-
-        """
-        codes = self.dates.get(date)
-        # oracle 单条in语句查询记录不允许超过1000条
-        codes = chunk(codes, 999)
-        data = []
-        for code in codes:
-            codes_str = "','".join(code)
-            sql = self.model_mapping.get(self.m)
-            sql = render(sql, '<code>', codes_str)
-            sql = render(sql, '<date>', date.strftime('%Y-%m-%d'))
-            d = read_oracle(sql)
-            data.append(d)
-        data = pd.concat(data, axis=0)
-        return data
-
-    def commit(self):
-        """提交"""
-        dates = self.dates
-        funds = models.Funds.objects.all()
-        funds = {x.secucode: x for x in funds}
-        ret = []
-        for date in dates:
-            # 60日内无净值数据的，不视为净值遗漏，视为不再披露净值
-            if date < datetime.date.today() - datetime.timedelta(days=60):
-                continue
-            data = self.get_data(date)
-            data.secucode = data.secucode.apply(lambda x: funds.get(x))
-            data = data.where(data.notnull(), None)
-            for idx, r in data.iterrows():
-                r = self.m(**r)
-                ret.append(r)
-        self.m.objects.bulk_create(ret)
-
-
-def commit_fund_data():
-    """同步基金净值数据
-
-    2021.02.04修改为批量同步
+    同步基金累计单位净值
 
     Returns:
-
     """
-    p = ThreadPoolExecutor(max_workers=2)
-    tasks = []
-    for m in DataGetter.model_mapping.keys():
-        dg = DataGetter(m)
-        tasks.append(p.submit(dg.commit))
-    wait(tasks, return_when=ALL_COMPLETED)
+    if not models.FundPrice.objects.exists():
+        sql = template.acc_nav_bulk
+    else:
+        sql = template.acc_nav
+    data = read_oracle(sql)
+    latest = latest_update_date(models.FundPrice)
+    data = data[data.agg(lambda x: x.date > latest.get(x.secucode, ThisYear), axis=1)]
+    data = replace_fund_instance(data)
+    data = data.fillna(0)
+    commit_by_chunk(data, models.FundPrice)
 
 
 if __name__ == '__main__':
-    commit_fund_asset_allocate()
+    commit_fund_acc_nav()

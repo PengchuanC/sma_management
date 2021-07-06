@@ -7,6 +7,22 @@
 fund = "select secucode, secuabbr as secuname from jydb.secumain where secucategory in (8, 13)"
 
 # 基金累计净值数据
+acc_nav_bulk = """
+    SELECT
+        s.secucode AS secucode,
+        m.enddate AS "date",
+        m.nv,
+        m.unitnv AS nav,
+        m.accumulatedunitnv AS acc_nav,
+        m.dailyprofit
+    FROM
+        jydb.secumain s
+    JOIN jydb.mf_netvalue m ON
+        s.innercode = m.innercode
+    order by 
+        s.secucode, enddate
+"""
+
 acc_nav = """
     SELECT
         s.secucode AS secucode,
@@ -20,30 +36,12 @@ acc_nav = """
     JOIN jydb.mf_netvalue m ON
         s.innercode = m.innercode
     WHERE
-        s.secucode = '<code>'
-        AND enddate > to_date('<date>', 'yyyy-MM-dd')
-"""
-
-acc_nav_multi = """
-    SELECT
-        s.secucode AS secucode,
-        m.enddate AS "date",
-        m.nv,
-        m.unitnv AS nav,
-        m.accumulatedunitnv AS acc_nav,
-        m.dailyprofit
-    FROM
-        jydb.secumain s
-    JOIN jydb.mf_netvalue m ON
-        s.innercode = m.innercode
-    WHERE
-        s.secucode in ('<code>')
-        AND enddate > to_date('<date>', 'yyyy-MM-dd')
+        enddate > (SYSDATE - INTERVAL '14' DAY)
 """
 
 
 # 基金复权净值数据
-adj_nav = """
+adj_nav_bulk = """
     SELECT
         s.secucode AS secucode,
         m.tradingday AS "date",
@@ -53,12 +51,11 @@ adj_nav = """
         jydb.secumain s
     JOIN jydb.MF_FundNetValueReTrans m ON
         s.innercode = m.innercode
-    WHERE
-        s.secucode = '<code>'
-        AND m.tradingday > to_date('<date>', 'yyyy-MM-dd')
+    order by 
+        s.secucode, m.tradingday
 """
 
-adj_nav_multi = """
+adj_nav = """
     SELECT
         s.secucode AS secucode,
         m.tradingday AS "date",
@@ -69,8 +66,7 @@ adj_nav_multi = """
     JOIN jydb.MF_FundNetValueRe m ON
         s.innercode = m.innercode
     WHERE
-        s.secucode in ('<code>')
-        AND m.tradingday > to_date('<date>', 'yyyy-MM-dd')
+        m.tradingday > (SYSDATE - INTERVAL '14' DAY)
 """
 
 
