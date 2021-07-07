@@ -6,7 +6,6 @@ valuation v2
     初版估值表导入程序无法处理T+2以上的数据（OP不会反复导出估值表数据）
     因此在此版中采用从TA数据库中导出的数据来还原第一版估值表中的数据
 """
-from pandas.core.reshape.concat import concat
 from proc.read.valuation import read_valuation_new
 from proc.commit.valuation import whole_cta_fof, latest_update_date, models, TradingDays, three_days_ago
 from proc.configs import FileStoragePath
@@ -14,7 +13,7 @@ from proc.read import collect
 
 
 def tradingdays_between(start, end):
-    dates = models.TradingDays.objects.filter(
+    dates = TradingDays.objects.filter(
         date__range=(start, end)).values('date').distinct()
     dates = [x['date'] for x in dates]
     return dates
@@ -42,7 +41,7 @@ def commit_single_cta_fof(cta: models.Portfolio):
                 'date', 'port_code']
     for vf in vfs:
         date = vf.date
-        tradingday = models.TradingDays.objects.filter(date=date)
+        tradingday = TradingDays.objects.filter(date=date)
         # 非交易日估值表（多数为月末）不同步
         if not tradingday.exists():
             continue
@@ -50,7 +49,7 @@ def commit_single_cta_fof(cta: models.Portfolio):
         v = v.get(str(o32))
         if v is None:
             continue
-        ago = three_days_ago(max(v.index), day=1)
+        ago = three_days_ago(max(v.index))
         if latest >= ago:
             continue
         v = v[(v.index > latest) & (v.index <= ago)]
@@ -59,7 +58,7 @@ def commit_single_cta_fof(cta: models.Portfolio):
         if v.empty:
             continue
         v = v.fillna(0)
-        v['port_code'] = fof
+        v['port_code'] = cta
         v = v.reset_index()
         b = v[balance]
         e = v[expanded]
