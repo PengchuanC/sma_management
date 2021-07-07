@@ -38,7 +38,7 @@ class OverviewView(APIView):
         """穿透资产配置"""
         port_code: str = request.GET.get('portCode')
         date = models.Balance.objects.filter(port_code=port_code).last().date
-        r = FundHoldingView.asset_allocate(port_code, date)
+        r = FundHoldingView.asset_allocate(port_code, date, otc=False)
         ret = [
             {'name': '权益', 'value': float(r['stock'])},
             {'name': '固收', 'value': float(r['bond'])},

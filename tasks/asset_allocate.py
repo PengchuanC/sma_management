@@ -20,7 +20,7 @@ def _portfolio_asset_allocate(portfolio: models.Portfolio):
     ret = []
     for date in dates:
         try:
-            allocate: dict = FundHoldingView.asset_allocate(portfolio.port_code, date=date)
+            allocate: dict = FundHoldingView.asset_allocate(portfolio.port_code, date=date, otc=False)
             allocate.pop('fund')
             names = ['equity', 'fix_income', 'alter', 'money', 'other']
             for idx, attr in enumerate(['stock', 'bond', 'metals', 'monetary', 'other']):

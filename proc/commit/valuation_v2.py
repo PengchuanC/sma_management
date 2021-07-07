@@ -13,6 +13,13 @@ from proc.configs import FileStoragePath
 from proc.read import collect
 
 
+def tradingdays_between(start, end):
+    dates = models.TradingDays.objects.filter(
+        date__range=(start, end)).values('date').distinct()
+    dates = [x['date'] for x in dates]
+    return dates
+
+
 def commit_valuation():
     """逐一同步数据"""
     whole = whole_cta_fof()
@@ -35,22 +42,30 @@ def commit_single_cta_fof(cta: models.Portfolio):
                 'date', 'port_code']
     for vf in vfs:
         date = vf.date
-        tradingday = TradingDays.objects.filter(date=date)
+        tradingday = models.TradingDays.objects.filter(date=date)
         # 非交易日估值表（多数为月末）不同步
         if not tradingday.exists():
             continue
         v = read_valuation_new(vf)
         v = v.get(str(o32))
-        ago = three_days_ago(max(v.index))
+        if v is None:
+            continue
+        ago = three_days_ago(max(v.index), day=1)
+        if latest >= ago:
+            continue
         v = v[(v.index > latest) & (v.index <= ago)]
+        tradingdays = tradingdays_between(latest, ago)
+        v = v[v.index.isin(tradingdays)]
         if v.empty:
             continue
         v = v.fillna(0)
-        v['port_code'] = cta
+        v['port_code'] = fof
         v = v.reset_index()
         b = v[balance]
         e = v[expanded]
-        b = [models.Balance(**x) for _, x in b.iterrows()]
-        e = [models.BalanceExpanded(**x) for _, x in e.iterrows()]
-        models.Balance.objects.bulk_create(b)
-        models.BalanceExpanded.objects.bulk_create(e)
+        for _, r in b.iterrows():
+            models.Balance.objects.update_or_create(
+                port_code=r['port_code'], date=r['date'], defaults={**r})
+        for _, r in e.iterrows():
+            models.BalanceExpanded.objects.update_or_create(
+                port_code=r['port_code'], date=r['date'], defaults={**r})

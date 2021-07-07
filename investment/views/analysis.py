@@ -419,11 +419,11 @@ class FundHoldingView(APIView):
         return category
 
     @staticmethod
-    def asset_allocate(port_code: str, date: datetime.date):
+    def asset_allocate(port_code: str, date: datetime.date, otc=True):
         """获取组合的资产配置情况
         :return: {'stock': 0, 'bond': 0, 'fund': 0, 'metals': 0, 'monetary': 0}
         """
-        holding = FundHoldingView.fund_ratio(port_code, date, otc=True)
+        holding = FundHoldingView.fund_ratio(port_code, date, otc)
         holding = holding[holding.ratio > 0]
         funds = list(holding.secucode)
         relate = FundAssociate.objects.filter(
