@@ -33,6 +33,7 @@ def read_transaction(vf: VF):
         if value not in data.columns:
             data[value] = 0
     data['fee'] = data['fee'] + data['commission'] + data['handling']
+    data['operation_amount'] = data['operation_amount'].fillna(0)
     data = data.drop(['commission', 'handling'], axis=1)
     data = data.where(data.notnull(), None)
     return data

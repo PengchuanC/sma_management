@@ -29,7 +29,7 @@ def three_days_ago(date=datetime.date.today()):
     days = TradingDays.objects.filter(date__range=(
         month_ago, date)).values('date').order_by('date')
     days = [x['date'] for x in days]
-    day = days[-3]
+    day = days[-2]
     return day
 
 

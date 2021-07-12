@@ -44,7 +44,8 @@ def commit_single(portfolio: models.Portfolio, model):
     begin = latest_update_date_o32(portfolio, model)
     # o32会比估值表提前更新，但并不需要提前
     end = latest_update_date(portfolio)
-    o32_code = models.PortfolioExpanded.objects.get(port_code=portfolio.port_code).o32_code
+    o32_code = models.PortfolioExpanded.objects.get(
+        port_code=portfolio.port_code).o32_code
     vfs = [x for x in vfs if all({x.date > begin, x.date <= end})]
     rows = []
     for vf in vfs:
