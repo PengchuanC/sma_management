@@ -43,6 +43,8 @@ def commit_single_cta_fof(cta: models.Portfolio):
         date = vf.date
         tradingday = TradingDays.objects.filter(date=date)
         # 非交易日估值表（多数为月末）不同步
+        if date < latest:
+            continue
         if not tradingday.exists():
             continue
         v = read_valuation_new(vf)

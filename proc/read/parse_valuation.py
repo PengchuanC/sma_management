@@ -83,7 +83,10 @@ def analyze(data):
 
 
 def locate_new(data, row, col='EN_SZ'):
-    v = data[data['VC_KMDM'].apply(lambda x: row in x)]
+    if row == '累计单位净值':
+        v = data[data['VC_KMDM'].apply(lambda x: row in x)]
+    else:
+        v = data[data['VC_KMDM'] == row]
     v = v[[col, 'L_ZTBH', 'D_YWRQ']]
     v.columns = ['value', 'o32', 'date']
     if row == '累计单位净值':
