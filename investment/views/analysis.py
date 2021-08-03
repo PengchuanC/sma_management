@@ -125,6 +125,8 @@ class AttributeChartView(APIView):
         month = AttributeChartView.last_trading_day_of_last_month(date)
         ret = []
         for start in [launch, week, month]:
+            if start < launch:
+                start = launch
             changes = models.Income.objects.filter(
                 port_code=port_code, date__range=(start, date)).values('date', 'unit_nav', 'change')
             changes = [x for x in changes]
