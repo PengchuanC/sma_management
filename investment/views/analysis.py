@@ -128,17 +128,22 @@ class AttributeChartView(APIView):
             changes = models.Income.objects.filter(
                 port_code=port_code, date__range=(start, date)).values('date', 'unit_nav', 'change')
             changes = [x for x in changes]
-            total = sum([x['change'] for x in changes[1:]])
+            total = float(sum([x['change'] for x in changes[1:]]))
             columns = ['equity', 'bond', 'alter', 'money']
+            fee = models.DetailFee.objects.filter(
+                port_code=port_code, date__gt=start, date__lte=date).values('management')
+            fee = float(sum(x['management'] for x in fee))
             asset = models.IncomeAsset.objects.filter(
                 port_code=port_code, date__in=(start, date)).values('date', *columns)
             asset = pd.DataFrame(asset).set_index('date')
-            asset = asset.diff(1).dropna()
-            asset /= total
-            change = (changes[-1]['unit_nav'] / changes[0]['unit_nav']) - 1
-            asset *= change
-            asset['fee'] = float(change) - float(asset.sum(axis=1))
+            asset = asset.diff(1).dropna().astype(float)
+            asset /= asset.sum(axis=1).sum()
+            change = float(changes[-1]['unit_nav'] / changes[0]['unit_nav']) - 1
+            fee_ratio = fee / total * change
+            asset *= (change - fee_ratio)
+            asset['fee'] = fee_ratio
             asset['change'] = change
+            # print(asset)
             asset = asset.to_dict(orient='records')[0]
             asset['total_profit'] = change
             asset = {x: round(y*100, 2) for x, y in asset.items()}
