@@ -195,7 +195,7 @@ class FundHoldingView(APIView):
 
         limit = FundHoldingView.fund_limit(funds)
         holding = pd.merge(holding, limit, how='left', on='secucode')
-        holding = holding.where(holding.notnull(), None)
+        holding = holding.fillna('')
 
         holding = holding.to_dict(orient='records')
         return Response(holding)
