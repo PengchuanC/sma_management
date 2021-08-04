@@ -141,11 +141,10 @@ class AttributeChartView(APIView):
             asset = asset.diff(1).dropna().astype(float)
             asset /= asset.sum(axis=1).sum()
             change = float(changes[-1]['unit_nav'] / changes[0]['unit_nav']) - 1
-            fee_ratio = fee / total * change
+            fee_ratio = - fee / total * change
             asset *= (change - fee_ratio)
             asset['fee'] = fee_ratio
             asset['change'] = change
-            # print(asset)
             asset = asset.to_dict(orient='records')[0]
             asset['total_profit'] = change
             asset = {x: round(y*100, 2) for x, y in asset.items()}
