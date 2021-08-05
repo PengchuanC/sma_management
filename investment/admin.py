@@ -106,7 +106,7 @@ class FundPosEstimateAdmin(admin.ModelAdmin):
 class PortfolioAdmin(admin.ModelAdmin):
     list_display = (
         'id', 'port_code', 'port_name', 'manager', 'init_money', 'purchase_fee', 'redemption_fee', 'base', 'describe',
-        'port_type', 'launch_date', 'valid'
+        'port_type', 'launch_date', 'settlemented', 't_n'
     )
     list_display_links = ('port_code', )
 

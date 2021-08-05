@@ -185,13 +185,13 @@ DATABASE_ROUTERS = ['investment.router.AuthRouter', 'investment.router.Router']
 
 
 Q_CLUSTER = {
-    'name': 'DjangORM',
+    'name': 'DjangoORM',
     'workers': 4,
     'timeout': 600,
-    'retry': 120,
+    'retry': 5,
     'queue_limit': 50,
     'bulk': 10,
-    'orm': 'default'
+    'orm': 'default',
 }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'

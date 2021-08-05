@@ -13,6 +13,7 @@ _sym_db = _symbol_database.Default()
 
 from src import brinson_pb2 as src_dot_brinson__pb2
 from src import am_sma_pb2 as src_dot_am__sma__pb2
+from src import backtest_pb2 as src_dot_backtest__pb2
 
 
 DESCRIPTOR = _descriptor.FileDescriptor(
@@ -21,9 +22,9 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=b'Z\005.;src',
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x12src/services.proto\x12\x03src\x1a\x11src/brinson.proto\x1a\x10src/am_sma.proto2\xac\x04\n\x0cMicroService\x12\x35\n\x0e\x42rinsonHandler\x12\x10.brinson.Request\x1a\x11.brinson.Response\x12+\n\x0cSMAPortfolio\x12\t.sma.NULL\x1a\x0e.sma.Portfolio0\x01\x12*\n\nSMABalance\x12\x0c.sma.Request\x1a\x0c.sma.Balance0\x01\x12:\n\x12SMABalanceExpanded\x12\x0c.sma.Request\x1a\x14.sma.BalanceExpanded0\x01\x12(\n\tSMAIncome\x12\x0c.sma.Request\x1a\x0b.sma.Income0\x01\x12\x32\n\x0eSMAIncomeAsset\x12\x0c.sma.Request\x1a\x10.sma.IncomeAsset0\x01\x12*\n\nSMAHolding\x12\x0c.sma.Request\x1a\x0c.sma.Holding0\x01\x12\x32\n\x0eSMATransaction\x12\x0c.sma.Request\x1a\x10.sma.Transaction0\x01\x12.\n\x0cSMADetailFee\x12\x0c.sma.Request\x1a\x0e.sma.DetailFee0\x01\x12.\n\x0cSMABenchmark\x12\x0c.sma.Request\x1a\x0e.sma.Benchmark0\x01\x12\x32\n\x0eSMAInterestTax\x12\x0c.sma.Request\x1a\x10.sma.InterestTax0\x01\x42\x07Z\x05.;srcb\x06proto3'
+  serialized_pb=b'\n\x12src/services.proto\x12\x03src\x1a\x11src/brinson.proto\x1a\x10src/am_sma.proto\x1a\x12src/backtest.proto2\xc5\x05\n\x0cMicroService\x12\x35\n\x0e\x42rinsonHandler\x12\x10.brinson.Request\x1a\x11.brinson.Response\x12+\n\x0cSMAPortfolio\x12\t.sma.NULL\x1a\x0e.sma.Portfolio0\x01\x12*\n\nSMABalance\x12\x0c.sma.Request\x1a\x0c.sma.Balance0\x01\x12:\n\x12SMABalanceExpanded\x12\x0c.sma.Request\x1a\x14.sma.BalanceExpanded0\x01\x12(\n\tSMAIncome\x12\x0c.sma.Request\x1a\x0b.sma.Income0\x01\x12\x32\n\x0eSMAIncomeAsset\x12\x0c.sma.Request\x1a\x10.sma.IncomeAsset0\x01\x12*\n\nSMAHolding\x12\x0c.sma.Request\x1a\x0c.sma.Holding0\x01\x12\x32\n\x0eSMATransaction\x12\x0c.sma.Request\x1a\x10.sma.Transaction0\x01\x12.\n\x0cSMADetailFee\x12\x0c.sma.Request\x1a\x0e.sma.DetailFee0\x01\x12,\n\x0bSMASecurity\x12\x0c.sma.Request\x1a\r.sma.Security0\x01\x12\x36\n\x10SMASecurityQuote\x12\x0c.sma.Request\x1a\x12.sma.SecurityQuote0\x01\x12.\n\x0cSMABenchmark\x12\x0c.sma.Request\x1a\x0e.sma.Benchmark0\x01\x12\x32\n\x0eSMAInterestTax\x12\x0c.sma.Request\x1a\x10.sma.InterestTax0\x01\x12\x31\n\x08\x42\x61\x63ktest\x12\x11.backtest.Request\x1a\x12.backtest.ResponseB\x07Z\x05.;srcb\x06proto3'
   ,
-  dependencies=[src_dot_brinson__pb2.DESCRIPTOR,src_dot_am__sma__pb2.DESCRIPTOR,])
+  dependencies=[src_dot_brinson__pb2.DESCRIPTOR,src_dot_am__sma__pb2.DESCRIPTOR,src_dot_backtest__pb2.DESCRIPTOR,])
 
 
 
@@ -39,8 +40,8 @@ _MICROSERVICE = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=65,
-  serialized_end=621,
+  serialized_start=85,
+  serialized_end=794,
   methods=[
   _descriptor.MethodDescriptor(
     name='BrinsonHandler',
@@ -133,9 +134,29 @@ _MICROSERVICE = _descriptor.ServiceDescriptor(
     create_key=_descriptor._internal_create_key,
   ),
   _descriptor.MethodDescriptor(
+    name='SMASecurity',
+    full_name='src.MicroService.SMASecurity',
+    index=9,
+    containing_service=None,
+    input_type=src_dot_am__sma__pb2._REQUEST,
+    output_type=src_dot_am__sma__pb2._SECURITY,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='SMASecurityQuote',
+    full_name='src.MicroService.SMASecurityQuote',
+    index=10,
+    containing_service=None,
+    input_type=src_dot_am__sma__pb2._REQUEST,
+    output_type=src_dot_am__sma__pb2._SECURITYQUOTE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
     name='SMABenchmark',
     full_name='src.MicroService.SMABenchmark',
-    index=9,
+    index=11,
     containing_service=None,
     input_type=src_dot_am__sma__pb2._REQUEST,
     output_type=src_dot_am__sma__pb2._BENCHMARK,
@@ -145,10 +166,20 @@ _MICROSERVICE = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='SMAInterestTax',
     full_name='src.MicroService.SMAInterestTax',
-    index=10,
+    index=12,
     containing_service=None,
     input_type=src_dot_am__sma__pb2._REQUEST,
     output_type=src_dot_am__sma__pb2._INTERESTTAX,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='Backtest',
+    full_name='src.MicroService.Backtest',
+    index=13,
+    containing_service=None,
+    input_type=src_dot_backtest__pb2._REQUEST,
+    output_type=src_dot_backtest__pb2._RESPONSE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),

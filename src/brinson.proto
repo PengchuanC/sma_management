@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package brinson;
 
-option go_package=".;brinson";
+option go_package="brinson;brinson";
 
 
 message Request {

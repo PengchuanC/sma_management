@@ -6,6 +6,7 @@ from_sma
 因此第二版采用rpc服务读取数据，保存到另一个数据库
 """
 import asyncio
+import datetime
 
 from asgiref.sync import sync_to_async
 
@@ -18,8 +19,13 @@ client = Client()
 
 async def update_portfolio():
     async for p in client.sma_portfolio():
-        portfolio = await sync_to_async(models.Portfolio.objects.get)(port_code=p.port_code)
-        for attr in ('manager', 'init_money', 'purchase_fee', 'redemption_fee', 'base', 'describe'):
+        try:
+            portfolio = await sync_to_async(models.Portfolio.objects.get)(port_code=p.port_code)
+        except models.Portfolio.DoesNotExist:
+            continue
+        for attr in (
+                'manager', 'init_money', 'purchase_fee', 'redemption_fee', 'base', 'describe', 'settlemented', 't_n'
+        ):
             setattr(portfolio, attr, getattr(p, attr))
         await sync_to_async(portfolio.save)()
 
@@ -165,9 +171,27 @@ async def interest_tax(portfolio: models.Portfolio):
     await sync_to_async(models.InterestTax.objects.bulk_create)(ret)
 
 
+async def security():
+    async for d in client.sma_security():
+        default = {'secuname': d.secuname, 'category': d.category, 'category_code': d.category_code}
+        await sync_to_async(models.Security.objects.update_or_create)(secucode=d.secucode, defaults=default)
+
+
+async def security_quote():
+    try:
+        max_id = await sync_to_async(models.SecurityPrice.objects.latest)('id')
+        max_id = max_id.id
+    except models.SecurityPrice.DoesNotExist:
+        max_id = 0
+    async for d in client.sma_security_quote(str(max_id)):
+        default = {
+            'secucode_id': d.secucode_id, 'date': d.date, 'auto_date': d.auto_date, 'price': d.price, 'note': d.note}
+        await sync_to_async(models.SecurityPrice.objects.update_or_create)(id=d.id, defaults=default)
+
+
 async def update_sma():
     await update_portfolio()
-    whole = await sync_to_async(models.Portfolio.objects.filter)(valid=True)
+    whole = await sync_to_async(models.Portfolio.objects.filter)(settlemented=0)
     whole = await sync_to_async(list)(whole)
     for portfolio in whole:
         await balance(portfolio)
@@ -179,6 +203,8 @@ async def update_sma():
         await detail_fee(portfolio)
         await benchmark(portfolio)
         await interest_tax(portfolio)
+        await security()
+        await security_quote()
 
 
 def commit_sma():
@@ -188,3 +214,7 @@ def commit_sma():
 
 
 __all__ = ('commit_sma',)
+
+
+if __name__ == '__main__':
+    commit_sma()

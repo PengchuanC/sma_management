@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=b'Z\007sma;sma',
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x10src/am_sma.proto\x12\x03sma\"\x06\n\x04NULL\"\xd9\x01\n\tPortfolio\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x11\n\tport_code\x18\x02 \x01(\t\x12\x11\n\tport_name\x18\x03 \x01(\t\x12\x0f\n\x07manager\x18\x04 \x01(\t\x12\x12\n\ninit_money\x18\x05 \x01(\x02\x12\x14\n\x0cpurchase_fee\x18\x06 \x01(\x02\x12\x16\n\x0eredemption_fee\x18\x07 \x01(\x02\x12\x0c\n\x04\x62\x61se\x18\x08 \x01(\t\x12\x10\n\x08\x64\x65scribe\x18\t \x01(\t\x12\x12\n\nactivation\x18\n \x01(\x02\x12\x13\n\x0blaunch_date\x18\x0b \x01(\t\"*\n\x07Request\x12\x11\n\tport_code\x18\x01 \x01(\t\x12\x0c\n\x04\x64\x61te\x18\x02 \x01(\t\"\xb1\x02\n\x07\x42\x61lance\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x14\n\x0cport_code_id\x18\x02 \x01(\t\x12\r\n\x05\x61sset\x18\x03 \x01(\x02\x12\x0c\n\x04\x64\x65\x62t\x18\x04 \x01(\x02\x12\x11\n\tnet_asset\x18\x05 \x01(\x02\x12\x0e\n\x06shares\x18\x06 \x01(\x02\x12\x10\n\x08unit_nav\x18\x07 \x01(\x02\x12\x0f\n\x07\x61\x63\x63_nav\x18\x08 \x01(\x02\x12\x0f\n\x07savings\x18\t \x01(\x02\x12\x13\n\x0b\x66und_invest\x18\n \x01(\x02\x12\x13\n\x0bliquidation\x18\x0b \x01(\x02\x12\x13\n\x0bvalue_added\x18\x0c \x01(\x02\x12\x12\n\nprofit_pay\x18\r \x01(\x02\x12\x15\n\rcash_dividend\x18\x0e \x01(\x02\x12\x18\n\x10security_deposit\x18\x0f \x01(\x02\x12\x0c\n\x04\x64\x61te\x18\x10 \x01(\t\"\x95\x02\n\x0f\x42\x61lanceExpanded\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x14\n\x0cport_code_id\x18\x02 \x01(\t\x12\x14\n\x0c\x64ividend_rec\x18\x03 \x01(\x02\x12\x14\n\x0cinterest_rec\x18\x04 \x01(\x02\x12\x14\n\x0cpurchase_rec\x18\x05 \x01(\x02\x12\x16\n\x0eredemption_pay\x18\x06 \x01(\x02\x12\x1a\n\x12redemption_fee_pay\x18\x07 \x01(\x02\x12\x16\n\x0emanagement_pay\x18\x08 \x01(\x02\x12\x15\n\rcustodian_pay\x18\t \x01(\x02\x12\x17\n\x0fwithholding_pay\x18\n \x01(\x02\x12\x14\n\x0cinterest_pay\x18\x0b \x01(\x02\x12\x0c\n\x04\x64\x61te\x18\x0c \x01(\t\"\x81\x01\n\x06Income\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x14\n\x0cport_code_id\x18\x02 \x01(\t\x12\x10\n\x08unit_nav\x18\x03 \x01(\x02\x12\x11\n\tnet_asset\x18\x04 \x01(\x02\x12\x0e\n\x06\x63hange\x18\x05 \x01(\x02\x12\x12\n\nchange_pct\x18\x06 \x01(\x02\x12\x0c\n\x04\x64\x61te\x18\x07 \x01(\t\"\x8f\x01\n\x0bIncomeAsset\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x14\n\x0cport_code_id\x18\x02 \x01(\t\x12\x14\n\x0ctotal_profit\x18\x03 \x01(\x02\x12\x0e\n\x06\x65quity\x18\x04 \x01(\x02\x12\x0c\n\x04\x62ond\x18\x05 \x01(\x02\x12\r\n\x05\x61lter\x18\x06 \x01(\x02\x12\r\n\x05money\x18\x07 \x01(\x02\x12\x0c\n\x04\x64\x61te\x18\x08 \x01(\t\"\xa7\x02\n\x07Holding\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x14\n\x0cport_code_id\x18\x02 \x01(\t\x12\x10\n\x08secucode\x18\x03 \x01(\t\x12\x15\n\rholding_value\x18\x04 \x01(\x02\x12\x0f\n\x07mkt_cap\x18\x05 \x01(\x02\x12\x14\n\x0c\x63urrent_cost\x18\x06 \x01(\x02\x12\x12\n\ntotal_cost\x18\x07 \x01(\x02\x12\x0b\n\x03\x66\x65\x65\x18\x08 \x01(\x02\x12\x13\n\x0b\x66low_profit\x18\t \x01(\x02\x12\x14\n\x0ctotal_profit\x18\n \x01(\x02\x12\x10\n\x08\x64ividend\x18\x0b \x01(\x02\x12\x16\n\x0etotal_dividend\x18\x0c \x01(\x02\x12\x10\n\x08\x63\x61tegory\x18\r \x01(\t\x12\x14\n\x0ctrade_market\x18\x0e \x01(\x03\x12\x0c\n\x04\x64\x61te\x18\x0f \x01(\t\"\xfe\x01\n\x0bTransaction\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x14\n\x0cport_code_id\x18\x02 \x01(\t\x12\x10\n\x08secucode\x18\x03 \x01(\t\x12\x0e\n\x06\x61mount\x18\x04 \x01(\x02\x12\x0f\n\x07\x62\x61lance\x18\x05 \x01(\x02\x12\x13\n\x0border_price\x18\x06 \x01(\x02\x12\x13\n\x0border_value\x18\x07 \x01(\x02\x12\x12\n\ndeal_value\x18\x08 \x01(\x02\x12\x0b\n\x03\x66\x65\x65\x18\t \x01(\x02\x12\x18\n\x10operation_amount\x18\n \x01(\x02\x12\x11\n\toperation\x18\x0b \x01(\t\x12\x14\n\x0csubject_name\x18\x0c \x01(\t\x12\x0c\n\x04\x64\x61te\x18\r \x01(\t\"\x99\x01\n\tDetailFee\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x14\n\x0cport_code_id\x18\x02 \x01(\t\x12\x12\n\nmanagement\x18\x03 \x01(\x02\x12\x11\n\tcustodian\x18\x04 \x01(\x02\x12\r\n\x05\x61udit\x18\x05 \x01(\x02\x12\x10\n\x08interest\x18\x06 \x01(\x02\x12\x14\n\x0cinterest_tax\x18\x07 \x01(\x02\x12\x0c\n\x04\x64\x61te\x18\x08 \x01(\t\"M\n\tBenchmark\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x14\n\x0cport_code_id\x18\x02 \x01(\t\x12\x10\n\x08unit_nav\x18\x03 \x01(\x02\x12\x0c\n\x04\x64\x61te\x18\x04 \x01(\t\"\\\n\x0bInterestTax\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x14\n\x0cport_code_id\x18\x02 \x01(\t\x12\x10\n\x08secucode\x18\x03 \x01(\t\x12\x0b\n\x03tax\x18\x04 \x01(\x02\x12\x0c\n\x04\x64\x61te\x18\x05 \x01(\tB\tZ\x07sma;smab\x06proto3'
+  serialized_pb=b'\n\x10src/am_sma.proto\x12\x03sma\"\x06\n\x04NULL\"\xfc\x01\n\tPortfolio\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x11\n\tport_code\x18\x02 \x01(\t\x12\x11\n\tport_name\x18\x03 \x01(\t\x12\x0f\n\x07manager\x18\x04 \x01(\t\x12\x12\n\ninit_money\x18\x05 \x01(\x02\x12\x14\n\x0cpurchase_fee\x18\x06 \x01(\x02\x12\x16\n\x0eredemption_fee\x18\x07 \x01(\x02\x12\x0c\n\x04\x62\x61se\x18\x08 \x01(\t\x12\x10\n\x08\x64\x65scribe\x18\t \x01(\t\x12\x12\n\nactivation\x18\n \x01(\x02\x12\x13\n\x0blaunch_date\x18\x0b \x01(\t\x12\x14\n\x0csettlemented\x18\x0c \x01(\x03\x12\x0b\n\x03t_n\x18\r \x01(\x03\"*\n\x07Request\x12\x11\n\tport_code\x18\x01 \x01(\t\x12\x0c\n\x04\x64\x61te\x18\x02 \x01(\t\"\xb1\x02\n\x07\x42\x61lance\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x14\n\x0cport_code_id\x18\x02 \x01(\t\x12\r\n\x05\x61sset\x18\x03 \x01(\x02\x12\x0c\n\x04\x64\x65\x62t\x18\x04 \x01(\x02\x12\x11\n\tnet_asset\x18\x05 \x01(\x02\x12\x0e\n\x06shares\x18\x06 \x01(\x02\x12\x10\n\x08unit_nav\x18\x07 \x01(\x02\x12\x0f\n\x07\x61\x63\x63_nav\x18\x08 \x01(\x02\x12\x0f\n\x07savings\x18\t \x01(\x02\x12\x13\n\x0b\x66und_invest\x18\n \x01(\x02\x12\x13\n\x0bliquidation\x18\x0b \x01(\x02\x12\x13\n\x0bvalue_added\x18\x0c \x01(\x02\x12\x12\n\nprofit_pay\x18\r \x01(\x02\x12\x15\n\rcash_dividend\x18\x0e \x01(\x02\x12\x18\n\x10security_deposit\x18\x0f \x01(\x02\x12\x0c\n\x04\x64\x61te\x18\x10 \x01(\t\"\x95\x02\n\x0f\x42\x61lanceExpanded\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x14\n\x0cport_code_id\x18\x02 \x01(\t\x12\x14\n\x0c\x64ividend_rec\x18\x03 \x01(\x02\x12\x14\n\x0cinterest_rec\x18\x04 \x01(\x02\x12\x14\n\x0cpurchase_rec\x18\x05 \x01(\x02\x12\x16\n\x0eredemption_pay\x18\x06 \x01(\x02\x12\x1a\n\x12redemption_fee_pay\x18\x07 \x01(\x02\x12\x16\n\x0emanagement_pay\x18\x08 \x01(\x02\x12\x15\n\rcustodian_pay\x18\t \x01(\x02\x12\x17\n\x0fwithholding_pay\x18\n \x01(\x02\x12\x14\n\x0cinterest_pay\x18\x0b \x01(\x02\x12\x0c\n\x04\x64\x61te\x18\x0c \x01(\t\"\x81\x01\n\x06Income\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x14\n\x0cport_code_id\x18\x02 \x01(\t\x12\x10\n\x08unit_nav\x18\x03 \x01(\x02\x12\x11\n\tnet_asset\x18\x04 \x01(\x02\x12\x0e\n\x06\x63hange\x18\x05 \x01(\x02\x12\x12\n\nchange_pct\x18\x06 \x01(\x02\x12\x0c\n\x04\x64\x61te\x18\x07 \x01(\t\"\x8f\x01\n\x0bIncomeAsset\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x14\n\x0cport_code_id\x18\x02 \x01(\t\x12\x14\n\x0ctotal_profit\x18\x03 \x01(\x02\x12\x0e\n\x06\x65quity\x18\x04 \x01(\x02\x12\x0c\n\x04\x62ond\x18\x05 \x01(\x02\x12\r\n\x05\x61lter\x18\x06 \x01(\x02\x12\r\n\x05money\x18\x07 \x01(\x02\x12\x0c\n\x04\x64\x61te\x18\x08 \x01(\t\"\xa7\x02\n\x07Holding\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x14\n\x0cport_code_id\x18\x02 \x01(\t\x12\x10\n\x08secucode\x18\x03 \x01(\t\x12\x15\n\rholding_value\x18\x04 \x01(\x02\x12\x0f\n\x07mkt_cap\x18\x05 \x01(\x02\x12\x14\n\x0c\x63urrent_cost\x18\x06 \x01(\x02\x12\x12\n\ntotal_cost\x18\x07 \x01(\x02\x12\x0b\n\x03\x66\x65\x65\x18\x08 \x01(\x02\x12\x13\n\x0b\x66low_profit\x18\t \x01(\x02\x12\x14\n\x0ctotal_profit\x18\n \x01(\x02\x12\x10\n\x08\x64ividend\x18\x0b \x01(\x02\x12\x16\n\x0etotal_dividend\x18\x0c \x01(\x02\x12\x10\n\x08\x63\x61tegory\x18\r \x01(\t\x12\x14\n\x0ctrade_market\x18\x0e \x01(\x03\x12\x0c\n\x04\x64\x61te\x18\x0f \x01(\t\"\xfe\x01\n\x0bTransaction\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x14\n\x0cport_code_id\x18\x02 \x01(\t\x12\x10\n\x08secucode\x18\x03 \x01(\t\x12\x0e\n\x06\x61mount\x18\x04 \x01(\x02\x12\x0f\n\x07\x62\x61lance\x18\x05 \x01(\x02\x12\x13\n\x0border_price\x18\x06 \x01(\x02\x12\x13\n\x0border_value\x18\x07 \x01(\x02\x12\x12\n\ndeal_value\x18\x08 \x01(\x02\x12\x0b\n\x03\x66\x65\x65\x18\t \x01(\x02\x12\x18\n\x10operation_amount\x18\n \x01(\x02\x12\x11\n\toperation\x18\x0b \x01(\t\x12\x14\n\x0csubject_name\x18\x0c \x01(\t\x12\x0c\n\x04\x64\x61te\x18\r \x01(\t\"\x99\x01\n\tDetailFee\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x14\n\x0cport_code_id\x18\x02 \x01(\t\x12\x12\n\nmanagement\x18\x03 \x01(\x02\x12\x11\n\tcustodian\x18\x04 \x01(\x02\x12\r\n\x05\x61udit\x18\x05 \x01(\x02\x12\x10\n\x08interest\x18\x06 \x01(\x02\x12\x14\n\x0cinterest_tax\x18\x07 \x01(\x02\x12\x0c\n\x04\x64\x61te\x18\x08 \x01(\t\"M\n\tBenchmark\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x14\n\x0cport_code_id\x18\x02 \x01(\t\x12\x10\n\x08unit_nav\x18\x03 \x01(\x02\x12\x0c\n\x04\x64\x61te\x18\x04 \x01(\t\"\\\n\x0bInterestTax\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x14\n\x0cport_code_id\x18\x02 \x01(\t\x12\x10\n\x08secucode\x18\x03 \x01(\t\x12\x0b\n\x03tax\x18\x04 \x01(\x02\x12\x0c\n\x04\x64\x61te\x18\x05 \x01(\t\"W\n\x08Security\x12\x10\n\x08secucode\x18\x01 \x01(\t\x12\x10\n\x08secuname\x18\x02 \x01(\t\x12\x10\n\x08\x63\x61tegory\x18\x03 \x01(\t\x12\x15\n\rcategory_code\x18\x04 \x01(\t\"n\n\rSecurityQuote\x12\n\n\x02id\x18\x01 \x01(\x03\x12\x0c\n\x04\x64\x61te\x18\x02 \x01(\t\x12\x11\n\tauto_date\x18\x03 \x01(\t\x12\r\n\x05price\x18\x04 \x01(\x02\x12\x0c\n\x04note\x18\x05 \x01(\t\x12\x13\n\x0bsecucode_id\x18\x06 \x01(\tB\tZ\x07sma;smab\x06proto3'
 )
 
 
@@ -135,6 +135,20 @@ _PORTFOLIO = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='settlemented', full_name='sma.Portfolio.settlemented', index=11,
+      number=12, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='t_n', full_name='sma.Portfolio.t_n', index=12,
+      number=13, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -148,7 +162,7 @@ _PORTFOLIO = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=34,
-  serialized_end=251,
+  serialized_end=286,
 )
 
 
@@ -186,8 +200,8 @@ _REQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=253,
-  serialized_end=295,
+  serialized_start=288,
+  serialized_end=330,
 )
 
 
@@ -323,8 +337,8 @@ _BALANCE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=298,
-  serialized_end=603,
+  serialized_start=333,
+  serialized_end=638,
 )
 
 
@@ -432,8 +446,8 @@ _BALANCEEXPANDED = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=606,
-  serialized_end=883,
+  serialized_start=641,
+  serialized_end=918,
 )
 
 
@@ -506,8 +520,8 @@ _INCOME = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=886,
-  serialized_end=1015,
+  serialized_start=921,
+  serialized_end=1050,
 )
 
 
@@ -587,8 +601,8 @@ _INCOMEASSET = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1018,
-  serialized_end=1161,
+  serialized_start=1053,
+  serialized_end=1196,
 )
 
 
@@ -717,8 +731,8 @@ _HOLDING = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1164,
-  serialized_end=1459,
+  serialized_start=1199,
+  serialized_end=1494,
 )
 
 
@@ -833,8 +847,8 @@ _TRANSACTION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1462,
-  serialized_end=1716,
+  serialized_start=1497,
+  serialized_end=1751,
 )
 
 
@@ -914,8 +928,8 @@ _DETAILFEE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1719,
-  serialized_end=1872,
+  serialized_start=1754,
+  serialized_end=1907,
 )
 
 
@@ -967,8 +981,8 @@ _BENCHMARK = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1874,
-  serialized_end=1951,
+  serialized_start=1909,
+  serialized_end=1986,
 )
 
 
@@ -1027,8 +1041,128 @@ _INTERESTTAX = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1953,
-  serialized_end=2045,
+  serialized_start=1988,
+  serialized_end=2080,
+)
+
+
+_SECURITY = _descriptor.Descriptor(
+  name='Security',
+  full_name='sma.Security',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='secucode', full_name='sma.Security.secucode', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='secuname', full_name='sma.Security.secuname', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='category', full_name='sma.Security.category', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='category_code', full_name='sma.Security.category_code', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=2082,
+  serialized_end=2169,
+)
+
+
+_SECURITYQUOTE = _descriptor.Descriptor(
+  name='SecurityQuote',
+  full_name='sma.SecurityQuote',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='id', full_name='sma.SecurityQuote.id', index=0,
+      number=1, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='date', full_name='sma.SecurityQuote.date', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='auto_date', full_name='sma.SecurityQuote.auto_date', index=2,
+      number=3, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='price', full_name='sma.SecurityQuote.price', index=3,
+      number=4, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='note', full_name='sma.SecurityQuote.note', index=4,
+      number=5, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='secucode_id', full_name='sma.SecurityQuote.secucode_id', index=5,
+      number=6, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=2171,
+  serialized_end=2281,
 )
 
 DESCRIPTOR.message_types_by_name['NULL'] = _NULL
@@ -1043,6 +1177,8 @@ DESCRIPTOR.message_types_by_name['Transaction'] = _TRANSACTION
 DESCRIPTOR.message_types_by_name['DetailFee'] = _DETAILFEE
 DESCRIPTOR.message_types_by_name['Benchmark'] = _BENCHMARK
 DESCRIPTOR.message_types_by_name['InterestTax'] = _INTERESTTAX
+DESCRIPTOR.message_types_by_name['Security'] = _SECURITY
+DESCRIPTOR.message_types_by_name['SecurityQuote'] = _SECURITYQUOTE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 NULL = _reflection.GeneratedProtocolMessageType('NULL', (_message.Message,), {
@@ -1128,6 +1264,20 @@ InterestTax = _reflection.GeneratedProtocolMessageType('InterestTax', (_message.
   # @@protoc_insertion_point(class_scope:sma.InterestTax)
   })
 _sym_db.RegisterMessage(InterestTax)
+
+Security = _reflection.GeneratedProtocolMessageType('Security', (_message.Message,), {
+  'DESCRIPTOR' : _SECURITY,
+  '__module__' : 'src.am_sma_pb2'
+  # @@protoc_insertion_point(class_scope:sma.Security)
+  })
+_sym_db.RegisterMessage(Security)
+
+SecurityQuote = _reflection.GeneratedProtocolMessageType('SecurityQuote', (_message.Message,), {
+  'DESCRIPTOR' : _SECURITYQUOTE,
+  '__module__' : 'src.am_sma_pb2'
+  # @@protoc_insertion_point(class_scope:sma.SecurityQuote)
+  })
+_sym_db.RegisterMessage(SecurityQuote)
 
 
 DESCRIPTOR._options = None

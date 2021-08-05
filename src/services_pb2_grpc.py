@@ -3,6 +3,7 @@
 import grpc
 
 from src import am_sma_pb2 as src_dot_am__sma__pb2
+from src import backtest_pb2 as src_dot_backtest__pb2
 from src import brinson_pb2 as src_dot_brinson__pb2
 
 
@@ -60,6 +61,16 @@ class MicroServiceStub(object):
                 request_serializer=src_dot_am__sma__pb2.Request.SerializeToString,
                 response_deserializer=src_dot_am__sma__pb2.DetailFee.FromString,
                 )
+        self.SMASecurity = channel.unary_stream(
+                '/src.MicroService/SMASecurity',
+                request_serializer=src_dot_am__sma__pb2.Request.SerializeToString,
+                response_deserializer=src_dot_am__sma__pb2.Security.FromString,
+                )
+        self.SMASecurityQuote = channel.unary_stream(
+                '/src.MicroService/SMASecurityQuote',
+                request_serializer=src_dot_am__sma__pb2.Request.SerializeToString,
+                response_deserializer=src_dot_am__sma__pb2.SecurityQuote.FromString,
+                )
         self.SMABenchmark = channel.unary_stream(
                 '/src.MicroService/SMABenchmark',
                 request_serializer=src_dot_am__sma__pb2.Request.SerializeToString,
@@ -69,6 +80,11 @@ class MicroServiceStub(object):
                 '/src.MicroService/SMAInterestTax',
                 request_serializer=src_dot_am__sma__pb2.Request.SerializeToString,
                 response_deserializer=src_dot_am__sma__pb2.InterestTax.FromString,
+                )
+        self.Backtest = channel.unary_unary(
+                '/src.MicroService/Backtest',
+                request_serializer=src_dot_backtest__pb2.Request.SerializeToString,
+                response_deserializer=src_dot_backtest__pb2.Response.FromString,
                 )
 
 
@@ -129,6 +145,18 @@ class MicroServiceServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def SMASecurity(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SMASecurityQuote(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
     def SMABenchmark(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
@@ -136,6 +164,12 @@ class MicroServiceServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def SMAInterestTax(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def Backtest(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -189,6 +223,16 @@ def add_MicroServiceServicer_to_server(servicer, server):
                     request_deserializer=src_dot_am__sma__pb2.Request.FromString,
                     response_serializer=src_dot_am__sma__pb2.DetailFee.SerializeToString,
             ),
+            'SMASecurity': grpc.unary_stream_rpc_method_handler(
+                    servicer.SMASecurity,
+                    request_deserializer=src_dot_am__sma__pb2.Request.FromString,
+                    response_serializer=src_dot_am__sma__pb2.Security.SerializeToString,
+            ),
+            'SMASecurityQuote': grpc.unary_stream_rpc_method_handler(
+                    servicer.SMASecurityQuote,
+                    request_deserializer=src_dot_am__sma__pb2.Request.FromString,
+                    response_serializer=src_dot_am__sma__pb2.SecurityQuote.SerializeToString,
+            ),
             'SMABenchmark': grpc.unary_stream_rpc_method_handler(
                     servicer.SMABenchmark,
                     request_deserializer=src_dot_am__sma__pb2.Request.FromString,
@@ -198,6 +242,11 @@ def add_MicroServiceServicer_to_server(servicer, server):
                     servicer.SMAInterestTax,
                     request_deserializer=src_dot_am__sma__pb2.Request.FromString,
                     response_serializer=src_dot_am__sma__pb2.InterestTax.SerializeToString,
+            ),
+            'Backtest': grpc.unary_unary_rpc_method_handler(
+                    servicer.Backtest,
+                    request_deserializer=src_dot_backtest__pb2.Request.FromString,
+                    response_serializer=src_dot_backtest__pb2.Response.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -363,6 +412,40 @@ class MicroService(object):
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
     @staticmethod
+    def SMASecurity(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_stream(request, target, '/src.MicroService/SMASecurity',
+            src_dot_am__sma__pb2.Request.SerializeToString,
+            src_dot_am__sma__pb2.Security.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SMASecurityQuote(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_stream(request, target, '/src.MicroService/SMASecurityQuote',
+            src_dot_am__sma__pb2.Request.SerializeToString,
+            src_dot_am__sma__pb2.SecurityQuote.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
     def SMABenchmark(request,
             target,
             options=(),
@@ -393,5 +476,22 @@ class MicroService(object):
         return grpc.experimental.unary_stream(request, target, '/src.MicroService/SMAInterestTax',
             src_dot_am__sma__pb2.Request.SerializeToString,
             src_dot_am__sma__pb2.InterestTax.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def Backtest(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/src.MicroService/Backtest',
+            src_dot_backtest__pb2.Request.SerializeToString,
+            src_dot_backtest__pb2.Response.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

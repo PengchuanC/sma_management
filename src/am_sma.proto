@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package sma;
 
-option go_package=".;sma";
+option go_package="sma;sma";
 
 message NULL {}
 
@@ -18,6 +18,8 @@ message Portfolio {
   string describe = 9;
   float activation = 10;
   string launch_date = 11;
+  int64 settlemented = 12;
+  int64 t_n = 13;
 }
 
 
@@ -123,7 +125,8 @@ message DetailFee {
   float custodian = 4;
   float audit = 5;
   float interest = 6;
-  string date = 7;
+  float interest_tax = 7;
+  string date = 8;
 }
 
 message Benchmark {
@@ -139,4 +142,20 @@ message InterestTax {
   string secucode = 3;
   float tax = 4;
   string date = 5;
+}
+
+message Security {
+  string secucode = 1;
+  string secuname = 2;
+  string category = 3;
+  string category_code = 4;
+}
+
+message SecurityQuote {
+  int64 id = 1;
+  string date = 2;
+  string auto_date = 3;
+  float price = 4;
+  string note = 5;
+  string secucode_id = 6;
 }

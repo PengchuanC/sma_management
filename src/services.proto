@@ -4,6 +4,7 @@ package src;
 
 import "src/brinson.proto";
 import "src/am_sma.proto";
+import "src/backtest.proto";
 
 
 option go_package=".;src";
@@ -28,7 +29,13 @@ service MicroService {
 
   rpc SMADetailFee(sma.Request) returns (stream sma.DetailFee);
 
+  rpc SMASecurity(sma.Request) returns (stream sma.Security);
+
+  rpc SMASecurityQuote(sma.Request) returns (stream sma.SecurityQuote);
+
   rpc SMABenchmark(sma.Request) returns (stream sma.Benchmark);
 
   rpc SMAInterestTax(sma.Request) returns (stream sma.InterestTax);
+
+  rpc Backtest(backtest.Request) returns (backtest.Response);
 }

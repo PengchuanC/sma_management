@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package backtest;
+
+option go_package="backtest;backtest";
+
+// 请求数据类型
+message Request {
+  map<string, float> weight = 1;
+  string start = 2;
+  string end = 3;
+  repeated string indexes = 4;
+  repeated Base base = 5;
+  Method method = 6;
+
+  enum Method {
+    month = 0;
+    quarter = 1;
+    year =  2;
+  }
+
+  message Base {
+    string index = 1;
+    float value = 2;
+  }
+}
+
+// 返回数据类型
+message Response {
+  repeated Nav nav = 1;
+  Performance performance = 2;
+  repeated Industry industry = 3;
+}
+
+message Nav {
+  string date = 1;
+  float nav = 2;
+}
+
+message Performance {
+  map<string, Indicators> indicators = 1;
+
+  message Indicators {
+    map<string, float> indicator = 1;
+  }
+}
+
+message Industry {
+  string name = 1;
+  float portfolio = 2;
+  float index = 3;
+  float diff = 4;
+}

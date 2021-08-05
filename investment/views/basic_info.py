@@ -4,7 +4,7 @@
 import pandas as pd
 
 from collections import Counter
-from django.db.models import Sum, Count
+from django.db.models import Sum, Count, Max
 from rest_framework.views import Response, APIView
 from dateutil.parser import parse
 from django.http import JsonResponse
@@ -17,13 +17,17 @@ from investment.utils.date import latest_trading_day, quarter_end_in_date_series
 class BasicInfo(APIView):
     @staticmethod
     def get(request):
-        last = latest_trading_day(portfolio.Balance)
-        ports = portfolio.Portfolio.objects.filter(
-            balance__date=last
-        ).values(
-            'port_code', 'port_type', 'port_name', 'launch_date', 'balance__net_asset', 'init_money',
-            'balance__unit_nav', 'balance__acc_nav', 'balance__savings', 'sales__name', 'balance__security_deposit'
-        )
+        last = Balance.objects.filter(port_code__settlemented=0).values('port_code').annotate(m=Max('date'))
+        last = {x['port_code']: x['m'] for x in last}
+        ports = []
+        for port_code, date in last.items():
+            port = portfolio.Portfolio.objects.filter(
+                balance__date=date, port_code=port_code
+            ).values(
+                'port_code', 'port_type', 'port_name', 'launch_date', 'balance__net_asset', 'init_money',
+                'balance__unit_nav', 'balance__acc_nav', 'balance__savings', 'sales__name', 'balance__security_deposit'
+            )
+            ports.append(port[0])
         purchase = portfolio.Transactions.objects.filter(operation='TA申购').values('port_code').annotate(
             money=Sum('operation_amount'))
         purchase = {x['port_code']: x['money'] for x in purchase}
@@ -38,7 +42,7 @@ class BasicInfo(APIView):
             'sales__name': 'fa'
         }
         f_ports = []
-        pt = {1: '现金型', 2: '固收型', 3: '平衡型', 4: '成长型', 5: '权益型'}
+        pt = {1: '现金型', 2: '固收型', 3: '平衡型', 4: '成长型', 5: '权益型', 6: 'CTA'}
         count = 0
         total = 0
         for p in ports:
@@ -50,12 +54,13 @@ class BasicInfo(APIView):
             p['port_type'] = pt.get(p['port_type'])
             p['key'] = count
             p['cash'] = p.pop('balance__savings') + p.pop('balance__security_deposit')
-            p['last'] = last.strftime('%Y-%m-%d')
+            p['last'] = last.get(p['port_code']).strftime('%Y-%m-%d')
             f_ports.append(p)
             count += 1
             total += float(p['net_asset'])
+        f_ports = sorted(f_ports, key=lambda x: x['port_code'])
         return Response(
-            {'data': f_ports, 'num': count, 'total': total, 'avg': total / count, 'last': last.strftime('%Y-%m-%d')})
+            {'data': f_ports, 'num': count, 'total': total, 'avg': total / count, 'last': ''})
 
 
 class Capital(APIView):

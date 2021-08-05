@@ -17,6 +17,7 @@ class Client(object):
         service, _ = consul_app.find(service_name)
         host = service['Address']
         port = service['Port']
+        host = 'localhost'
         self.channel = grpc.aio.insecure_channel(f'{host}:{port}')
         self.stub = MicroServiceStub(self.channel)
 
@@ -80,10 +81,23 @@ class Client(object):
         async for x in data:
             yield x
 
+    async def sma_security(self) -> AsyncIterator[pb.Security]:
+        request = pb.Request(port_code=None, date=None)
+        data = self.stub.SMASecurity(request)
+        async for x in data:
+            yield x
+
+    async def sma_security_quote(self, date) -> AsyncIterator[pb.SecurityQuote]:
+        """date实际为id，为了保持接口一致所以写为date"""
+        request = pb.Request(port_code=None, date=date)
+        data = self.stub.SMASecurityQuote(request)
+        async for x in data:
+            yield x
+
 
 async def test():
     client = Client()
-    async for x in client.sma_interest_tax('PFF003', '2021-05-28'):
+    async for x in client.sma_security_quote('8511'):
         print(x)
     print('exit')
 

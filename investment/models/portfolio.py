@@ -25,14 +25,15 @@ class Portfolio(models.Model):
     activation = models.DecimalField(verbose_name="开户费", max_digits=10, decimal_places=2, default=0)
     port_type = models.IntegerField(
         verbose_name='组合类型', default=3,
-        choices=((1, '现金型'), (2, '固收型'), (3, '平衡型'), (4, '成长型'), (5, '权益型'))
+        choices=((1, '现金型'), (2, '固收型'), (3, '平衡型'), (4, '成长型'), (5, '权益型'), (6, 'CTA'))
     )
     launch_date = models.DateTimeField(null=False, verbose_name="成立日期")
-    valid = models.BooleanField(verbose_name='有效', default=True)
+    settlemented = models.IntegerField(verbose_name='是否已清算', choices=((0, '是'), (1, '否')), default=1)
+    t_n = models.IntegerField(verbose_name="估值频率", default=1)
 
     class Meta:
         db_table = 'sma_portfolio'
-        verbose_name = "组合基础信息"
+        verbose_name = "1. 组合基础信息"
         verbose_name_plural = verbose_name
 
     def __str__(self):
@@ -59,7 +60,7 @@ class Balance(models.Model):
 
     class Meta:
         db_table = 'sma_balance'
-        verbose_name = "组合资产负债"
+        verbose_name = "2.1 组合资产负债"
         verbose_name_plural = verbose_name
         get_latest_by = ('date',)
 
@@ -84,7 +85,7 @@ class BalanceExpanded(models.Model):
 
     class Meta:
         db_table = 'sma_balance_expanded'
-        verbose_name = "组合应收应付表"
+        verbose_name = "2.2 组合应收应付表"
         verbose_name_plural = verbose_name
         get_latest_by = ('date', )
 
@@ -103,7 +104,7 @@ class Income(models.Model):
 
     class Meta:
         db_table = 'sma_income_portfolio'
-        verbose_name = '组合损益表'
+        verbose_name = '3.1 组合损益表'
         verbose_name_plural = verbose_name
         get_latest_by = 'date'
 
@@ -120,7 +121,7 @@ class IncomeAsset(models.Model):
 
     class Meta:
         db_table = 'sma_income_asset'
-        verbose_name = '组合资产损益表'
+        verbose_name = '3.2 组合资产损益表'
         verbose_name_plural = verbose_name
         get_latest_by = 'date'
 
@@ -143,7 +144,7 @@ class Holding(models.Model):
 
     class Meta:
         db_table = 'sma_holding_fund'
-        verbose_name = '组合持基明细'
+        verbose_name = '4.1 组合持基明细'
         verbose_name_plural = verbose_name
         index_together = ['port_code', 'date']
         get_latest_by = 'date'
@@ -168,7 +169,7 @@ class Transactions(models.Model):
 
     class Meta:
         db_table = 'sma_transactions'
-        verbose_name = '组合交易流水'
+        verbose_name = '4.2 组合交易流水'
         verbose_name_plural = verbose_name
         index_together = ['port_code', 'date']
         get_latest_by = ['date']
@@ -188,7 +189,7 @@ class DetailFee(models.Model):
 
     class Meta:
         db_table = 'sma_detail_fee'
-        verbose_name = '组合费用提取明细'
+        verbose_name = '4.3 组合费用提取明细'
         verbose_name_plural = verbose_name
         get_latest_by = 'date'
 
@@ -206,7 +207,7 @@ class InterestTax(models.Model):
 
     class Meta:
         db_table = 'sma_interest_tax'
-        verbose_name = '组合场内交易基金利息税'
+        verbose_name = '4.4 组合场内交易基金利息税'
         verbose_name_plural = verbose_name
         get_latest_by = 'date'
 
@@ -219,7 +220,7 @@ class ValuationBenchmark(models.Model):
 
     class Meta:
         db_table = 'sma_evaluate_benchmark'
-        verbose_name = '组合基准净值表'
+        verbose_name = '4.5 组合基准净值表'
         verbose_name_plural = verbose_name
         index_together = ['port_code', 'date']
         get_latest_by = 'date'
@@ -243,7 +244,7 @@ class PortfolioStyle(models.Model):
 
     class Meta:
         db_table = 'sma_style'
-        verbose_name = '组合风格'
+        verbose_name = '4.6 组合风格'
         verbose_name_plural = verbose_name
 
     def __str__(self):
@@ -263,7 +264,7 @@ class PortfolioBrinson(models.Model):
 
     class Meta:
         db_table = 'sma_brinson'
-        verbose_name = '组合Brinson'
+        verbose_name = '4.7 组合Brinson'
         verbose_name_plural = verbose_name
 
     def __str__(self):
@@ -279,7 +280,7 @@ class Sales(models.Model):
 
     class Meta:
         db_table = 'sma_sales'
-        verbose_name = '组合对应销售人员'
+        verbose_name = '1.2 组合对应销售人员'
         verbose_name_plural = verbose_name
 
     def __str__(self):
@@ -294,7 +295,7 @@ class PreValuedNav(models.Model):
 
     class Meta:
         db_table = 'sma_portfolio_pre_valuation'
-        verbose_name = '组合每日预估值记录'
+        verbose_name = '4.8 组合每日预估值记录'
         verbose_name_plural = verbose_name
 
     def __str__(self):
@@ -316,7 +317,7 @@ class ClientPR(models.Model):
 
     class Meta:
         db_table = 'sma_client_pr'
-        verbose_name = '组合客户申赎记录'
+        verbose_name = '5.1 组合客户申赎记录'
         verbose_name_plural = verbose_name
 
     def __str__(self):
@@ -335,7 +336,7 @@ class PortfolioAssetAllocate(models.Model):
 
     class Meta:
         db_table = 'sma_portfolio_allocate'
-        verbose_name = '组合资产配置'
+        verbose_name = '4.9 组合资产配置'
         verbose_name_plural = verbose_name
         get_latest_by = 'date'
 
