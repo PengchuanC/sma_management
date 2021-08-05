@@ -17,7 +17,6 @@ class Client(object):
         service, _ = consul_app.find(service_name)
         host = service['Address']
         port = service['Port']
-        host = 'localhost'
         self.channel = grpc.aio.insecure_channel(f'{host}:{port}')
         self.stub = MicroServiceStub(self.channel)
 
