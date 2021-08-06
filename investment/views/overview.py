@@ -15,6 +15,7 @@ from rest_framework.views import APIView, Response
 from pandas import DataFrame
 from investment import models
 from investment.views.analysis import FundHoldingView
+from investment.utils.holding_v2 import asset_type_penetrate
 
 
 class OverviewView(APIView):
@@ -38,11 +39,11 @@ class OverviewView(APIView):
         """穿透资产配置"""
         port_code: str = request.GET.get('portCode')
         date = models.Balance.objects.filter(port_code=port_code).last().date
-        r = FundHoldingView.asset_allocate(port_code, date, otc=False)
+        r = asset_type_penetrate(port_code, date)
         ret = [
-            {'name': '权益', 'value': float(r['stock'])},
-            {'name': '固收', 'value': float(r['bond'])},
-            {'name': '另类', 'value': float(r['metals'])},
+            {'name': '权益', 'value': float(r['equity'])},
+            {'name': '固收', 'value': float(r['fix_income'])},
+            {'name': '另类', 'value': float(r['alternative'])},
             {'name': '货币', 'value': float(r['monetary'])},
             {'name': '其他', 'value': float(r['other'])}
         ]

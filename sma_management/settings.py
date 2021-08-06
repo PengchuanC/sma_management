@@ -185,10 +185,10 @@ DATABASE_ROUTERS = ['investment.router.AuthRouter', 'investment.router.Router']
 
 
 Q_CLUSTER = {
-    'name': 'DjangoORM',
+    'name': 'DjangORM',
     'workers': 4,
     'timeout': 600,
-    'retry': 5,
+    'retry': 800,
     'queue_limit': 50,
     'bulk': 10,
     'orm': 'default',

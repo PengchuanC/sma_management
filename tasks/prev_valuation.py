@@ -7,10 +7,11 @@ from tasks import models
 from investment.utils.holding import fund_holding_stock, holding_etf_in_exchange
 from investment.views import FundHoldingView
 from investment.views.prev_valuation import PreValuationConsumer
+from investment.utils.holding_v2 import asset_type_penetrate, portfolio_holding_security
 
 
 def pre_valuation():
-    portfolios = models.Portfolio.objects.filter(valid=True).all()
+    portfolios = models.Portfolio.objects.filter(settlemented=0).all()
     for portfolio in portfolios:
         try:
             port_code = portfolio.port_code
@@ -24,7 +25,8 @@ def pre_valuation():
                 try:
                     r = _pre_valuation_gil(port_code, date)
                     models.PreValuedNav.objects.update_or_create(port_code=portfolio, date=r['date'], defaults=r)
-                except AttributeError:
+                except AttributeError as e:
+                    raise e
                     pass
         except Exception as e:
             raise e
@@ -33,8 +35,8 @@ def pre_valuation():
 def _pre_valuation(port_code: str):
     """获取组合预估值"""
     date = models.Balance.objects.filter(port_code=port_code).last().date
-    ratio = FundHoldingView.asset_allocate(port_code, date)
-    stock = ratio['stock']
+    ratio = asset_type_penetrate(port_code, date)
+    stock = ratio['equity']
     holding = fund_holding_stock(port_code, date)
     equity = float(holding.ratio.sum()) / stock
     ret = PreValuationConsumer.calc(holding, equity)[0]
@@ -44,34 +46,20 @@ def _pre_valuation(port_code: str):
 def _pre_valuation_gil(port_code: str, date: datetime.date):
     """预估组合当日涨跌幅，利用聚源数据而非爬虫数据"""
     date = models.Balance.objects.filter(port_code=port_code, date__lte=date).last().date
-    ratio = FundHoldingView.asset_allocate(port_code, date)
-    stock = ratio['stock']
-    holding = fund_holding_stock(port_code, date, in_exchange=False)
-    etf = holding_etf_in_exchange(port_code, date)
-    etf_df = pd.DataFrame([{'stockcode': x, 'ratio': y} for x, y in etf.items()])
-    # 计算前十大在权益持仓中的占比
-    equity = float(holding.ratio.sum()) / float(stock)
+    holding = portfolio_holding_security(port_code, date)
+    holding = pd.Series(holding, dtype=float)
 
     # 获取股票涨跌幅
-    stocks = list(holding.stockcode)
+    stocks = list(holding.index)
     price = models.StockDailyQuote.objects.filter(
         secucode__in=stocks, date=date).values('secucode', 'closeprice', 'prevcloseprice')
-    price_etf = models.FundQuote.objects.filter(
-        secucode__in=list(etf.keys()), date=date).values('secucode', 'closeprice', 'prevcloseprice')
-    price = [*price, *price_etf]
     price = DataFrame(price)
+    if price.empty:
+        return {'date': date, 'value': 0}
     price['change'] = price['closeprice'] / price['prevcloseprice'] - 1
     price = price[['secucode', 'change']]
-    price = price.dropna()
-
-    stock = holding.merge(price, left_on='stockcode', right_on='secucode', how='left')
-    change_stock = float((stock['ratio'] * stock['change']).sum()) / equity
-    if etf_df.empty:
-        change_etf = 0
-    else:
-        etf = etf_df.merge(price, left_on='stockcode', right_on='secucode', how='left')
-        change_etf = float((etf['ratio'].astype('float') * etf['change']).sum())
-    change = change_etf + change_stock
+    price = price.dropna().set_index('secucode')['change'].astype(float)
+    change = (holding * price).sum()
     return {'date': date, 'value': change}
 
 

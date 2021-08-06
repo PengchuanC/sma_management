@@ -8,7 +8,7 @@ import datetime
 import pandas as pd
 
 from django.db.models import Max
-from .. import models
+from investment import models
 
 
 def fund_holding_stock(port_code: str, date: str or datetime.date, in_exchange=True):

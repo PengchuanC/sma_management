@@ -1,9 +1,10 @@
 from tasks import models
 from investment.views.analysis import FundHoldingView
+from investment.utils.holding_v2 import asset_type_penetrate
 
 
 def portfolio_asset_allocate():
-    portfolios = models.Portfolio.objects.filter(valid=True).all()
+    portfolios = models.Portfolio.objects.filter(settlemented=0).all()
     for portfolio in portfolios:
         ret = _portfolio_asset_allocate(portfolio)
         models.PortfolioAssetAllocate.objects.bulk_create(ret)
@@ -20,15 +21,15 @@ def _portfolio_asset_allocate(portfolio: models.Portfolio):
     ret = []
     for date in dates:
         try:
-            allocate: dict = FundHoldingView.asset_allocate(portfolio.port_code, date=date, otc=False)
-            allocate.pop('fund')
+            allocate: dict = asset_type_penetrate(portfolio.port_code, date)
             names = ['equity', 'fix_income', 'alter', 'money', 'other']
-            for idx, attr in enumerate(['stock', 'bond', 'metals', 'monetary', 'other']):
+            for idx, attr in enumerate(['equity', 'fix_income', 'alternative', 'monetary', 'other']):
                 allocate[names[idx]] = allocate.pop(attr)
             allocate.update({'port_code': portfolio, 'date': date})
             allocate: models.PortfolioAssetAllocate = models.PortfolioAssetAllocate(**allocate)
             ret.append(allocate)
-        except:
+        except Exception as e:
+            print(e)
             continue
     return ret
 

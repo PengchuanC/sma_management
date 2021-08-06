@@ -5,16 +5,17 @@ test
 @date: 2020-09-07
 @desc:
 """
+import datetime
 
 from rest_framework.views import Response, APIView
 
-from investment.utils import capital_flow, holding
+from investment.utils import capital_flow, holding_v2
 
 
 class TestViews(APIView):
 
     @staticmethod
     def get(request):
-        holding.fund_holding_stock_by_fund(['110011', '000001'])
-        r = capital_flow.category_capital_flow('有色金属', '2020-10-01')
-        return Response(r.to_dict(orient='records'))
+        r = holding_v2.portfolio_holding_security('PFF003', datetime.date(2021, 6, 1))
+        print(r)
+        return Response()
