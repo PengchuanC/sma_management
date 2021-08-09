@@ -46,7 +46,7 @@ async def latest_update_date(model, port_code: str):
     """最后更新日期"""
     exist = await sync_to_async(model.objects.filter(port_code=port_code).exists)()
     if not exist:
-        last = await launch_date(port_code)
+        last = await launch_date(port_code) - datetime.timedelta(days=1)
     else:
         last = await sync_to_async(model.objects.filter(port_code=port_code).latest)('date')
         last = last.date

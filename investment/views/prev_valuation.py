@@ -57,6 +57,8 @@ class PreValuationConsumer(AsyncJsonWebsocketConsumer):
         holding = [{'secucode': x, 'ratio': y} for x, y in holding.items()]
         holding = pd.DataFrame(holding)
         self.holding = holding
+        if holding.empty:
+            return {}
         stocks = list(holding.secucode)
         stocks = models.StockRealtimePrice.objects.filter(secucode__in=stocks).values(
             'secucode', 'prev_close', 'price', 'time'
@@ -90,6 +92,8 @@ class PreValuationConsumer(AsyncJsonWebsocketConsumer):
     @staticmethod
     def calc(holding):
         """计算实时涨跌幅"""
+        if holding.empty:
+            return []
         last = models.StockRealtimePrice.objects.latest()
         time = last.time
         last = models.StockRealtimePrice.objects.filter(
