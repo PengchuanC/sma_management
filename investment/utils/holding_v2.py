@@ -6,6 +6,7 @@ holding
 私募视为另类资产，ETF、股票视为权益资产，债券视为固收资产
 """
 import datetime
+from itertools import groupby
 
 from django.db.models import Subquery
 
@@ -98,7 +99,7 @@ def portfolio_holding_security(port_code: str, date):
     return ret
 
 
-def fund_holding_stocks(secucode, date, scale=True):
+def fund_holding_stocks(secucode, date, scale=True) -> dict:
     """基金持有股票及其占比"""
     maincode = open_fund_maincode(secucode)
     rpt = models.FundHoldingStock.objects.filter(secucode=secucode, date__lte=date).last()
@@ -116,4 +117,28 @@ def fund_holding_stocks(secucode, date, scale=True):
     return holding
 
 
+def portfolio_holding_stock(port_code: str, date: datetime.date):
+    """组合持股分析，返回类型为pandas.DataFrame
+    主要包含开放式基金(含场内)的穿透持股和组合的股票持仓
+    """
+    holdings = models.Holding.objects.filter(port_code=port_code, date=date).values('secucode', 'mkt_cap')
+    balance = models.Balance.objects.get(port_code=port_code, date=date)
+    net_value = balance.net_asset
+    holdings = {x['secucode']: x['mkt_cap'] / net_value for x in holdings}
+    ret = []
+    for secucode, cap in holdings.items():
+        security = models.Security.objects.filter(secucode=secucode).first()
+        if not security:
+            continue
+        # 判断证券类型
+        # 公募基金
+        if security.category_code in ('110502', '110503', '110504'):
+            stocks = fund_holding_stocks(secucode, date, scale=False)
+            stocks = [(x, y) for x, y in stocks.items()]
+            ret.extend(stocks)
+        # TODO:
+    ret = sorted(ret, key=lambda x: x[0])
+    ret = groupby(ret, key=lambda x: x[0])
+    ret = {x[0]: sum(map(lambda y: y[1], x[1])) / 100 for x in ret}
+    return ret
 
