@@ -13,6 +13,7 @@ import pandas as pd
 from django.db.models import Max
 from sql import models
 from investment.utils.holding import fund_holding_stock
+from investment.utils.holding_v2 import portfolio_holding_stock
 
 
 class Allocate(abc.ABC):
@@ -61,6 +62,7 @@ class PortfolioAllocate(Allocate):
         if not self._weight.empty:
             return self._weight
         holding = fund_holding_stock(self.p, self.d)
+        holding.ratio = holding.ratio.astype(float)
         if not isinstance(holding, pd.DataFrame):
             return None
         holding = holding[['stockcode', 'ratio']]
@@ -130,8 +132,8 @@ class PortfolioAllocate(Allocate):
             传媒         0.02828580270302707551405546491
         """
         holding = self._stock_weight().copy()
-        holding.change = holding.change * holding.weight
-        holding = holding[['industry', 'change', 'weight']].groupby('industry').sum()
+        holding.change = holding.change.astype(float) * holding.weight.astype(float)
+        holding = holding.groupby('industry')[['change', 'weight']].sum()
         holding.change = holding.agg(lambda x: x.change / x.weight if x.weight != 0 else 0, axis=1)
         data = holding.change
         data = self.format_weight_change(data)
@@ -157,9 +159,29 @@ class IndexAllocate(PortfolioAllocate):
         md = models.IndexComponent.objects.filter(secucode=self.i).aggregate(m=Max('date')).get('m')
         holding = models.IndexComponent.objects.filter(secucode=self.i, date=md).values('stockcode', 'weight')
         holding = pd.DataFrame(holding)
+        holding.weight = holding.weight.astype(float)
         holding = holding.rename(columns={'stockcode': 'secucode'})
         holding = self._added(holding, self.d)
         return holding
+
+    @property
+    def weight(self):
+        """行业配置比例
+
+        行业配置比例指行业市值占权益市值比例
+        Returns:
+            Series
+            >>> self.weight
+            industry
+            交通运输     0.04712243786184013222487976769
+            休闲服务     0.02927308738101760784195512812
+            传媒       0.03153064982391022063088072711
+        """
+        holding = self._stock_weight().copy()
+        weight = holding.groupby('industry')['weight'].sum()
+        weight = weight / weight.sum()
+        data = self.format_weight_change(weight)
+        return data.weight
 
 
 class Model(object):
@@ -232,7 +254,7 @@ class Model(object):
 def commit_brinson():
     """提交Brinson归因数据"""
     index = '000906'
-    portfolios = models.Portfolio.objects.filter(valid=True).all()
+    portfolios = models.Portfolio.objects.filter(settlemented=0).all()
     for p in portfolios:
         dates = models.Balance.objects.filter(port_code=p).order_by('date').values('date')
         dates = [x['date'] for x in dates]
