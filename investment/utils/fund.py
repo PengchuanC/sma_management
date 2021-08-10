@@ -1,8 +1,9 @@
 """
 单只基金相关的功能
 """
+import re
 
-from investment.models import Funds
+from investment.models import Funds, Security
 from rpc.client import Client
 
 
@@ -10,6 +11,8 @@ def fund_names(funds):
     """获取基金名称"""
     query_ret = Funds.objects.filter(secucode__in=funds).all()
     ret = {x.secucode: x.secuname for x in query_ret}
+    query_ret = Security.objects.filter(secucode__in=funds).all()
+    ret.update({x.secucode: re.sub(r'[(私募基金)|(私募证券投资基金)|(集合资产管理计划)]', '', x.secuname) for x in query_ret})
     return ret
 
 

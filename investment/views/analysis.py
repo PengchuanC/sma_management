@@ -5,6 +5,7 @@
 
 import datetime
 from decimal import Decimal
+from typing import Optional
 
 import pandas as pd
 from dateutil.relativedelta import relativedelta
@@ -24,6 +25,7 @@ from investment import models
 from investment.utils.calc import Formula, capture_return
 from investment.utils import fund, period_change as pc
 from investment.utils.holding import fund_holding_stock, index_holding_sw, fund_top_ten_scale
+from investment.utils import holding_v2
 from rpc.client import Client
 
 
@@ -511,17 +513,21 @@ class FundHoldingStockView(APIView):
         else:
             date = Balance.objects.filter(
                 port_code=port_code, date__lte=date).last().date.strftime('%Y-%m-%d')
-        ret = fund_holding_stock(port_code, date)
+        ret = holding_v2.portfolio_holding_security(port_code, date)
         ind = FundHoldingStockView.industry_sw(ret)
-        ratio = FundHoldingView.asset_allocate(port_code, date)
+        if ind is None:
+            return Response({'stock': [], 'industry': []})
+        ratio = holding_v2.asset_type_penetrate(port_code, date)
         index = FundHoldingStockView.industry_index_top_ten(port_code)
-        equity = ratio.get('stock')
+        equity = ratio.get('equity')
         ind['ratio'] = ind['ratio'].astype('float')
         ind['ratioinequity'] = ind['ratio'] / float(equity)
         ind = ind.merge(index, on='firstindustryname', how='outer').fillna(0)
         ind = ind.sort_values(
             ['ratio'], ascending=False).reset_index(drop=True)
         ind['key'] = ind.index + 1
+        ret = [{'secucode': x, 'ratio': y} for x, y in ret.items()]
+        ret = pd.DataFrame(ret)
         ret['ofnv'] = ret['ratio'] / ret['ratio'].sum()
         ret['cumsum'] = ret['ratio'].cumsum()
         ret = ret.to_dict(orient='records')
@@ -529,14 +535,15 @@ class FundHoldingStockView(APIView):
         return Response({'stock': ret, 'industry': ind})
 
     @staticmethod
-    def industry_sw(data: pd.DataFrame) -> pd.DataFrame:
+    def industry_sw(data: dict) -> Optional[pd.DataFrame]:
         """接受基金组合中股票市值占比的DataFrame"""
-        funds = list(data.stockcode)
+        funds = list(data.keys())
         ind = SISW.objects.filter(secucode__in=funds).values(
             'secucode', 'firstindustryname')
         ind = pd.DataFrame(ind)
-        ind = pd.merge(ind, data, left_on='secucode',
-                       right_on='stockcode', how='outer')
+        if ind.empty:
+            return
+        ind['ratio'] = ind['secucode'].apply(lambda x: data.get(x))
         ind.firstindustryname = ind.firstindustryname.fillna('港股')
         ind = ind.groupby(['firstindustryname'])['ratio'].sum()
         ind: pd.DataFrame = ind.reset_index()
@@ -574,6 +581,8 @@ class FundHoldingStockView(APIView):
             if stock is None:
                 continue
             stocks.append(stock)
+        if not  stocks:
+            return
         stocks = pd.concat(stocks, axis=0)
         data = stocks.merge(holding, on='secucode', how='left')
         mkt_cap = data.drop_duplicates(['secucode'])['mkt_cap'].sum()
