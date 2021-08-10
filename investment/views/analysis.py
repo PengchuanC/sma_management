@@ -528,6 +528,13 @@ class FundHoldingStockView(APIView):
         ind['key'] = ind.index + 1
         ret = [{'secucode': x, 'ratio': y} for x, y in ret.items()]
         ret = pd.DataFrame(ret)
+        names = models.Stock.objects.filter(secucode__in=list(ret['secucode'])).all()
+        names = {x.secucode: x.secuname for x in names}
+        ret['secuname'] = ret['secucode'].apply(lambda x: names.get(x))
+        # 去掉ETF，LOF
+        ret = ret[ret.secuname.notnull()]
+        ret = ret.sort_values('ratio', ascending=False).reset_index(drop=True)
+        ret['key'] = ret.index + 1
         ret['ofnv'] = ret['ratio'] / ret['ratio'].sum()
         ret['cumsum'] = ret['ratio'].cumsum()
         ret = ret.to_dict(orient='records')
