@@ -35,6 +35,7 @@ def commit_capital():
 
 
 def commit_portfolio_allocate():
+    """每日计算组合各类资产持仓占比"""
     portfolio_asset_allocate()
 
 
