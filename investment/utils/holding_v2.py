@@ -74,8 +74,8 @@ def asset_type_penetrate(port_code: str, date: datetime.date) -> dict:
 
 def portfolio_holding_security(port_code: str, date):
     """组合在给定日期持有的场内证券
-    ETF、LOF、股票、债券直接获取比例
-    场外公募基金穿透到底层
+    ETF、股票、债券直接获取比例
+    LOF、场外公募基金穿透到底层
     """
     holdings = models.Holding.objects.filter(port_code=port_code, date=date).values('secucode', 'mkt_cap')
     balance = models.Balance.objects.get(port_code=port_code, date=date)
@@ -87,10 +87,10 @@ def portfolio_holding_security(port_code: str, date):
         if not security:
             continue
         # 股票、债券、场内基金
-        if security.category_code in ('110503', '110504'):
+        if security.category_code in ('110503',):
             ret[secucode] = float(ratio)
         # 场外基金
-        elif security.category_code == '110502':
+        elif security.category_code in ('110502', '110504'):
             stocks = fund_holding_stocks(secucode, date)
             stocks = {x: y * float(ratio) for x, y in stocks.items()}
             for stockcode, r in stocks.items():
