@@ -111,7 +111,7 @@ class OverviewView(APIView):
         pre = DataFrame(pre)
         income = DataFrame(income)
         data = pre.merge(income, on='date', how='left').dropna(how='any')
-        data = data.sort_value('date')
+        data = data.sort_values('date')
         data = data.to_dict(orient='records')
         return JsonResponse({'data': data})
 
