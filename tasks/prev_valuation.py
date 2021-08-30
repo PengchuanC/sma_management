@@ -48,11 +48,16 @@ def _pre_valuation_gil(port_code: str, date: datetime.date):
     v_date = models.Balance.objects.filter(port_code=port_code, date__lte=date).last().date
     holding = portfolio_holding_security(port_code, v_date)
     holding = pd.Series(holding, dtype=float)
+    holding = holding[holding > 0]
     # 获取股票涨跌幅
     stocks = list(holding.index)
     price = models.StockDailyQuote.objects.filter(
         secucode__in=stocks, date=date).values('secucode', 'closeprice', 'prevcloseprice')
     price = DataFrame(price)
+    hk_price = models.StockDailyQuoteHK.objects.filter(
+            secucode__in=stocks, date=date).values('secucode', 'closeprice', 'prevcloseprice')
+    hk_price = DataFrame(hk_price)
+    price = price.append(hk_price)
     if price.empty:
         return
     price['change'] = price['closeprice'] / price['prevcloseprice'] - 1

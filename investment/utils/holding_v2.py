@@ -132,7 +132,7 @@ def portfolio_holding_stock(port_code: str, date: datetime.date):
     net_value = balance.net_asset
     holdings = {x['secucode']: x['mkt_cap'] / net_value for x in holdings}
     ret = []
-    for secucode, cap in holdings.items():
+    for secucode, ratio in holdings.items():
         security = models.Security.objects.filter(secucode=secucode).first()
         if not security:
             continue
@@ -140,7 +140,7 @@ def portfolio_holding_stock(port_code: str, date: datetime.date):
         # 公募基金
         if security.category_code in ('110502', '110503', '110504'):
             stocks = fund_holding_stocks(secucode, date, scale=False)
-            stocks = [(x, y) for x, y in stocks.items()]
+            stocks = [(x, float(y) * float(ratio)) for x, y in stocks.items()]
             ret.extend(stocks)
         # TODO:
     ret = sorted(ret, key=lambda x: x[0])

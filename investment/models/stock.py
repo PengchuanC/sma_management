@@ -87,6 +87,19 @@ class StockDailyQuote(models.Model):
         unique_together = (('secucode', 'date'),)
 
 
+class StockDailyQuoteHK(models.Model):
+    secucode = models.ForeignKey(Stock, to_field='secucode', on_delete=models.CASCADE, verbose_name="股票代码")
+    closeprice = models.DecimalField(verbose_name='收盘价', max_digits=10, decimal_places=2)
+    prevcloseprice = models.DecimalField(verbose_name='收盘价', max_digits=10, decimal_places=2)
+    date = models.DateField(verbose_name='交易日', null=False)
+
+    class Meta:
+        db_table = 'sma_stock_daily_quote_hk'
+        verbose_name = '股票日行情'
+        verbose_name_plural = verbose_name
+        unique_together = (('secucode', 'date'),)
+
+
 class CapitalFlow(models.Model):
     secucode = models.ForeignKey(Stock, verbose_name='证券代码', to_field='secucode', on_delete=models.CASCADE)
     date = models.DateField(verbose_name='交易日期', null=False, blank=False)

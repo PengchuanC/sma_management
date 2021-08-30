@@ -1,7 +1,8 @@
 
 
 stock = """
-    select secucode, secuabbr as secuname from jydb.secumain where secucategory=1 and listedstate = 1 
+    select secucode, secuabbr as secuname from jydb.secumain WHERE SECUCATEGORY IN(1, 8, 13) AND 
+    LISTEDSTATE = 1 and listedstate = 1 AND LISTEDSECTOR IN (1, 2, 3, 6, 7)
     UNION ALL
     select secucode, secuabbr as secuname from jydb.hk_secumain where SECUMARKET = 72 and listedstate = 1
 """
@@ -79,8 +80,38 @@ stock_quote = """
     JOIN JYDB.SECUMAIN s ON
         qd.INNERCODE = s.INNERCODE
     WHERE
-        s.SECUCATEGORY = 1
-        AND qd.TRADINGDAY > TO_DATE('<date>', 'YYYY-MM-DD')
+        s.secucategory in (1, 8, 13) and
+        qd.TRADINGDAY > TO_DATE('<date>', 'YYYY-MM-DD')
+"""
+
+stock_quote_sti = """
+    SELECT
+        s.SECUCODE,
+        qd.CLOSEPRICE,
+        qd.PREVCLOSEPRICE,
+        qd.TRADINGDAY AS "date"
+    FROM
+        JYDB.LC_STIBDailyQuote qd
+    JOIN JYDB.SECUMAIN s ON
+        qd.INNERCODE = s.INNERCODE
+    WHERE
+        qd.TRADINGDAY > TO_DATE('<date>', 'YYYY-MM-DD')
+"""
+
+
+# 股票收盘价
+stock_quote_hk = """
+    SELECT
+        s.SECUCODE,
+        qd.CLOSEPRICE,
+        qd.PREVCLOSEPRICE,
+        qd.TRADINGDAY AS "date"
+    FROM
+        JYDB.QT_HKDAILYQUOTE qd
+    JOIN JYDB.HK_SECUMAIN s ON
+        qd.INNERCODE = s.INNERCODE
+    WHERE
+        qd.TRADINGDAY > TO_DATE('<date>', 'YYYY-MM-DD')
 """
 
 
