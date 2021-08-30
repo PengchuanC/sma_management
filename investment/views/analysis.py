@@ -514,7 +514,6 @@ class FundHoldingStockView(APIView):
             date = Balance.objects.filter(
                 port_code=port_code, date__lte=date).last().date.strftime('%Y-%m-%d')
         ret = holding_v2.portfolio_holding_stock(port_code, date)
-        print(ret)
         ind = FundHoldingStockView.industry_sw(ret)
         if ind is None:
             return Response({'stock': [], 'industry': []})
