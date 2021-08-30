@@ -63,5 +63,5 @@ def _pre_valuation_gil(port_code: str, date: datetime.date):
 
 
 if __name__ == '__main__':
-    # _pre_valuation_gil('PFF005', datetime.date(2021, 8, 18))
+    # _pre_valuation_gil('PFF003', datetime.date(2021, 8, 27))
     pre_valuation()

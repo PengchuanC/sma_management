@@ -51,3 +51,5 @@ def commit_fund_fee():
 
 if __name__ == '__main__':
     commit_portfolio_allocate()
+    commit_fund_pos()
+    pre_valuation()

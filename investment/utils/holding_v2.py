@@ -108,7 +108,11 @@ def fund_holding_stocks(secucode, date, scale=True) -> dict:
     if rpt is None:
         return {}
     date = rpt.date
-    holding = models.FundHoldingStock.objects.filter(secucode=secucode, date=date).values('stockcode', 'ratio')
+    holding = models.FundHoldingStock.objects.filter(
+        secucode=secucode, date=date, publish='年报').values('stockcode', 'ratio')
+    if not holding:
+        holding = models.FundHoldingStock.objects.filter(
+            secucode=secucode, date=date, publish='季报').values('stockcode', 'ratio')
     sum_ = float(sum(x['ratio'] for x in holding))
     if scale:
         asset = open_fund_asset_type(maincode)

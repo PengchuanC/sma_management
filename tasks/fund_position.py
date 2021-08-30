@@ -2,6 +2,7 @@ import datetime
 from itertools import groupby
 from typing import Dict, List, Union
 
+import arrow
 import pandas as pd
 import numpy as np
 from sklearn.linear_model import Lasso
@@ -98,8 +99,8 @@ def fund_nav(funds: List[str], date: datetime.date) -> pd.DataFrame:
 
     """
     start = date_before_target(date)
-    before = (start - datetime.timedelta(days=90)).strftime('%Y-%m-%d')
-    funds = [x for x in funds if LAUNCH.get(x) <= before]
+    before = (start - datetime.timedelta(days=90))
+    funds = [x for x in funds if arrow.get(LAUNCH.get(x, datetime.date.today())).date() <= before]
     nav = models.FundPrice.objects.filter(
         secucode__in=funds, date__range=(start, date)
     ).values('secucode', 'date', 'nav')
