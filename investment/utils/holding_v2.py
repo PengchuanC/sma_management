@@ -145,6 +145,6 @@ def portfolio_holding_stock(port_code: str, date: datetime.date):
         # TODO:
     ret = sorted(ret, key=lambda x: x[0])
     ret = groupby(ret, key=lambda x: x[0])
-    ret = {x[0]: sum(map(lambda y: y[1], x[1])) / 100 for x in ret}
+    ret = {x[0]: sum(map(lambda y: y[1], x[1])) for x in ret}
     return ret
 
