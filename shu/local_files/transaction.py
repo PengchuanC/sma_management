@@ -58,7 +58,7 @@ def transaction_files_yx():
 
 
 def commit_transaction():
-    portfolio = models.Portfolio.objects.filter(valid=True)
+    portfolio = models.Portfolio.objects.filter(settlemented=0)
     for port_code in portfolio:
         _commit_transaction(port_code)
 
