@@ -6,7 +6,7 @@ configs
 @desc: 已废弃
 """
 from shu import models
-from pathlib import Pathd
+from pathlib import Path
 
 
 TEST = False
