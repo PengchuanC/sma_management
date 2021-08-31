@@ -5,7 +5,7 @@ database:
   port: 3306
   username: fof
   password: 123456
-  database: am_sma_second
+  database: am_sma_third
 
 # file path
 target_path: "data"

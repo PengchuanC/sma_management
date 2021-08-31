@@ -8,7 +8,7 @@ command
 import click
 
 from sql import tools
-from shu.from_sma import commit_sma
+from shu.run import shu_commit
 from crawl import fund_limit
 from proc import commit as proc_commit
 
@@ -56,7 +56,7 @@ def run_index():
 
 @root.command()
 def shu():
-    commit_sma()
+    shu_commit()
     proc_commit.commit_valuation()
     proc_commit.commit_transaction()
     proc_commit.commit_holding()
@@ -72,7 +72,7 @@ def proc():
 @root.command()
 def run_all():
     """存在依赖顺序，shu必须先commit"""
-    commit_sma()
+    shu_commit()
     tools.commit_stocks()
     tools.commit_fund()
     tools.commit_basic_info()
