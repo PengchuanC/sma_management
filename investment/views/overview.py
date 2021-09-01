@@ -13,6 +13,8 @@ from django.http import JsonResponse
 from channels.db import database_sync_to_async
 from rest_framework.views import APIView, Response
 from pandas import DataFrame
+from asgiref.sync import sync_to_async
+
 from investment import models
 from investment.views.analysis import FundHoldingView
 from investment.utils.holding_v2 import asset_type_penetrate
@@ -51,15 +53,18 @@ class OverviewView(APIView):
         return JsonResponse({'data': ret, 'lever': lever})
 
     @staticmethod
-    def avg_asset_allocate(request):
+    async def avg_asset_allocate(request):
         """穿透资产区间平均配置"""
         port_code: str = request.GET.get('portCode')
         start = request.GET.get('start')
         end = request.GET.get('end')
         if not start or not end:
-            end = models.Balance.objects.filter(port_code=port_code).last().date
+            end = await database_sync_to_async(models.Balance.objects.filter(port_code=port_code).last)()
+            end = end.date
             start = end - relativedelta(days=30)
-        ret = models.PortfolioAssetAllocate.objects.filter(port_code=port_code, date__range=(start, end)).all()
+        ret = await database_sync_to_async(
+            models.PortfolioAssetAllocate.objects.filter(port_code=port_code, date__range=(start, end)).all)()
+        ret = await sync_to_async(list)(ret)
         ret = DataFrame([model_to_dict(x) for x in ret])
         r = ret.mean()
         ret = [
@@ -73,7 +78,7 @@ class OverviewView(APIView):
         return JsonResponse({'data': ret, 'lever': lever})
 
     @staticmethod
-    def history_asset_allocate(request):
+    async def history_asset_allocate(request):
         """基金成立以来持仓配置情况
 
         Args:
@@ -83,9 +88,10 @@ class OverviewView(APIView):
 
         """
         port_code: str = request.GET.get('portCode')
-        ret = models.PortfolioAssetAllocate.objects.filter(port_code=port_code).values(
+        ret = await database_sync_to_async(models.PortfolioAssetAllocate.objects.filter(port_code=port_code).values)(
             'date', 'equity', 'fix_income', 'alter', 'money', 'other'
         )
+        ret = await sync_to_async(list)(ret)
         ret = [x for x in ret]
         return JsonResponse({'data': ret})
 
@@ -104,12 +110,12 @@ class OverviewView(APIView):
         return JsonResponse({'data': model_to_dict(data)})
 
     @staticmethod
-    def pre_valuation_compare_real(request):
+    async def pre_valuation_compare_real(request):
         port_code = request.GET.get('portCode')
-        pre = models.PreValuedNav.objects.filter(port_code=port_code).values('date', 'value')
-        income = models.Income.objects.filter(port_code=port_code).values('date', 'change_pct')
-        pre = DataFrame(pre)
-        income = DataFrame(income)
+        pre = await sync_to_async(models.PreValuedNav.objects.filter(port_code=port_code).values)('date', 'value')
+        income = await sync_to_async(models.Income.objects.filter(port_code=port_code).values)('date', 'change_pct')
+        pre = await sync_to_async(DataFrame)(pre)
+        income = await sync_to_async(DataFrame)(income)
         data = pre.merge(income, on='date', how='left').dropna(how='any')
         data = data.sort_values('date')
         data = data.to_dict(orient='records')
