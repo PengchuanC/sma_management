@@ -34,7 +34,7 @@ urlpatterns = [
     path('analysis/std/', views.MovingVolatility.as_view()),
     path('analysis/monthly/', views.AttributeChartView.monthly_attribute),
 
-    path('overview/', views.OverviewView.as_view()),
+    path('overview/', views.OverviewView.unit_nav),
     path('overview/allocate/', views.OverviewView.asset_allocate),
     path('overview/allocate/avg/', views.OverviewView.avg_asset_allocate),
     path('overview/allocate/history/', views.OverviewView.history_asset_allocate),
