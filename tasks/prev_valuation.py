@@ -20,6 +20,8 @@ def pre_valuation():
             except models.PreValuedNav.DoesNotExist:
                 date = datetime.date(2020, 1, 1)
             dates = models.Balance.objects.filter(port_code=port_code, date__gte=date).values('date').distinct()
+            if not dates:
+                continue
             dates = sorted([x['date'] for x in dates])
             after = models.TradingDays.objects.filter(date__range=(dates[-1], datetime.date.today())).values('date')
             after = sorted([x['date'] for x in after])

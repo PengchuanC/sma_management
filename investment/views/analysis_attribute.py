@@ -3,12 +3,17 @@
 包含业绩归因、风格分析等内容
 """
 import datetime
+
 import pandas as pd
 import numpy as np
 from django.forms.models import model_to_dict
+from django.http.response import JsonResponse
+from asgiref.sync import sync_to_async
 from rest_framework.views import Response, APIView
+
 from investment import models
 from ..utils.holding import fund_holding_stock
+from ..utils.holding_v2 import portfolio_holding_stock
 
 
 class StyleAnalysis(APIView):
@@ -55,6 +60,70 @@ class ExposureAnalysis(APIView):
         ret = np.dot(h, f)
         ret = {'name': factors_cn, 'value': ret}
         return Response(ret)
+
+
+class Exposure(object):
+    factors = ['beta', 'momentum', 'size', 'earnyild', 'resvol', 'growth', 'btop', 'leverage', 'liquidty', 'sizenl']
+    factors_cn = ['贝塔', '动量', '市值', '盈利', '波动', '成长', '质量', '杠杆', '流动性', '非线性市值']
+    names = dict(zip(factors, factors_cn))
+
+    @staticmethod
+    async def exposure(request):
+        port_code = request.GET.get('portCode')
+        date = request.GET.get('date')
+        exp = Exposure()
+        date = await exp.nearest_tradingday(port_code, date)
+        ptf = await exp.portfolio_exposure(port_code, date)
+        idx = await exp.index_exposure('000906', date)
+        return JsonResponse({'name': exp.factors_cn, 'portfolio': ptf, 'index': idx})
+
+    @staticmethod
+    async def nearest_tradingday(port_code, date):
+        """最近交易日"""
+        if date:
+            date = await sync_to_async(models.Balance.objects.filter(port_code=port_code, date__lte=date).last)()
+        else:
+            date = await sync_to_async(models.Balance.objects.filter(port_code=port_code).last)()
+        date = date.date
+        return date
+
+    async def style_factor_exposure(self, stocks, date):
+        """风格因子 因子暴露"""
+        expose_last = await sync_to_async(models.StockExpose.objects.filter(date__lte=date).last)()
+        expose_last = expose_last.date
+        expose = await sync_to_async(models.StockExpose.objects.filter(secucode__in=stocks, date=expose_last).values)()
+        expose = await sync_to_async(pd.DataFrame)(expose)
+        expose = expose.set_index('secucode_id')
+        expose = expose[self.factors]
+        return expose
+
+    async def portfolio_exposure(self, port_code, date):
+        """组合放个暴露"""
+        holding = await sync_to_async(portfolio_holding_stock)(port_code, date)
+        holding = await sync_to_async(pd.Series)(holding)
+        exposure = await self.style_factor_exposure(list(holding.index), date)
+        exposure['holding'] = holding
+        exposure = exposure.astype(float)
+        ret = exposure['holding'].dot(exposure[self.factors])
+        ret = ret.to_list()
+        return ret
+
+    async def index_exposure(self, index_code, date):
+        """指数风格暴露"""
+        latest = await sync_to_async(models.IndexComponent.objects.filter(secucode=index_code, date__lte=date).last)()
+        last = latest.date
+        holding = await sync_to_async(models.IndexComponent.objects.filter(secucode=index_code, date=last).values)(
+            'stockcode', 'weight'
+        )
+        holding = await sync_to_async(pd.DataFrame)(holding)
+        holding = holding.set_index('stockcode')
+        holding = holding / 100
+        exposure = await self.style_factor_exposure(list(holding.index), date)
+        exposure['holding'] = holding
+        exposure = exposure.astype(float)
+        ret = exposure['holding'].dot(exposure[self.factors])
+        ret = ret.to_list()
+        return ret
 
 
 class BrinsonAnalysis(APIView):
