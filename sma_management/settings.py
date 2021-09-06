@@ -185,13 +185,21 @@ DATABASE_ROUTERS = ['investment.router.AuthRouter', 'investment.router.Router']
 
 
 Q_CLUSTER = {
-    'name': 'DjangORM',
+    'name': 'fund-filter',
     'workers': 4,
-    'timeout': 600,
-    'retry': 800,
-    'queue_limit': 50,
-    'bulk': 10,
-    'orm': 'default',
+    'retry': 500,
+    'recycle': 500,
+    'timeout': 480,
+    'compress': True,
+    'save_limit': 250,
+    'queue_limit': 500,
+    'cpu_affinity': 1,
+    'label': 'Django Q',
+    'redis': {
+        'host': '10.170.139.12',
+        'port': 6379,
+        'db': 0,
+    }
 }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'

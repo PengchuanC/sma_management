@@ -58,12 +58,11 @@ class BackTestView(APIView):
 
         # 子线程生成文件
         def write_file(data_, perf_, file_dir_):
-            excel = pd.ExcelWriter(file_dir_ / 'backtest.xlsx')
-            nav = data_.rename(columns=names).copy()
-            nav.to_excel(excel, sheet_name='回测净值')
-            perf_.to_excel(excel, sheet_name='业绩表现')
-            excel.save()
-            excel.close()
+            with pd.ExcelWriter(file_dir_ / 'backtest.xlsx') as excel:
+                nav = data_.rename(columns=names).copy()
+                nav.to_excel(excel, sheet_name='回测净值')
+                perf_.to_excel(excel, sheet_name='业绩表现')
+                excel.save()
 
         global fund_date
         if date != fund_date:
