@@ -141,7 +141,7 @@ def portfolio_holding_stock(port_code: str, date: datetime.date):
         # 公募基金
         if security.category_code in ('110502', '110503', '110504'):
             stocks = fund_holding_stocks(secucode, date, scale=False)
-            stocks = [(x, float(y) * float(ratio) * 100) for x, y in stocks.items() if float(y) > 0]
+            stocks = [(x, float(y) * float(ratio)) for x, y in stocks.items() if float(y) > 0]
             ret.extend(stocks)
         # TODO:
     ret = sorted(ret, key=lambda x: x[0])

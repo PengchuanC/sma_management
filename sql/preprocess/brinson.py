@@ -61,15 +61,12 @@ class PortfolioAllocate(Allocate):
         """
         if not self._weight.empty:
             return self._weight
-        # holding = fund_holding_stock(self.p, self.d)
         holding = portfolio_holding_stock(self.p, self.d)
         holding = [{'secucode': x, 'weight': y}for x, y in holding.items()]
         holding = pd.DataFrame(holding)
-        holding.weight = holding.weight.astype(float)
+        holding.weight = holding.weight.astype(float) * 100
         if not isinstance(holding, pd.DataFrame):
             return None
-        # holding = holding[['stockcode', 'ratio']]
-        # holding = holding.rename(columns={'stockcode': 'secucode', 'ratio': 'weight'})
         return self._added(holding, self.d)
 
     @classmethod

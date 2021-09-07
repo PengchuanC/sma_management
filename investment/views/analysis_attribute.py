@@ -103,7 +103,6 @@ class Exposure(object):
         holding = await sync_to_async(pd.Series)(holding)
         exposure = await self.style_factor_exposure(list(holding.index), date)
         exposure['holding'] = holding
-        exposure['holding'] /= 100
         exposure = exposure.astype(float)
         ret = exposure['holding'].dot(exposure[self.factors])
         ret = ret.to_list()
