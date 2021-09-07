@@ -61,12 +61,15 @@ class PortfolioAllocate(Allocate):
         """
         if not self._weight.empty:
             return self._weight
-        holding = fund_holding_stock(self.p, self.d)
-        holding.ratio = holding.ratio.astype(float)
+        # holding = fund_holding_stock(self.p, self.d)
+        holding = portfolio_holding_stock(self.p, self.d)
+        holding = [{'secucode': x, 'weight': y}for x, y in holding.items()]
+        holding = pd.DataFrame(holding)
+        holding.weight = holding.weight.astype(float)
         if not isinstance(holding, pd.DataFrame):
             return None
-        holding = holding[['stockcode', 'ratio']]
-        holding = holding.rename(columns={'stockcode': 'secucode', 'ratio': 'weight'})
+        # holding = holding[['stockcode', 'ratio']]
+        # holding = holding.rename(columns={'stockcode': 'secucode', 'ratio': 'weight'})
         return self._added(holding, self.d)
 
     @classmethod
@@ -256,13 +259,16 @@ def commit_brinson():
     index = '000906'
     portfolios = models.Portfolio.objects.filter(settlemented=0).all()
     for p in portfolios:
+        if p.port_code != 'PFF005':
+            continue
         dates = models.Balance.objects.filter(port_code=p).order_by('date').values('date')
         dates = [x['date'] for x in dates]
         max_ = models.PortfolioBrinson.objects.filter(port_code=p).aggregate(m=Max('date'))['m']
         if max_:
             dates = [x for x in dates if x > max_]
-        dates = set(dates)
+        dates = sorted(set(dates))
         for date in dates:
+            print(p.port_code, date)
             model = Model(p, index, date)
             data = []
             try:

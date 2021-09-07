@@ -8,6 +8,7 @@ holding
 import datetime
 from itertools import groupby
 
+import pandas as pd
 from django.db.models import Subquery
 from asgiref.sync import sync_to_async
 
@@ -103,15 +104,15 @@ def portfolio_holding_security(port_code: str, date):
 def fund_holding_stocks(secucode, date, scale=True) -> dict:
     """基金持有股票及其占比"""
     maincode = open_fund_maincode(secucode)
-    rpt = models.FundHoldingStock.objects.filter(secucode=secucode, date__lte=date).last()
+    rpt = models.FundHoldingStock.objects.filter(secucode=maincode, date__lte=date).last()
     if rpt is None:
         return {}
     date = rpt.date
     holding = models.FundHoldingStock.objects.filter(
-        secucode=secucode, date=date, publish='年报').values('stockcode', 'ratio')
+        secucode=maincode, date=date, publish='年报').values('stockcode', 'ratio')
     if not holding:
         holding = models.FundHoldingStock.objects.filter(
-            secucode=secucode, date=date, publish='季报').values('stockcode', 'ratio')
+            secucode=maincode, date=date, publish='季报').values('stockcode', 'ratio')
     sum_ = float(sum(x['ratio'] for x in holding))
     if scale:
         asset = open_fund_asset_type(maincode)
@@ -126,7 +127,8 @@ def portfolio_holding_stock(port_code: str, date: datetime.date):
     """组合持股分析，返回类型为pandas.DataFrame
     主要包含开放式基金(含场内)的穿透持股和组合的股票持仓
     """
-    holdings = models.Holding.objects.filter(port_code=port_code, date=date).values('secucode', 'mkt_cap')
+    holdings = models.Holding.objects.filter(
+        port_code=port_code, date=date).exclude(mkt_cap=0).values('secucode', 'mkt_cap')
     balance = models.Balance.objects.get(port_code=port_code, date=date)
     net_value = balance.net_asset
     holdings = {x['secucode']: x['mkt_cap'] / net_value for x in holdings}
@@ -139,7 +141,7 @@ def portfolio_holding_stock(port_code: str, date: datetime.date):
         # 公募基金
         if security.category_code in ('110502', '110503', '110504'):
             stocks = fund_holding_stocks(secucode, date, scale=False)
-            stocks = [(x, float(y) * float(ratio)) * 100 for x, y in stocks.items()]
+            stocks = [(x, float(y) * float(ratio) * 100) for x, y in stocks.items() if float(y) > 0]
             ret.extend(stocks)
         # TODO:
     ret = sorted(ret, key=lambda x: x[0])
