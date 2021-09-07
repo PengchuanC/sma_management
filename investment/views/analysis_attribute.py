@@ -141,7 +141,7 @@ class BrinsonAnalysis(APIView):
         data = [model_to_dict(x) for x in data]
         data = pd.DataFrame(data)
         for q in ['q1', 'q2', 'q3', 'q4']:
-            data[q] = data[q].astype('float')
+            data[q] = data[q].astype('float') + 1
         data = data[['industry', 'q1', 'q2', 'q3', 'q4']].groupby('industry').agg(self.cumprod)
         data['raa'] = data['q2'] - data['q1']
         data['rss'] = data['q3'] - data['q1']

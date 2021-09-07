@@ -259,8 +259,6 @@ def commit_brinson():
     index = '000906'
     portfolios = models.Portfolio.objects.filter(settlemented=0).all()
     for p in portfolios:
-        if p.port_code != 'PFF005':
-            continue
         dates = models.Balance.objects.filter(port_code=p).order_by('date').values('date')
         dates = [x['date'] for x in dates]
         max_ = models.PortfolioBrinson.objects.filter(port_code=p).aggregate(m=Max('date'))['m']
