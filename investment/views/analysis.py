@@ -85,7 +85,7 @@ class AttributeChartView(APIView):
         if not date:
             date = datetime.date.today().strftime('%Y-%m-%d')
         d: IncomeAsset = IncomeAsset.objects.filter(
-            port_code=port_code, date__lte=date).last()
+            port_code=port_code, date__lte=date).latest('date')
         date = d.date.strftime('%Y-%m-%d')
         cp = float(Income.objects.filter(port_code=port_code,
                    date__lte=date).last().unit_nav) - 1
