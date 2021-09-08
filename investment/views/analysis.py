@@ -98,8 +98,11 @@ class AttributeChartView(APIView):
         # 周度区间
         week = AttributeChartView.last_trading_day_of_last_week(date)
         month = AttributeChartView.last_trading_day_of_last_month(date)
+        start = IncomeAsset.objects.filter(port_code=port_code).first().date
         ret = []
         for ltw in [week, month]:
+            if ltw < start:
+                ltw = start
             sd: IncomeAsset = IncomeAsset.objects.get(
                 port_code=port_code, date=ltw)
             scp = float(Income.objects.filter(

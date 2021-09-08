@@ -64,7 +64,8 @@ class PortfolioAllocate(Allocate):
         holding = portfolio_holding_stock(self.p, self.d)
         holding = [{'secucode': x, 'weight': y}for x, y in holding.items()]
         holding = pd.DataFrame(holding)
-        holding.weight = holding.weight.astype(float) * 100
+        holding.weight = holding.weight.astype(float)
+        holding.weight /= holding.weight.sum()
         if not isinstance(holding, pd.DataFrame):
             return None
         return self._added(holding, self.d)
@@ -160,6 +161,7 @@ class IndexAllocate(PortfolioAllocate):
         holding = models.IndexComponent.objects.filter(secucode=self.i, date=md).values('stockcode', 'weight')
         holding = pd.DataFrame(holding)
         holding.weight = holding.weight.astype(float)
+        holding.weight /= holding.weight.sum()
         holding = holding.rename(columns={'stockcode': 'secucode'})
         holding = self._added(holding, self.d)
         return holding
@@ -283,4 +285,8 @@ def commit_brinson():
 
 
 if __name__ == '__main__':
+    # p = models.Portfolio.objects.get(port_code='PFF005')
+    # model = Model(p, index='000906', date=datetime.date(2021, 8, 16))
+    # model.q4
+    # model.q1
     commit_brinson()
