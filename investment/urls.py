@@ -28,6 +28,7 @@ urlpatterns = [
     path('analysis/fundholding/summary/', views.FundHoldingNomuraOIView.holding_by_NOI_classify),
     path('analysis/fundholding/stock/', views.FundHoldingStockView.as_view()),
     path('analysis/fundholding/yx/', views.FundHoldingView.holding_yx),
+    path('analysis/fundholding/fund/', views.fund_holding_yield),
     path('analysis/style/', views.StyleAnalysis.as_view()),
     # path('analysis/expose/', views.ExposureAnalysis.as_view()),
     path('analysis/expose/', views.Exposure.exposure),

@@ -660,3 +660,37 @@ class FundHoldingNomuraOIView(object):
             key += 1
 
         return JsonResponse({'holding': ret, 'allocate': allocate})
+
+
+async def fund_holding_yield(request):
+    """基金持有期间各买入阶段至今收益"""
+    port_code = request.GET.get('portCode')
+    secucode = request.GET.get('secucode')
+    operations = ['开放式基金申购成交确认', '开放式基金转换转入成交确认', '证券买入']
+    history = await sync_to_async(models.Transactions.objects.filter(
+        port_code=port_code, secucode=secucode, operation__in=operations
+    ).values)('date', 'order_price', 'order_value', 'operation')
+    history = await sync_to_async(list)(history)
+    data = []
+
+    latest = await sync_to_async(models.Balance.objects.filter(port_code=port_code).latest)('date')
+    value_date = latest.date
+    for key, x in enumerate(history):
+        op = x['operation']
+        if op in ['开放式基金申购成交确认', '开放式基金转换转入成交确认']:
+            # 使用复权单位净值出现数据异常
+            latest = await sync_to_async(
+                models.FundAdjPrice.objects.filter(secucode=secucode, date=value_date).latest)('date')
+            nav = latest.nav
+            start = await sync_to_async(
+                models.FundAdjPrice.objects.filter(secucode=secucode, date__lt=x['date']).last)()
+            start_nav = start.nav
+            ry = nav / start_nav - 1
+        else:
+            latest = await sync_to_async(
+                models.FundQuote.objects.filter(secucode=secucode, date=value_date).latest)('date')
+            price = latest.closeprice
+            ry = price / float(x['order_price']) - 1
+        r = {'key': key+1, 'buy_date': x['date'], 'shares': x['order_value'], 'value_date': value_date, 'return': ry}
+        data.append(r)
+    return JsonResponse({'data': data})

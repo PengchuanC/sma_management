@@ -51,7 +51,6 @@ def _pre_valuation_gil(port_code: str, date: datetime.date):
     holding = portfolio_holding_security(port_code, v_date)
     holding = pd.Series(holding, dtype=float)
     holding = holding[holding > 0]
-    holding = holding * 100
     # 获取股票涨跌幅
     stocks = list(holding.index)
     price = models.StockDailyQuote.objects.filter(
