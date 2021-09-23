@@ -671,6 +671,9 @@ async def fund_holding_yield(request):
         port_code=port_code, secucode=secucode, operation__in=operations
     ).values)('date', 'order_price', 'order_value', 'operation')
     history = await sync_to_async(list)(history)
+    history = pd.DataFrame(history)
+    history = history.groupby(['date', 'operation']).agg({'order_price': 'mean', 'order_value': 'sum'})
+    history = history.reset_index().to_dict(orient='records')
     data = []
 
     latest = await sync_to_async(models.Balance.objects.filter(port_code=port_code).latest)('date')
