@@ -60,7 +60,7 @@ class HistoryView(APIView):
             if r.operation == '开放式基金申购成交确认':
                 h = {'operation': '申购', 'cap': - r.operation_amount}
             elif r.operation == '开放式基金赎回成交确认':
-                h = {'operation': '赎回', 'cap': r.operation_amount}
+                h = {'operation': '赎回', 'cap': r.operation_amount + r.fee}
             elif r.operation == '开放式基金转换转出成交确认':
                 h = {'operation': '转出', 'cap': r.order_value * r.order_price}
             else:
