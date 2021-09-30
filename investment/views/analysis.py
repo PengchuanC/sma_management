@@ -26,7 +26,7 @@ from investment.utils.calc import Formula, capture_return
 from investment.utils import fund, period_change as pc
 from investment.utils.holding import fund_holding_stock, index_holding_sw, fund_top_ten_scale
 from investment.utils import holding_v2
-from rpc.client import Client
+from rpc.fund_screen_client import Client
 
 
 class PerformanceView(APIView):
@@ -425,8 +425,8 @@ class FundHoldingView(APIView):
     @staticmethod
     def fund_category(funds):
         """获取基金分类"""
-        category = Client.simple('fund_category_full', funds)
-        category = pd.DataFrame(category)
+        category = Client.simple('fund_category', funds)
+        category = pd.DataFrame(category).rename(columns={'first': 'branch', 'second': 'classify'})
         return category
 
     @staticmethod
