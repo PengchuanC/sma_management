@@ -4,7 +4,7 @@
 import re
 
 from investment.models import Funds, Security
-from rpc.client import Client
+from rpc.fund_screen_client import Client
 
 
 def fund_names(funds):
