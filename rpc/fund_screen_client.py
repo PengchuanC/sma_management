@@ -9,9 +9,6 @@ from typing import List
 from rpc.register import consul_app
 
 
-loop = asyncio.get_event_loop()
-
-
 class Client(object):
     stub: pbg.ScreenRpcServerStub = None
 
