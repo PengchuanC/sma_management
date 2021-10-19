@@ -258,6 +258,7 @@ class SecurityPrice(models.Model):
     price = models.FloatField(verbose_name='前收盘价', null=False)
     note = models.CharField(
         verbose_name='备注', max_length=50, null=True, blank=True)
+    o32 = models.IntegerField(verbose_name='组合O32代码', null=False, blank=False)
 
     class Meta:
         db_table = "sma_security_quote"

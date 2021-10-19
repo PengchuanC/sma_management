@@ -23,9 +23,9 @@ from investment.models import (
 from investment import models
 
 from investment.utils.calc import Formula, capture_return
-from investment.utils import fund, period_change as pc
+from investment.utils import fund, period_change as pc, holding_v2
 from investment.utils.holding import fund_holding_stock, index_holding_sw, fund_top_ten_scale
-from investment.utils import holding_v2
+from investment.utils.date import nearest_tradingday_before_x
 from rpc.fund_screen_client import Client
 
 
@@ -697,3 +697,28 @@ async def fund_holding_yield(request):
         r = {'key': key+1, 'buy_date': x['date'], 'shares': x['order_value'], 'value_date': value_date, 'return': ry}
         data.append(r)
     return JsonResponse({'data': data})
+
+
+async def fund_holding_yield_v2(request):
+    """基金持有期间各买入阶段至今收益"""
+    port_code = request.GET.get('portCode')
+    secucode = request.GET.get('secucode')
+    operations = [
+        '开放式基金认购成交确认', '开放式基金申购成交确认', '开放式基金赎回成交确认', '开放式基金转换转入成交确认',
+        '开放式基金转换转出成交确认', '证券买入', '证券卖出'
+    ]
+    history = await sync_to_async(models.Transactions.objects.filter(
+        port_code=port_code, secucode=secucode, operation__in=operations
+    ).values)('date', 'order_price', 'order_value', 'operation')
+    history = await sync_to_async(list)(history)
+    history = pd.DataFrame(history)
+    history['order_value'] = history['order_value'].astype(float)
+    buy_op = ['开放式基金认购成交确认', '开放式基金申购成交确认', '开放式基金转换转入成交确认', '证券买入']
+    sell_op = ['开放式基金赎回成交确认', '开放式基金转换转出成交确认', '证券卖出']
+    buy = history[history.operation.isin(buy_op)][['date', 'order_price', 'order_value']]
+    buy = buy.groupby(['date', 'order_price']).sum().reset_index()
+    sell = history[history.operation.isin(sell_op)][['date', 'order_price', 'order_value']]
+    sell = sell.groupby(['date', 'order_price']).sum().reset_index()
+    print(buy)
+    print(sell)
+    return JsonResponse({})

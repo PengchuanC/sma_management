@@ -29,6 +29,7 @@ urlpatterns = [
     path('analysis/fundholding/stock/', views.FundHoldingStockView.as_view()),
     path('analysis/fundholding/yx/', views.FundHoldingView.holding_yx),
     path('analysis/fundholding/fund/', views.fund_holding_yield),
+    path('analysis/fundholding/fund/v2/', views.fund_holding_yield_v2),
     path('analysis/style/', views.StyleAnalysis.as_view()),
     # path('analysis/expose/', views.ExposureAnalysis.as_view()),
     path('analysis/expose/', views.Exposure.exposure),

@@ -26,6 +26,11 @@ class MicroServiceStub(object):
                 request_serializer=src_dot_am__sma__pb2.NULL.SerializeToString,
                 response_deserializer=src_dot_am__sma__pb2.Portfolio.FromString,
                 )
+        self.SMAPortfolioExpanded = channel.unary_stream(
+                '/src.MicroService/SMAPortfolioExpanded',
+                request_serializer=src_dot_am__sma__pb2.NULL.SerializeToString,
+                response_deserializer=src_dot_am__sma__pb2.PortfolioExpanded.FromString,
+                )
         self.SMABalance = channel.unary_stream(
                 '/src.MicroService/SMABalance',
                 request_serializer=src_dot_am__sma__pb2.Request.SerializeToString,
@@ -98,6 +103,12 @@ class MicroServiceServicer(object):
         raise NotImplementedError('Method not implemented!')
 
     def SMAPortfolio(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def SMAPortfolioExpanded(self, request, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -187,6 +198,11 @@ def add_MicroServiceServicer_to_server(servicer, server):
                     servicer.SMAPortfolio,
                     request_deserializer=src_dot_am__sma__pb2.NULL.FromString,
                     response_serializer=src_dot_am__sma__pb2.Portfolio.SerializeToString,
+            ),
+            'SMAPortfolioExpanded': grpc.unary_stream_rpc_method_handler(
+                    servicer.SMAPortfolioExpanded,
+                    request_deserializer=src_dot_am__sma__pb2.NULL.FromString,
+                    response_serializer=src_dot_am__sma__pb2.PortfolioExpanded.SerializeToString,
             ),
             'SMABalance': grpc.unary_stream_rpc_method_handler(
                     servicer.SMABalance,
@@ -289,6 +305,23 @@ class MicroService(object):
         return grpc.experimental.unary_stream(request, target, '/src.MicroService/SMAPortfolio',
             src_dot_am__sma__pb2.NULL.SerializeToString,
             src_dot_am__sma__pb2.Portfolio.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def SMAPortfolioExpanded(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_stream(request, target, '/src.MicroService/SMAPortfolioExpanded',
+            src_dot_am__sma__pb2.NULL.SerializeToString,
+            src_dot_am__sma__pb2.PortfolioExpanded.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 

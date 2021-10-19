@@ -41,3 +41,25 @@ class HoldingYX(models.Model):
 
     def __str__(self):
         return self.port_code.port_code
+
+
+class ReturnYield(models.Model):
+    port_code = models.ForeignKey(Portfolio, to_field='port_code', on_delete=models.CASCADE)
+    secucode = models.CharField(max_length=12, null=True, verbose_name="证券代码", blank=True)
+    date = models.DateField(null=False, verbose_name="更新日期")
+    buy_at = models.DateField(null=False, verbose_name="买入日期")
+    sell_at = models.DateField(verbose_name="卖出日期")
+    buy_price = models.FloatField(verbose_name='买入价格')
+    sell_price = models.FloatField(verbose_name='卖出价格')
+    deal_value = models.FloatField(verbose_name='交易份额')
+    ret_yield = models.FloatField(default=0, verbose_name='持有期收益率')
+    annualized = models.FloatField(default=0, verbose_name='持有期年化收益率')
+
+    class Meta:
+        db_table = 'sma_income_return_yield'
+        verbose_name = '组合持基区间收益'
+        verbose_name_plural = verbose_name
+        get_latest_by = 'date'
+
+    def __str__(self):
+        return self.port_code.port_code

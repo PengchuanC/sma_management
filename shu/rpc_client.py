@@ -26,55 +26,61 @@ class Client(object):
         async for x in data:
             yield x
 
-    async def sma_balance(self, port_code, date) -> AsyncIterator[pb.Portfolio]:
+    async def sma_portfolio_expanded(self) -> AsyncIterator[pb.PortfolioExpanded]:
+        request = pb.NULL()
+        data = self.stub.SMAPortfolioExpanded(request)
+        async for x in data:
+            yield x
+
+    async def sma_balance(self, port_code, date) -> AsyncIterator[pb.Balance]:
         request = pb.Request(port_code=port_code, date=date)
         data = self.stub.SMABalance(request)
         async for x in data:
             yield x
 
-    async def sma_balance_expanded(self, port_code, date) -> AsyncIterator[pb.Portfolio]:
+    async def sma_balance_expanded(self, port_code, date) -> AsyncIterator[pb.BalanceExpanded]:
         request = pb.Request(port_code=port_code, date=date)
         data = self.stub.SMABalanceExpanded(request)
         async for x in data:
             yield x
 
-    async def sma_income(self, port_code, date) -> AsyncIterator[pb.Portfolio]:
+    async def sma_income(self, port_code, date) -> AsyncIterator[pb.Income]:
         request = pb.Request(port_code=port_code, date=date)
         data = self.stub.SMAIncome(request)
         async for x in data:
             yield x
 
-    async def sma_income_asset(self, port_code, date) -> AsyncIterator[pb.Portfolio]:
+    async def sma_income_asset(self, port_code, date) -> AsyncIterator[pb.IncomeAsset]:
         request = pb.Request(port_code=port_code, date=date)
         data = self.stub.SMAIncomeAsset(request)
         async for x in data:
             yield x
 
-    async def sma_holding(self, port_code, date) -> AsyncIterator[pb.Portfolio]:
+    async def sma_holding(self, port_code, date) -> AsyncIterator[pb.Holding]:
         request = pb.Request(port_code=port_code, date=date)
         data = self.stub.SMAHolding(request)
         async for x in data:
             yield x
 
-    async def sma_transaction(self, port_code, date) -> AsyncIterator[pb.Portfolio]:
+    async def sma_transaction(self, port_code, date) -> AsyncIterator[pb.Transaction]:
         request = pb.Request(port_code=port_code, date=date)
         data = self.stub.SMATransaction(request)
         async for x in data:
             yield x
 
-    async def sma_detail_fee(self, port_code, date) -> AsyncIterator[pb.Portfolio]:
+    async def sma_detail_fee(self, port_code, date) -> AsyncIterator[pb.DetailFee]:
         request = pb.Request(port_code=port_code, date=date)
         data = self.stub.SMADetailFee(request)
         async for x in data:
             yield x
 
-    async def sma_benchmark(self, port_code, date) -> AsyncIterator[pb.Portfolio]:
+    async def sma_benchmark(self, port_code, date) -> AsyncIterator[pb.Benchmark]:
         request = pb.Request(port_code=port_code, date=date)
         data = self.stub.SMABenchmark(request)
         async for x in data:
             yield x
 
-    async def sma_interest_tax(self, port_code, date) -> AsyncIterator[pb.Portfolio]:
+    async def sma_interest_tax(self, port_code, date) -> AsyncIterator[pb.InterestTax]:
         request = pb.Request(port_code=port_code, date=date)
         data = self.stub.SMAInterestTax(request)
         async for x in data:

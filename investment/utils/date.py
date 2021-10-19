@@ -1,6 +1,7 @@
 import datetime
 from typing import Any, List
 from itertools import groupby
+from investment import models
 
 
 def latest_trading_day(m: Any):
@@ -23,3 +24,8 @@ def quarter_end_in_date_series(dates: List[datetime.date]):
     series = [max(x[1]) for x in series]
     series = [x[1] for x in series]
     return series
+
+
+def nearest_tradingday_before_x(day: datetime.date):
+    """指定日期的前一个交易日"""
+    return models.TradingDays.objects.filter(date__lt=day).latest('date').date

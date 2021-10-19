@@ -23,6 +23,14 @@ message Portfolio {
 }
 
 
+message PortfolioExpanded {
+  int64 id = 1;
+  string port_code_id = 2;
+  int64 o32 = 3;
+  string valuation = 4;
+}
+
+
 // 请求组合数据
 message Request {
   string port_code = 1;
@@ -158,4 +166,5 @@ message SecurityQuote {
   float price = 4;
   string note = 5;
   string secucode_id = 6;
+  int64 o32 = 7;
 }

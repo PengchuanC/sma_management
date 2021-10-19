@@ -30,6 +30,14 @@ async def update_portfolio():
         await sync_to_async(portfolio.save)()
 
 
+async def update_portfolio_expanded():
+    async for p in client.sma_portfolio_expanded():
+        portfolio = await sync_to_async(models.Portfolio.objects.get)(port_code=p.port_code_id)
+        await sync_to_async(models.PortfolioExpanded.objects.update_or_create)(
+            port_code=portfolio, defaults={'o32': p.o32, 'valuation': p.valuation}
+        )
+
+
 async def portfolio_instance(port_code):
     portfolio = await sync_to_async(models.Portfolio.objects.get)(port_code=port_code)
     return portfolio
@@ -185,7 +193,9 @@ async def security_quote():
         max_id = 0
     async for d in client.sma_security_quote(str(max_id)):
         default = {
-            'secucode_id': d.secucode_id, 'date': d.date, 'auto_date': d.auto_date, 'price': d.price, 'note': d.note}
+            'secucode_id': d.secucode_id, 'date': d.date, 'auto_date': d.auto_date, 'price': d.price, 'note': d.note,
+            'o32': d.o32
+        }
         await sync_to_async(models.SecurityPrice.objects.update_or_create)(id=d.id, defaults=default)
 
 
@@ -194,6 +204,7 @@ async def update_sma():
     whole = await sync_to_async(models.Portfolio.objects.filter)(settlemented=0)
     whole = await sync_to_async(list)(whole)
     for portfolio in whole:
+        await update_portfolio_expanded()
         await balance(portfolio)
         await balance_expanded(portfolio)
         await income(portfolio)

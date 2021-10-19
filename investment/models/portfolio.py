@@ -40,6 +40,22 @@ class Portfolio(models.Model):
         return f'<{self.port_code} {self.port_name}>'
 
 
+class PortfolioExpanded(models.Model):
+    port_code = models.ForeignKey(
+        to=Portfolio, to_field='port_code', on_delete=models.DO_NOTHING)
+    o32 = models.IntegerField(verbose_name="o32中基金编号", null=False)
+    valuation = models.CharField(
+        verbose_name="估值表中基金名称", max_length=50, null=False)
+
+    class Meta:
+        db_table = 'sma_portfolio_expanded'
+        verbose_name = "1.2 组合代码在O32和估值表中对应关系"
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.port_code.port_code
+
+
 # 组合资产负债表
 class Balance(models.Model):
     port_code = models.ForeignKey(to=Portfolio, to_field='port_code', on_delete=models.CASCADE)
