@@ -84,7 +84,7 @@ def _commit_holding_stocks(publish: str, sql):
     sql = render(sql, '<date>', date.strftime('%Y-%m-%d'))
     data = read_oracle(sql)
     data = data[data.publish == publish]
-    data = data[data.agg(lambda x: x.date > existed.get(x.secucode, datetime.date(1990, 1, 1)), axis=1)]
+    data = data[data.agg(lambda x: x.date.date() > existed.get(x.secucode, datetime.date(1990, 1, 1)), axis=1)]
     data.secucode = data.secucode.apply(lambda x: instance.get(x))
     data = data[data.secucode.notnull()]
     data.ratio = data.ratio.fillna(0)
@@ -120,7 +120,7 @@ def commit_asset_allocate_hk():
     this_year = datetime.date.today().year
     latest = models.FundAssetAllocate.objects.values('secucode').annotate(mdate=Max('date'))
     latest = {x['secucode']: x['mdate'] for x in latest}
-    ratio = ratio[ratio.agg(lambda x: x.date > latest.get(x.secucode, datetime.date(this_year - 1, 1, 1)), axis=1)]
+    ratio = ratio[ratio.agg(lambda x: x.date.date() > latest.get(x.secucode, datetime.date(this_year - 1, 1, 1)), axis=1)]
     ratio['secucode'] = ratio['secucode'].apply(lambda x: fund.get(x))
     if ratio.empty:
         return
@@ -143,7 +143,7 @@ def commit_fund_holding_stock_hk():
     latest = models.FundHoldingStock.objects.values('secucode').annotate(mdate=Max('date'))
     latest = {x['secucode']: x['mdate'] for x in latest}
     this_year = datetime.date.today().year
-    data = data[data.agg(lambda x: x.date > latest.get(x.secucode, datetime.date(this_year-1, 1, 1)), axis=1)]
+    data = data[data.agg(lambda x: x.date.date() > latest.get(x.secucode, datetime.date(this_year-1, 1, 1)), axis=1)]
     data['secucode'] = data.secucode.apply(lambda x: fund.get(x))
     if data.empty:
         return
@@ -161,7 +161,7 @@ def commit_fund_quote():
         data = read_oracle(funds.fund_quote)
         last = models.FundQuote.objects.values('secucode').annotate(mdate=Max('date'))
         last = {x['secucode']: x['mdate'] for x in last}
-        data = data[data.agg(lambda x: x.date > last.get(x.secucode, datetime.date(2021, 1, 1)), axis=1)]
+        data = data[data.agg(lambda x: x.date.date() > last.get(x.secucode, datetime.date(2021, 1, 1)), axis=1)]
     instance = models.Funds.objects.all()
     instance = {x.secucode: x for x in instance}
     data.secucode = data.secucode.apply(lambda x: instance.get(x))

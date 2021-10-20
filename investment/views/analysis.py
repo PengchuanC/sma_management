@@ -202,6 +202,11 @@ class FundHoldingView(APIView):
         holding = pd.merge(holding, limit, how='left', on='secucode')
         holding = holding.fillna('')
 
+        war = self.weighted_average_return_yield(request)
+        holding['war'] = holding['secucode'].apply(lambda x: war.get(x))
+        holding = holding.astype(object)
+        holding = holding.where(holding.notnull(), None)
+
         holding = holding.to_dict(orient='records')
         return Response(holding)
 
@@ -503,6 +508,18 @@ class FundHoldingView(APIView):
         ret = data.to_dict(orient='records')
         return JsonResponse({'data': ret})
 
+    def weighted_average_return_yield(self, request):
+        """份额加权平均收益"""
+        port_code, date = self.parse_request(request)
+        exists = models.ReturnYield.objects.filter(port_code=port_code, date=date)
+        if not exists.exists():
+            return {}
+        data = exists.values()
+        data = pd.DataFrame(data)
+        data['r'] = data['deal_value'] * data['ret_yield'] / data['deal_value'].sum()
+        data = data.groupby('secucode')['r'].sum().to_dict()
+        return data
+
 
 class FundHoldingStockView(APIView):
     """持有股票分析"""
@@ -703,22 +720,21 @@ async def fund_holding_yield_v2(request):
     """基金持有期间各买入阶段至今收益"""
     port_code = request.GET.get('portCode')
     secucode = request.GET.get('secucode')
-    operations = [
-        '开放式基金认购成交确认', '开放式基金申购成交确认', '开放式基金赎回成交确认', '开放式基金转换转入成交确认',
-        '开放式基金转换转出成交确认', '证券买入', '证券卖出'
-    ]
-    history = await sync_to_async(models.Transactions.objects.filter(
-        port_code=port_code, secucode=secucode, operation__in=operations
-    ).values)('date', 'order_price', 'order_value', 'operation')
-    history = await sync_to_async(list)(history)
-    history = pd.DataFrame(history)
-    history['order_value'] = history['order_value'].astype(float)
-    buy_op = ['开放式基金认购成交确认', '开放式基金申购成交确认', '开放式基金转换转入成交确认', '证券买入']
-    sell_op = ['开放式基金赎回成交确认', '开放式基金转换转出成交确认', '证券卖出']
-    buy = history[history.operation.isin(buy_op)][['date', 'order_price', 'order_value']]
-    buy = buy.groupby(['date', 'order_price']).sum().reset_index()
-    sell = history[history.operation.isin(sell_op)][['date', 'order_price', 'order_value']]
-    sell = sell.groupby(['date', 'order_price']).sum().reset_index()
-    print(buy)
-    print(sell)
-    return JsonResponse({})
+    obj = await sync_to_async(
+        models.ReturnYield.objects.filter(port_code=port_code, secucode=secucode).aggregate
+    )(mdate=Max('date'))
+    last = obj['mdate']
+    data = await sync_to_async(
+        models.ReturnYield.objects.filter(port_code=port_code, secucode=secucode, date=last).values
+    )()
+    data = await sync_to_async(list)(data)
+    ret = []
+    count = 1
+    for r in data:
+        if r['deal_value'] < 10:
+            continue
+        r['key'] = count
+        count += 1
+        ret.append(r)
+
+    return JsonResponse(ret, safe=False)

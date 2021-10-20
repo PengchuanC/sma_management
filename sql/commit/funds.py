@@ -75,7 +75,7 @@ def commit_fund_asset_allocate():
     data = read_oracle(sql)
     data = data.fillna(0)
     latest = latest_update_date(models.FundAssetAllocate)
-    data = data[data.agg(lambda x: x.date > latest.get(x.secucode, datetime.date(2020, 1, 1)), axis=1)]
+    data = data[data.agg(lambda x: x.date.date() > latest.get(x.secucode, datetime.date(2020, 1, 1)), axis=1)]
     data = replace_fund_instance(data)
     commit_by_chunk(data, models.FundAssetAllocate)
 
@@ -97,7 +97,7 @@ def commit_fund_adj_nav():
         sql = template.adj_nav
     data = read_oracle(sql)
     latest = latest_update_date(models.FundAdjPrice)
-    data = data[data.agg(lambda x: x.date > latest.get(x.secucode, ThisYear), axis=1)]
+    data = data[data.agg(lambda x: x.date.date() > latest.get(x.secucode, ThisYear), axis=1)]
     data = replace_fund_instance(data)
     commit_by_chunk(data, models.FundAdjPrice)
 
@@ -114,7 +114,7 @@ def commit_fund_acc_nav():
         sql = template.acc_nav
     data = read_oracle(sql)
     latest = latest_update_date(models.FundPrice)
-    data = data[data.agg(lambda x: x.date > latest.get(x.secucode, ThisYear), axis=1)]
+    data = data[data.agg(lambda x: x.date.date() > latest.get(x.secucode, ThisYear), axis=1)]
     data = replace_fund_instance(data)
     data = data.fillna(0)
     commit_by_chunk(data, models.FundPrice)

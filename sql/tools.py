@@ -18,6 +18,7 @@ from sql.commit.tradingday import commit_tradingdays
 from sql.commit.stock import *
 from sql.commit import commit_style, commit_brinson, commit_capital_flow
 from crawl.fund_limit import commit_fund_limit
+from sql.preprocess.return_yield import commit_return_yield
 
 
 def commit_index_gil():
@@ -80,6 +81,7 @@ def commit_preprocess():
     commit_style()
     commit_brinson()
     commit_capital_flow()
+    commit_return_yield()
 
 
 __all__ = (
