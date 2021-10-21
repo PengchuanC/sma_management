@@ -9,7 +9,7 @@ from sklearn.linear_model import Lasso
 from sklearn import preprocessing
 
 from tasks import models
-from rpc.client import Client
+from rpc.fund_screen_client import Client
 
 
 # 基金仓位约束
@@ -27,7 +27,7 @@ MAPPER = {
     '灵活配置型': 'mix_flexible'
 }
 
-LAUNCH = Client.simple('fund_basic_info')
+LAUNCH = Client.simple('fund_basic')
 
 
 def fund_style() -> Dict[str, List[str]]:
@@ -41,10 +41,10 @@ def fund_style() -> Dict[str, List[str]]:
             '灵活配置型基金': []
         }
     """
-    funds = Client.simple('fund_category', [], '2')
-    funds = [x for x in funds if x['category'] in MAPPER.keys()]
-    funds = sorted(funds, key=lambda x: x['category'])
-    funds = groupby(funds, key=lambda x: x['category'])
+    funds = Client.simple('fund_category', [])
+    funds = [x for x in funds if x['second'] in MAPPER.keys()]
+    funds = sorted(funds, key=lambda x: x['second'])
+    funds = groupby(funds, key=lambda x: x['second'])
     funds = {x[0]: [y['secucode'] for y in x[1]] for x in funds}
     return funds
 

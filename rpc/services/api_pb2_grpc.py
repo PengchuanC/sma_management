@@ -2,6 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
+import rpc.services.basic_pb2 as basic__pb2
 import rpc.services.classify_pb2 as classify__pb2
 
 
@@ -19,13 +20,26 @@ class ScreenRpcServerStub(object):
                 request_serializer=classify__pb2.ClassifyReq.SerializeToString,
                 response_deserializer=classify__pb2.ClassifyResp.FromString,
                 )
+        self.FundBasicInfoHandler = channel.unary_unary(
+                '/services.ScreenRpcServer/FundBasicInfoHandler',
+                request_serializer=basic__pb2.FundBasicInfoRequest.SerializeToString,
+                response_deserializer=basic__pb2.FundBasicInfoResponse.FromString,
+                )
 
 
 class ScreenRpcServerServicer(object):
     """Missing associated documentation comment in .proto file."""
 
     def FundCategory(self, request, context):
-        """Missing associated documentation comment in .proto file."""
+        """基金行业分类
+        """
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def FundBasicInfoHandler(self, request, context):
+        """获取基金基础信息
+        """
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
@@ -37,6 +51,11 @@ def add_ScreenRpcServerServicer_to_server(servicer, server):
                     servicer.FundCategory,
                     request_deserializer=classify__pb2.ClassifyReq.FromString,
                     response_serializer=classify__pb2.ClassifyResp.SerializeToString,
+            ),
+            'FundBasicInfoHandler': grpc.unary_unary_rpc_method_handler(
+                    servicer.FundBasicInfoHandler,
+                    request_deserializer=basic__pb2.FundBasicInfoRequest.FromString,
+                    response_serializer=basic__pb2.FundBasicInfoResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -62,5 +81,22 @@ class ScreenRpcServer(object):
         return grpc.experimental.unary_unary(request, target, '/services.ScreenRpcServer/FundCategory',
             classify__pb2.ClassifyReq.SerializeToString,
             classify__pb2.ClassifyResp.FromString,
+            options, channel_credentials,
+            insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def FundBasicInfoHandler(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            insecure=False,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/services.ScreenRpcServer/FundBasicInfoHandler',
+            basic__pb2.FundBasicInfoRequest.SerializeToString,
+            basic__pb2.FundBasicInfoResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)

@@ -46,6 +46,13 @@ class Client(object):
         data = [{'secucode': x.secucode, 'first': x.first, 'second': x.second} for x in data]
         return data
 
+    def fund_basic(self):
+        r = pb.basic__pb2.FundBasicInfoRequest()
+        response = self.stub.FundBasicInfoHandler(r)
+        data = response.data
+        data = {x.secucode: x.launch_date for x in data}
+        return data
+
     @staticmethod
     def simple(attr, *args):
         name = 'fund_screen'
@@ -56,6 +63,8 @@ class Client(object):
 
 def example():
     r = Client.simple('fund_category', ['000001', '110011'])
+    print(r)
+    r = Client.simple('fund_basic')
     print(r)
 
 
