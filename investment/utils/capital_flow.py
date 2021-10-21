@@ -127,7 +127,9 @@ def outlook():
     Returns:
 
     """
-    date = datetime.date.today() - datetime.timedelta(days=20)
+    date = datetime.date.today()
+    td = models.TradingDays.objects.filter(date__lte=date).order_by('-date')
+    date = td[22].date
     categories = sw_categories()
     ret = []
     for category in categories:
