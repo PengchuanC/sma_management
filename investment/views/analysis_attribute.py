@@ -291,6 +291,7 @@ class ProfitAnalysis(object):
             father = {'key': key, 'secucode': '', 'secuabbr': c, **ratio}
             key += 1
             children = []
+            d = d.sort_values(['setup', 'quarter', 'month'], ascending=[False, False, False])
             for _, _d in d.iterrows():
                 ratio = _d[['week', 'month', 'quarter', 'setup']].to_dict()
                 child = {'key': key, 'secucode': _d.secucode, 'secuabbr': _d.secuabbr, **ratio}
