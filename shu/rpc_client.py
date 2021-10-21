@@ -9,9 +9,6 @@ from src import am_sma_pb2 as pb
 from rpc.register import consul_app
 
 
-service_name = 'microservices'
-
-
 class Client(object):
 
     def __init__(self):
