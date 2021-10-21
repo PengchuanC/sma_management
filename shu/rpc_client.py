@@ -1,4 +1,5 @@
 import asyncio
+import json
 import grpc
 from typing import AsyncIterator
 
@@ -14,10 +15,9 @@ service_name = 'microservices'
 class Client(object):
 
     def __init__(self):
-        service, _ = consul_app.find(service_name)
-        host = service['Address']
-        port = service['Port']
-        self.channel = grpc.aio.insecure_channel(f'{host}:{port}')
+        proxy_server = consul_app.get_by_key('RpcProxyServer')
+        proxy_server = json.loads(proxy_server)
+        self.channel = grpc.aio.insecure_channel(f'{proxy_server["host"]}:{proxy_server["port"]}')
         self.stub = MicroServiceStub(self.channel)
 
     async def sma_portfolio(self) -> AsyncIterator[pb.Portfolio]:
@@ -102,7 +102,7 @@ class Client(object):
 
 async def test():
     client = Client()
-    async for x in client.sma_security_quote('8511'):
+    async for x in client.sma_portfolio_expanded():
         print(x)
     print('exit')
 

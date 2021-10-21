@@ -36,5 +36,11 @@ class Consul(object):
             return None, True
         return server, False
 
+    def get_by_key(self, key):
+        """查询key/value"""
+        value = self._consul.kv.get(key)
+        info = value[1]
+        return info['Value']
+
 
 consul_app = Consul(**CONSUL_CONFIG)
