@@ -10,10 +10,12 @@ from django.forms.models import model_to_dict
 from django.http.response import JsonResponse
 from asgiref.sync import sync_to_async
 from rest_framework.views import Response, APIView
+from dateutil.relativedelta import relativedelta
 
 from investment import models
 from ..utils.holding import fund_holding_stock
 from ..utils.holding_v2 import portfolio_holding_stock
+from ..utils import fund as fund_util
 
 
 class StyleAnalysis(APIView):
@@ -196,3 +198,104 @@ class MovingVolatility(APIView):
         downside_std = downside_std.reset_index()
         downside_std = downside_std.to_dict(orient='records')
         return Response(downside_std)
+
+
+class ProfitAnalysis(object):
+    """
+    收益拆解到单一资产
+    """
+    @staticmethod
+    async def get(request):
+        """
+        Args:
+            request: Django Request obj.
+
+        Returns:
+
+        """
+        params = request.GET
+        port_code = params['portCode']
+        date = params.get('date')
+        pa = ProfitAnalysis()
+        if not date:
+            date = datetime.date.today()
+        nearest = await sync_to_async(models.Income.objects.filter(port_code=port_code, date__lte=date).latest)('date')
+        date = nearest.date
+        week = date + relativedelta(days=-7)
+        month = date + relativedelta(months=-1)
+        quarter = date + relativedelta(months=-3)
+        durations = {'week': week, 'month': month, 'quarter': quarter, 'setup': None}
+        data = []
+        for name, duration in durations.items():
+            ret = await pa.period_contribution(port_code, duration, date)
+            ret.name = name
+            data.append(ret)
+        data = pd.concat(data, axis=1)
+        data['secucode'] = data.index
+        funds = list(data.index)
+        names = await fund_util.fund_name_async(funds)
+        classify = fund_util.fund_classify(funds)
+        classify.update({port_code: '组合'})
+        data['secuabbr'] = data['secucode'].apply(lambda x: names.get(x))
+        data['classify'] = data['secucode'].apply(lambda x: classify.get(x))
+        ret = pa.format(data)
+        return JsonResponse(ret, safe=False)
+
+    @staticmethod
+    async def period_contribution(port_code, start, end):
+        """区间组合资产净值变动"""
+        prev_holding = None
+        prev = 1
+        if start is not None:
+            queryset = await sync_to_async(models.Balance.objects.filter)(port_code=port_code, date__lte=start)
+            exists = await sync_to_async(queryset.exists)()
+            if exists:
+                obj = await sync_to_async(queryset.latest)('date')
+                prev = obj.unit_nav
+                start = obj.date
+                prev_holding = await sync_to_async(
+                    models.Holding.objects.filter(port_code=port_code, date=start).values
+                )('secucode', 'total_profit')
+                prev_holding = await sync_to_async(list)(prev_holding)
+                prev_holding = {x['secucode']: x['total_profit'] for x in prev_holding}
+        current = await sync_to_async(models.Balance.objects.get)(port_code=port_code, date=end)
+        cur_holding = await sync_to_async(
+            models.Holding.objects.filter(port_code=port_code, date=end).values
+        )('secucode', 'total_profit')
+        cur_holding = await sync_to_async(list)(cur_holding)
+        cur_holding = {x['secucode']: x['total_profit'] for x in cur_holding}
+        cur_holding = pd.Series(cur_holding, name='current')
+        if prev_holding is not None:
+            prev_holding = pd.Series(prev_holding, name='prev')
+            data = pd.concat([prev_holding, cur_holding], axis=1).fillna(0)
+            cur_holding = data.current - data.prev
+        cur_holding /= cur_holding.sum()
+        current = current.unit_nav
+        change = current / prev - 1
+        cur_holding *= change
+        cur_holding[port_code] = change
+        return cur_holding
+
+    @staticmethod
+    def format(data: pd.DataFrame):
+        data = data.astype(object)
+        data = data.where(data.notnull(), None)
+        cls = ['组合', '股票型', '债券型', '另类', 'QDII型', '货币型']
+        key = 1
+        ret = []
+        for c in cls:
+            d = data[data.classify == c]
+            if d.empty:
+                continue
+            ratio = d[['week', 'month', 'quarter', 'setup']].sum().to_dict()
+            father = {'key': key, 'secucode': '', 'secuabbr': c, **ratio}
+            key += 1
+            children = []
+            for _, _d in d.iterrows():
+                ratio = _d[['week', 'month', 'quarter', 'setup']].to_dict()
+                child = {'key': key, 'secucode': _d.secucode, 'secuabbr': _d.secuabbr, **ratio}
+                children.append(child)
+                key += 1
+            father['children'] = children
+            ret.append(father)
+        return ret
