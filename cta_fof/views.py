@@ -4,7 +4,7 @@ import pandas as pd
 from django.http.response import JsonResponse
 from django.forms.models import model_to_dict
 from django.db.models import Sum
-from investment.models import Funds, Portfolio, Balance, Transactions, Holding
+from investment.models import Funds, Portfolio, Balance, Transactions, Holding, Security
 
 from cta_fof import models
 
@@ -54,7 +54,7 @@ def holding(request):
     data = pd.DataFrame(data)
     columns = ['secucode', 'secuabbr', 'recent', 'week', 'month', 'quarter', 'ytd', 'last_year', 'si']
     data = data[columns]
-    names = Funds.objects.filter(secucode__in=list(hold.secucode))
+    names = Security.objects.filter(secucode__in=list(hold.secucode))
     names = {x.secucode: x.secuname for x in names}
     hold = hold.merge(data, on='secucode', how='left')
     hold.secuabbr = hold.agg(lambda x: names.get(x.secucode) if not x.secuabbr else x.secuabbr, axis=1)
