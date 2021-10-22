@@ -238,6 +238,7 @@ class ProfitAnalysis(object):
         classify.update({port_code: '组合'})
         data['secuabbr'] = data['secucode'].apply(lambda x: names.get(x))
         data['classify'] = data['secucode'].apply(lambda x: classify.get(x))
+        data['classify'] = data['classify'].fillna('私募理财')
         ret = pa.format(data)
         return JsonResponse(ret, safe=False)
 
@@ -280,7 +281,7 @@ class ProfitAnalysis(object):
     def format(data: pd.DataFrame):
         data = data.astype(object)
         data = data.where(data.notnull(), None)
-        cls = ['组合', '股票型', '债券型', '另类', 'QDII型', '货币型']
+        cls = ['组合', '股票型', '债券型', '另类', 'QDII型', '货币型', '私募理财']
         key = 1
         ret = []
         for c in cls:
