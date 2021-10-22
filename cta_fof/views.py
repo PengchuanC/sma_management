@@ -57,7 +57,7 @@ def holding(request):
     names = Security.objects.filter(secucode__in=list(hold.secucode))
     names = {x.secucode: x.secuname for x in names}
     hold = hold.merge(data, on='secucode', how='left')
-    hold.secuabbr = hold.agg(lambda x: names.get(x.secucode) if not x.secuabbr else x.secuabbr, axis=1)
+    hold.secuabbr = hold.agg(lambda x: names.get(x.secucode), axis=1)
     hold = hold.sort_values('mkt_cap', ascending=False)
     hold['recent'] = hold.agg(lambda x: x.recent if x.recent else x.date, axis=1)
     hold['ratio'] = hold['mkt_cap'] / asset
