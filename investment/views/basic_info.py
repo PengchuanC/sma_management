@@ -26,8 +26,10 @@ class BasicInfo(APIView):
             ).values(
                 'port_code', 'port_type', 'port_name', 'launch_date', 'balance__net_asset', 'init_money',
                 'balance__unit_nav', 'balance__acc_nav', 'balance__savings', 'sales__name', 'balance__security_deposit'
-            )
-            ports.append(port[0])
+            ).last()
+            if port['port_type'] not in (1, 2, 3, 4, 5):
+                continue
+            ports.append(port)
         purchase = portfolio.Transactions.objects.filter(operation='TA申购').values('port_code').annotate(
             money=Sum('operation_amount'))
         purchase = {x['port_code']: x['money'] for x in purchase}

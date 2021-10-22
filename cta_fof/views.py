@@ -4,19 +4,19 @@ import pandas as pd
 from django.http.response import JsonResponse
 from django.forms.models import model_to_dict
 from django.db.models import Sum
-from investment.models import Funds
+from investment.models import Funds, Portfolio, Balance
 
 from cta_fof import models
 
 
 def cta_info(request):
-    funds = models.Portfolio.objects.filter(valid=True)
+    funds = Portfolio.objects.filter(settlemented=0, port_type__in=(6, ))
     ret = []
-    fund: models.Portfolio
+    fund: Portfolio
     num = len(funds)
     total = 0
     for fund in funds:
-        bl = models.Balance.objects.filter(port_code=fund.port_code).latest('date')
+        bl = Balance.objects.filter(port_code=fund.port_code).latest('date')
         # ble = models.BalanceExpanded.objects.filter(port_code=fund.port_code).latest('date')
         add = added_amount(fund.port_code)
         fund_dict = model_to_dict(fund)
