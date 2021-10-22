@@ -113,7 +113,17 @@ def mock(request):
     nav = nav.pivot_table(index='date', columns='secucode', values=['nav'])['nav']
     nav = nav.dropna(how='any')
     nav['cny'] = 1
+    private_fund = [x for x in funds if x not in nav.columns]
+    pf_nav = models.SecurityPrice.objects.filter(
+        secucode__in=private_fund, date__gte=date).values('secucode', 'date', 'price', 'auto_date')
+    pf_nav = pd.DataFrame(pf_nav)
+    pf_nav = pf_nav.sort_values(
+        ['secucode', 'auto_date'], ascending=[True, False]).drop_duplicates(['secucode', 'date'], keep='first')
+    pf_nav = pf_nav.pivot_table(index='date', columns='secucode', values='price')
+    nav = nav.merge(pf_nav, left_index=True, right_index=True, how='left').fillna(method='pad')
+    funds = sorted(nav.columns)
     nav = nav.loc[:, funds]
+    weight = weight.loc[:, funds]
     ret = np.dot(weight, nav.values.T)
     index = [x.strftime('%Y-%m-%d') for x in nav.index]
     ret = pd.DataFrame(ret.T, columns=['调仓组合', '不调仓组合'], index=index)
