@@ -24,7 +24,7 @@ def cta_info(request):
         info = {
             **fund_dict, 'launch_date': fund.launch_date.strftime('%Y-%m-%d'), 'last': bl.date.strftime('%Y-%m-%d'),
             'net_asset': bl.net_asset, 'nav': bl.unit_nav, 'nav_acc': bl.acc_nav, 'cash': bl.savings, 'fa': None,
-            'add': add, 'profit': profit
+            'add': add, 'profit': profit, 'port_type': 'CTA'
         }
         ret.append(info)
         total += bl.net_asset
