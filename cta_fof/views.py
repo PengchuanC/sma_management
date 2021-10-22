@@ -4,7 +4,7 @@ import pandas as pd
 from django.http.response import JsonResponse
 from django.forms.models import model_to_dict
 from django.db.models import Sum
-from investment.models import Funds, Portfolio, Balance
+from investment.models import Funds, Portfolio, Balance, Transactions, Holding
 
 from cta_fof import models
 
@@ -34,9 +34,9 @@ def cta_info(request):
 
 def added_amount(port_code: str):
     """基金增加份额"""
-    add = models.Transactions.objects.filter(
+    add = Transactions.objects.filter(
         port_code=port_code, operation='TA申购').aggregate(value=Sum('operation_amount'))['value'] or 0
-    minus = models.Transactions.objects.filter(
+    minus = Transactions.objects.filter(
             port_code=port_code, operation='TA赎回').aggregate(value=Sum('operation_amount'))['value'] or 0
     return add - minus
 
@@ -44,9 +44,9 @@ def added_amount(port_code: str):
 def holding(request):
     """cta fof持有的基金"""
     port_code = request.GET['port_code']
-    last = models.Holding.objects.filter(port_code=port_code).latest('date').date
-    asset = models.Balance.objects.filter(port_code=port_code, date=last).last().net_asset
-    hold = models.Holding.objects.filter(
+    last = Holding.objects.filter(port_code=port_code).latest('date').date
+    asset = Balance.objects.filter(port_code=port_code, date=last).last().net_asset
+    hold = Holding.objects.filter(
         port_code=port_code, date=last).values('secucode', 'holding_value', 'mkt_cap', 'date')
     hold = pd.DataFrame(hold)
     resp = r.get('http://10.170.129.129/cta/api/')
@@ -69,7 +69,7 @@ def holding(request):
 def transaction(request):
     port_code = request.GET['port_code']
     secucode = request.GET['secucode']
-    data = models.Transactions.objects.filter(port_code=port_code, secucode=secucode, operation='开放式基金申购成交确认').values()
+    data = Transactions.objects.filter(port_code=port_code, secucode=secucode, operation='开放式基金申购成交确认').values()
     data = [x for x in data]
     ret = []
     for x in data:
