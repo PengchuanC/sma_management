@@ -289,11 +289,13 @@ class FundHoldingView(APIView):
         ).values('secucode', 'date', 'operation', 'order_price', 'order_value', 'fee').order_by('date')
         buy = [x for x in trans if x['operation'] == '证券买入']
         buy = pd.DataFrame(buy)
-        buy = buy.groupby(['secucode', 'date', 'operation', 'order_price']).sum().reset_index()
+        buy = buy.groupby(['secucode', 'date', 'operation', 'order_price', 'order_value', 'fee']).sum().reset_index()
         sell = [x for x in trans if x['operation'] == '证券卖出']
         sell = pd.DataFrame(sell)
         if not sell.empty:
-            sell = sell.groupby(['secucode', 'date', 'operation', 'order_price']).sum().reset_index()
+            sell = sell.groupby(
+                ['secucode', 'date', 'operation', 'order_price', 'order_value', 'fee']
+            ).sum().reset_index()
 
         ret = []
         for idx1, b in buy.iterrows():
