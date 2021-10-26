@@ -289,13 +289,15 @@ class FundHoldingView(APIView):
         ).values('secucode', 'date', 'operation', 'order_price', 'order_value', 'fee').order_by('date')
         buy = [x for x in trans if x['operation'] == '证券买入']
         buy = pd.DataFrame(buy)
-        buy = buy.groupby(['secucode', 'date', 'operation', 'order_price', 'order_value', 'fee']).sum().reset_index()
         sell = [x for x in trans if x['operation'] == '证券卖出']
         sell = pd.DataFrame(sell)
+        for attr in ['order_price', 'order_value', 'fee']:
+            buy[attr] = buy[attr].astype(float)
+            if attr in sell.columns:
+                sell[attr] = sell[attr].astype(float)
+        buy = buy.groupby(['secucode', 'date', 'operation']).sum().reset_index()
         if not sell.empty:
-            sell = sell.groupby(
-                ['secucode', 'date', 'operation', 'order_price', 'order_value', 'fee']
-            ).sum().reset_index()
+            sell = sell.groupby(['secucode', 'date', 'operation']).sum().reset_index()
 
         ret = []
         for idx1, b in buy.iterrows():
@@ -306,7 +308,7 @@ class FundHoldingView(APIView):
             secucode = b['secucode']
             while b_value > 0:
                 if sell.empty or sell['order_value'].sum() == 0:
-                    s_price = round(Decimal(price), 4)
+                    s_price = round(price, 4)
                     r = s_price / b_price - 1
                     value = b_value
                     b_value = 0
