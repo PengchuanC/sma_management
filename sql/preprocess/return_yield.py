@@ -46,7 +46,7 @@ def _commit_return_yield(portfolio: models.Portfolio):
 def transactions(port_code, secucode, date):
     operations = [
         '开放式基金认购成交确认', '开放式基金申购成交确认', '开放式基金赎回成交确认', '开放式基金转换转入成交确认',
-        '开放式基金转换转出成交确认', '证券买入', '证券卖出'
+        '开放式基金转换转出成交确认', '证券买入', '证券卖出', '开放式基金红利再投资', '增加证券流通数量'
     ]
     history = models.Transactions.objects.filter(
         port_code=port_code, secucode=secucode, operation__in=operations, date__lte=date
@@ -56,10 +56,11 @@ def transactions(port_code, secucode, date):
         # 回购
         return
     history['order_value'] = history['order_value'].astype(float)
-    buy_op = ['开放式基金认购成交确认', '开放式基金申购成交确认', '开放式基金转换转入成交确认', '证券买入']
+    buy_op = ['开放式基金认购成交确认', '开放式基金申购成交确认', '开放式基金转换转入成交确认', '证券买入', '开放式基金红利再投资']
     sell_op = ['开放式基金赎回成交确认', '开放式基金转换转出成交确认', '证券卖出']
     buy = history[history.operation.isin(buy_op)][['date', 'order_price', 'order_value']]
     buy = buy.groupby(['date', 'order_price']).sum().reset_index().sort_values('date')
+    buy = buy[buy['order_price'] != 0]
     sell = history[history.operation.isin(sell_op)][['date', 'order_price', 'order_value']]
     ret = []
     if sell.empty:
@@ -118,7 +119,7 @@ def one_day_before_adjust_nav(secucode, date):
 
 def days_count(start, end):
     """两个日期之间交易日个数统计"""
-    days = models.TradingDays.objects.filter(date__range=(start, end))
+    days = models.TradingDays.objects.filter(date__gte=start, date__lte=end)
     days = [x.date for x in days]
     return len(days)
 
@@ -144,7 +145,7 @@ def proc_inner_market(port_code, secucode, trans: list):
         ret_yield = sell_price / buy_price - 1
         t['ret_yield'] = ret_yield
         count = days_count(start, end)
-        annualized = math.pow(1 + ret_yield, 250 / (count-1)) - 1
+        annualized = math.pow(1 + ret_yield, 250 / count) - 1
         t['annualized'] = annualized
         ret.append(t)
     return ret
@@ -161,6 +162,9 @@ def proc_mutual(port_code, secucode, trans):
     for t in trans:
         start = t['buy_at']
         end = t['sell_at']
+        # 排除op做账错误，如增加证券流通成本之类的
+        if start > end:
+            continue
         adj_start_obj = one_day_before_adjust_nav(secucode, start)
         adj_end_obj = one_day_before_adjust_nav(secucode, end)
         count = days_count(adj_start_obj.date, adj_end_obj.date)
@@ -169,7 +173,7 @@ def proc_mutual(port_code, secucode, trans):
         ret_yield = ep / sp - 1
         t['sell_at'] = adj_end_obj.date
         t['ret_yield'] = ret_yield
-        annualized = math.pow(1 + ret_yield, 250 / (count - 1)) - 1
+        annualized = math.pow(1 + ret_yield, 250 / count) - 1
         t['annualized'] = annualized
         ret.append(t)
     return ret

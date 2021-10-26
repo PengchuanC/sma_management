@@ -147,7 +147,7 @@ class BulkFundValuationConsumer(AsyncJsonWebsocketConsumer):
         if not isinstance(self.holding, pd.DataFrame):
             return
         if datetime.datetime.now().time() > datetime.time(15, 0, 20):
-            await self.disconnect(3000)
+            await self.disconnect(1000)
             return
         return await self.calc()
 
