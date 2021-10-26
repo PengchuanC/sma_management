@@ -295,9 +295,9 @@ class FundHoldingView(APIView):
             buy[attr] = buy[attr].astype(float)
             if attr in sell.columns:
                 sell[attr] = sell[attr].astype(float)
-        buy = buy.groupby(['secucode', 'date', 'operation']).sum().reset_index()
+        buy = buy.groupby(['secucode', 'date', 'operation', 'order_price']).sum().reset_index()
         if not sell.empty:
-            sell = sell.groupby(['secucode', 'date', 'operation']).sum().reset_index()
+            sell = sell.groupby(['secucode', 'date', 'operation', 'order_price']).sum().reset_index()
 
         ret = []
         for idx1, b in buy.iterrows():
