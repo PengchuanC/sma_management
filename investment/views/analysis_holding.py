@@ -88,6 +88,7 @@ class AnalysisHolding(object):
         for _, g in group.iterrows():
             _g = g.to_dict()
             _g['key'] = count
+            _g['second'] = None
             count += 1
             d = data[data.category == g.category]
             children = []
