@@ -144,7 +144,7 @@ class BrinsonAnalysis(APIView):
         data = pd.DataFrame(data)
         for q in ['q1', 'q2', 'q3', 'q4']:
             data[q] = data[q].astype('float') + 1
-        data = data[['industry', 'q1', 'q2', 'q3', 'q4']].groupby('industry').agg(self.cumprod)
+        data = data[['industry', 'q1', 'q2', 'q3', 'q4']].groupby('industry').agg(self.sum)
         data['raa'] = data['q2'] - data['q1']
         data['rss'] = data['q3'] - data['q1']
         data['rin'] = data['q4'] - data['q3'] - data['q2'] + data['q1']
@@ -162,7 +162,7 @@ class BrinsonAnalysis(APIView):
     @staticmethod
     def sum(s: pd.Series):
         """计算累乘值"""
-        return s.sum()*100
+        return s.sum()
 
 
 class MovingVolatility(APIView):

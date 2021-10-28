@@ -64,6 +64,7 @@ class PortfolioAllocate(Allocate):
         holding = portfolio_holding_stock(self.p, self.d)
         holding = [{'secucode': x, 'weight': y}for x, y in holding.items()]
         holding = pd.DataFrame(holding)
+        holding = holding[holding.weight != 0]
         holding.weight = holding.weight.astype(float)
         holding.weight /= holding.weight.sum()
         if not isinstance(holding, pd.DataFrame):

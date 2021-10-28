@@ -253,3 +253,9 @@ class CapitalFlowAdmin(admin.ModelAdmin):
 @admin.register(models.ObservePool)
 class ObservePoolAdmin(admin.ModelAdmin):
     list_display = ('secucode', )
+
+
+@admin.register(models.ImportantHolding)
+class ImportantHoldingAdmin(admin.ModelAdmin):
+    list_display = ('secucode', 'secuname', 'important', 'style', 'flag')
+    list_filter = ('important', 'style', 'flag')

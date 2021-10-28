@@ -49,6 +49,11 @@ def commit_fund_fee():
     commit_fund_fee_em()
 
 
+def commit_weighted_average_return():
+    """更新组合单只基金加权收益"""
+    tools.commit_return_yield()
+
+
 if __name__ == '__main__':
     commit_portfolio_allocate()
     commit_fund_pos()

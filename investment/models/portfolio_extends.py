@@ -3,7 +3,7 @@
 """
 
 from django.db import models
-from .portfolio import Portfolio
+from .portfolio import Portfolio, Funds
 
 
 class TransactionsYX(models.Model):
@@ -63,3 +63,18 @@ class ReturnYield(models.Model):
 
     def __str__(self):
         return self.port_code.port_code
+
+
+class ImportantHolding(models.Model):
+    secucode = models.ForeignKey(Funds, to_field='secucode', on_delete=models.CASCADE, verbose_name='基金代码')
+    important = models.CharField(verbose_name='仓位', null=True, blank=True, max_length=20)
+    style = models.CharField(verbose_name='风格', null=True, blank=True, max_length=20)
+    flag = models.CharField(verbose_name='标签', null=True, blank=True, max_length=20)
+
+    def secuname(self):
+        return self.secucode.secuname
+
+    class Meta:
+        db_table = 'sma_holding_important'
+        verbose_name = '6 基金池-基金风格及标签'
+        verbose_name_plural = verbose_name

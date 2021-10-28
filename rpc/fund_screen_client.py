@@ -12,9 +12,8 @@ from rpc.register import consul_app
 class Client(object):
     stub: pbg.ScreenRpcServerStub = None
 
-    def __init__(self, service_name):
-        host, port = self.get_server(service_name)
-        self.channel = grpc.insecure_channel(f'{host}:{port}')
+    def __init__(self, proxy_host='10.170.139.12:80'):
+        self.channel = grpc.insecure_channel(f'{proxy_host}')
 
     @staticmethod
     def get_server(service_name):
@@ -55,7 +54,7 @@ class Client(object):
 
     @staticmethod
     def simple(attr, *args):
-        name = 'fund_screen'
+        name = '10.170.139.12:80'
         with Client(name) as client:
             ret = getattr(client, attr)(*args)
         return ret
