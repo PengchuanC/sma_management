@@ -539,13 +539,12 @@ class FundHoldingStockView(APIView):
         if ind is None:
             return Response({'stock': [], 'industry': []})
         ratio = holding_v2.asset_type_penetrate(port_code, date)
-        index = FundHoldingStockView.industry_index_top_ten(port_code)
         equity = ratio.get('equity')
         ind['ratio'] = ind['ratio'].astype('float')
         ind['ratioinequity'] = ind['ratio'] / float(equity)
-        ind = ind.merge(index, on='firstindustryname', how='outer').fillna(0)
         ind = ind.sort_values(
             ['ratio'], ascending=False).reset_index(drop=True)
+        ind['scaled_ratio'] = ind['ratio'] / ind['ratio'].sum()
         ind['key'] = ind.index + 1
         ret = [{'secucode': x, 'ratio': y} for x, y in ret.items()]
         ret = pd.DataFrame(ret)
@@ -578,62 +577,6 @@ class FundHoldingStockView(APIView):
         ind['ratioinequity'] = ind['ratio'] / ind['ratio'].sum()
         ind = ind.reset_index(drop=True)
         return ind
-
-    @staticmethod
-    def industry_index_top_ten(port_code: str):
-        """组合100%化后与中证800对比
-
-        Args:
-            port_code:
-
-        Returns:
-               firstindustryname scaled_ratio   weight      diff
-            0               交通运输  0.045806  0.02636  0.019446
-            1               休闲服务  0.021357  0.01320  0.008157
-            2                 传媒  0.009180  0.02111 -0.011930
-            3               农林牧渔  0.013617  0.02025 -0.006633
-            4                 化工  0.056625  0.04776  0.008865
-            5               医药生物  0.095320  0.09882 -0.003500
-
-        """
-        latest = models.Holding.objects.filter(
-            port_code=port_code).latest('date').date
-        holding = models.Holding.objects.filter(
-            port_code=port_code, date=latest).values('secucode', 'mkt_cap')
-        holding = pd.DataFrame(holding)
-        holding = holding[holding['mkt_cap'] != 0]
-
-        stocks = []
-        for fund_ in holding['secucode']:
-            stock = fund_top_ten_scale(fund_)
-            if stock is None:
-                continue
-            stocks.append(stock)
-        if not  stocks:
-            return
-        stocks = pd.concat(stocks, axis=0)
-        data = stocks.merge(holding, on='secucode', how='left')
-        mkt_cap = data.drop_duplicates(['secucode'])['mkt_cap'].sum()
-        data['ratio'] = data['ratio']*data['mkt_cap'] / mkt_cap
-        data = data.groupby(['stockcode'])['ratio'].sum().reset_index()
-
-        sw = models.StockIndustrySW.objects.filter(secucode__in=list(data.stockcode)).values(
-            'secucode', 'firstindustryname')
-        sw = {x['secucode']: x['firstindustryname'] for x in sw}
-        data['firstindustryname'] = data['stockcode'].apply(
-            lambda x: sw.get(x, '港股'))
-        data = data.groupby(['firstindustryname'])['ratio'].sum().reset_index()
-
-        index = index_holding_sw('000906')
-        index = index.groupby(['firstindustryname'])[
-            'weight'].sum().reset_index()
-        data = data.merge(index, on='firstindustryname', how='outer')
-        data['ratio'] = data['ratio'].astype('float')
-        data['weight'] = data['weight'].astype('float')
-        data['diff'] = data['ratio'] - data['weight']
-        data = data.fillna(0)
-        data = data.rename(columns={'ratio': 'scaled_ratio'})
-        return data
 
 
 class FundHoldingNomuraOIView(object):
