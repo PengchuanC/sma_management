@@ -112,6 +112,9 @@ class OverviewView(APIView):
 
         """
         port_code = request.GET.get('portCode')
+        exists = await sync_to_async(models.ClientQ.objects.filter(port_code=port_code).exists)()
+        if not exists:
+            return JsonResponse({'data': {}})
         data = await database_sync_to_async(models.ClientQ.objects.get)(port_code=port_code)
         return JsonResponse({'data': model_to_dict(data)})
 

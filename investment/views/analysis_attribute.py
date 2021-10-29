@@ -298,6 +298,7 @@ class ProfitAnalysis(object):
                 child = {'key': key, 'secucode': _d.secucode, 'secuabbr': _d.secuabbr, **ratio}
                 children.append(child)
                 key += 1
-            father['children'] = children
+            if c != '组合':
+                father['children'] = children
             ret.append(father)
         return ret

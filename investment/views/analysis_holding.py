@@ -78,10 +78,11 @@ class AnalysisHolding(object):
         func = {'mkt_cap': 'sum', 'total_profit': 'sum', 'holding_ratio': 'sum', 'ret_yield': 'mean'}
         total = data.agg(func)
         total = total.to_dict()
-        total.update({'category': '合计', 'second': None, 'secuname': None, 'key': 0})
+        total.update({'category': '合计', 'second': None, 'secuname': '合计', 'key': 0, 'secucode': None})
         group = data.groupby('category').agg({**func, 'second': 'first'}).sort_values('holding_ratio', ascending=False)
         group = group.reset_index()
-        group['secuname'] = None
+        group['secuname'] = '合计'
+        group['secucode'] = None
         data = data.sort_values(['holding_ratio', 'ret_yield'], ascending=[False, False])
         ret = [total]
         count = 1
@@ -91,6 +92,7 @@ class AnalysisHolding(object):
             _g['second'] = None
             count += 1
             d = data[data.category == g.category]
+            d['category'] = None
             children = []
             for _, r in d.iterrows():
                 r = r.to_dict()
@@ -141,11 +143,16 @@ class FundClassify(object):
     async def invest_pool(self):
         """自定义的基金类型"""
         data = await self._noi_classify()
+        print(data[data['secucode'] == '260102'])
         important = await sync_to_async(
             models.ImportantHolding.objects.filter(secucode__in=self.funds).values)('secucode', 'important')
         important = await sync_to_async(list)(important)
-        important = {x['secucode']: x['important'] for x in important}
-        data['category'] = data['secucode'].apply(lambda x: important.get(x, '其他'))
+        important = [{'secucode': x['secucode'], 'category': x['important']} for x in important]
+        important = pd.DataFrame(important)
+        data = data.merge(important, on='secucode', how='outer')
+        data['category'] = data['category'].fillna('其他')
+        print(data[data['secucode'] == '260102'])
+        print(data)
         return data[['secucode', 'category', 'second']]
 
     async def dispatch(self):
