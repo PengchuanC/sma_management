@@ -143,7 +143,6 @@ class FundClassify(object):
     async def invest_pool(self):
         """自定义的基金类型"""
         data = await self._noi_classify()
-        print(data[data['secucode'] == '260102'])
         important = await sync_to_async(
             models.ImportantHolding.objects.filter(secucode__in=self.funds).values)('secucode', 'important')
         important = await sync_to_async(list)(important)
@@ -151,8 +150,6 @@ class FundClassify(object):
         important = pd.DataFrame(important)
         data = data.merge(important, on='secucode', how='outer')
         data['category'] = data['category'].fillna('其他')
-        print(data[data['secucode'] == '260102'])
-        print(data)
         return data[['secucode', 'category', 'second']]
 
     async def dispatch(self):
