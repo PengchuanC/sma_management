@@ -1,5 +1,6 @@
 import asyncio
 import grpc
+import json
 
 import rpc.services.api_pb2 as pb
 import rpc.services.api_pb2_grpc as pbg
@@ -9,10 +10,16 @@ from typing import List
 from rpc.register import consul_app
 
 
+def get_rpc_server():
+    info = consul_app.get_by_key('RpcProxyServer')
+    info = json.loads(info)
+    return f'{info["host"]}:{info["port"]}'
+
+
 class Client(object):
     stub: pbg.ScreenRpcServerStub = None
 
-    def __init__(self, proxy_host='10.170.139.12:80'):
+    def __init__(self, proxy_host='10.170.139.12:443'):
         self.channel = grpc.insecure_channel(f'{proxy_host}')
 
     @staticmethod
@@ -54,7 +61,7 @@ class Client(object):
 
     @staticmethod
     def simple(attr, *args):
-        name = '10.170.139.12:80'
+        name = get_rpc_server()
         with Client(name) as client:
             ret = getattr(client, attr)(*args)
         return ret
@@ -68,4 +75,6 @@ def example():
 
 
 if __name__ == '__main__':
-    example()
+    # example()
+    get_rpc_server()
+
