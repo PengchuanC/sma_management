@@ -133,8 +133,8 @@ class AttributeChartView(APIView):
             total = float(sum([x['change'] for x in changes[1:]]))
             columns = ['equity', 'bond', 'alter', 'money']
             fee = models.DetailFee.objects.filter(
-                port_code=port_code, date__gt=start, date__lte=date).values('management')
-            fee = float(sum(x['management'] for x in fee))
+                port_code=port_code, date__gt=start, date__lte=date).values('management', 'custodian', 'audit')
+            fee = float(sum(x['management'] + x['custodian'] + x['audit'] for x in fee))
             asset = models.IncomeAsset.objects.filter(
                 port_code=port_code, date__in=(start, date)).values('date', *columns)
             asset = pd.DataFrame(asset).set_index('date')
