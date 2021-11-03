@@ -7,6 +7,7 @@ import datetime
 from decimal import Decimal
 from typing import Optional
 
+import arrow
 import pandas as pd
 from dateutil.relativedelta import relativedelta
 from dateutil.parser import parse
@@ -117,26 +118,32 @@ class AttributeChartView(APIView):
         port_code = request.GET.get('portCode')
         date = request.GET.get('date')
         if not date:
-            date = datetime.date.today().strftime('%Y-%m-%d')
+            date: str = datetime.date.today().strftime('%Y-%m-%d')
         d: models.IncomeAsset = models.IncomeAsset.objects.filter(port_code=port_code, date__lte=date).last()
-        date = d.date.strftime('%Y-%m-%d')
+        date_str: str = d.date.strftime('%Y-%m-%d')
+        date: arrow.Arrow = arrow.get(date_str)
         launch = models.Income.objects.filter(port_code=port_code).first().date
-        week = AttributeChartView.last_trading_day_of_last_week(date)
-        month = AttributeChartView.last_trading_day_of_last_month(date)
+        ftd = (arrow.get(launch).shift(days=-1).date(), launch, date.date())
+        week = AttributeChartView.last_trading_day_of_last_week(date_str)
+        wsp = date.span('week')
+        wtd = (wsp[0].date(), week, wsp[1].date())
+        month = AttributeChartView.last_trading_day_of_last_month(date_str)
+        msp = date.span('month')
+        mtd = (msp[0].date(), month, wsp[1].date())
         ret = []
-        for start in [launch, week, month]:
-            if start < launch:
-                start = launch
+        for d in [ftd, wtd, mtd]:
+            start, prev, end = d
             changes = models.Income.objects.filter(
-                port_code=port_code, date__range=(start, date)).values('date', 'unit_nav', 'change')
+                port_code=port_code, date__range=(prev, end)).values('date', 'unit_nav', 'change')
             changes = [x for x in changes]
             total = float(sum([x['change'] for x in changes[1:]]))
             columns = ['equity', 'bond', 'alter', 'money']
             fee = models.DetailFee.objects.filter(
-                port_code=port_code, date__gt=start, date__lte=date).values('management', 'custodian', 'audit')
+                port_code=port_code, date__range=(start, end)).values('management', 'custodian', 'audit')
             fee = float(sum(x['management'] + x['custodian'] + x['audit'] for x in fee))
+
             asset = models.IncomeAsset.objects.filter(
-                port_code=port_code, date__in=(start, date)).values('date', *columns)
+                port_code=port_code, date__in=(prev, date.date())).values('date', *columns)
             asset = pd.DataFrame(asset).set_index('date')
             asset = asset.diff(1).dropna().astype(float)
             asset /= asset.sum(axis=1).sum()
