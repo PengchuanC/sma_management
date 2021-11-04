@@ -145,7 +145,7 @@ def proc_inner_market(port_code, secucode, trans: list):
         ret_yield = sell_price / buy_price - 1
         t['ret_yield'] = ret_yield
         count = days_count(start, end)
-        annualized = math.pow(1 + ret_yield, 250 / count) - 1
+        annualized = math.pow(1 + ret_yield, 250 / count) - 1 if count else None
         t['annualized'] = annualized
         ret.append(t)
     return ret
@@ -173,7 +173,7 @@ def proc_mutual(port_code, secucode, trans):
         ret_yield = ep / sp - 1
         t['sell_at'] = adj_end_obj.date
         t['ret_yield'] = ret_yield
-        annualized = math.pow(1 + ret_yield, 250 / count) - 1
+        annualized = math.pow(1 + ret_yield, 250 / count) - 1 if count != 0 else None
         t['annualized'] = annualized
         ret.append(t)
     return ret
