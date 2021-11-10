@@ -20,7 +20,7 @@ def save_prev_valuation_nav():
 def commit_all_db_task():
     """同步组合净值"""
     with Client() as client:
-        resp = client.commit_primary()
+        resp = client.commit_all()
     if resp == 0:
         commit_sma()
 
@@ -59,6 +59,7 @@ def commit_weighted_average_return():
 
 
 if __name__ == '__main__':
-    commit_portfolio_allocate()
-    commit_fund_pos()
-    pre_valuation()
+    # commit_portfolio_allocate()
+    # commit_fund_pos()
+    # pre_valuation()
+    commit_all_db_task()
