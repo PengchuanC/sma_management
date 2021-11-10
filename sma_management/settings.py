@@ -206,3 +206,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 SIMPLEUI_HOME_INFO = False
 SIMPLEUI_ANALYSIS = False
+
+
+RpcProxyHost = '10.170.139.12:443'

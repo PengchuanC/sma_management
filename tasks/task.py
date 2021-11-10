@@ -7,6 +7,7 @@ from crawl.stock_async import executor
 from crawl.fund_fee_howbuy import commit_fund_fee_hb
 from crawl.fund_fee import commit_fund_fee_em
 from sql.commit.funds_extend import commit_fund_quote
+from services.client import Client
 
 
 def save_prev_valuation_nav():
@@ -18,7 +19,10 @@ def save_prev_valuation_nav():
 
 def commit_all_db_task():
     """同步组合净值"""
-    commit_sma()
+    with Client() as client:
+        resp = client.commit_primary()
+    if resp == 0:
+        commit_sma()
 
 
 def crawl_stock_price():
