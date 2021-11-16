@@ -7,14 +7,25 @@ from_sma
 """
 import asyncio
 import datetime
+import functools
 
 from asgiref.sync import sync_to_async
+from django.db import connections
 
 from shu.rpc_client import Client
 from shu import models
 
 
 client = Client()
+
+
+def close_old_connections(func):
+    @functools.wraps(func)
+    async def inner(*args, **kwargs):
+        for conn in connections.all():
+            conn.close_if_unusable_or_obsolete()
+        return await func(*args, **kwargs)
+    return inner
 
 
 async def update_portfolio():
@@ -199,6 +210,7 @@ async def security_quote():
         await sync_to_async(models.SecurityPrice.objects.update_or_create)(id=d.id, defaults=default)
 
 
+@close_old_connections
 async def update_sma():
     await update_portfolio()
     whole = await sync_to_async(models.Portfolio.objects.filter)(settlemented=0)
