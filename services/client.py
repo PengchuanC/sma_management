@@ -30,3 +30,8 @@ class Client(object):
         request = services_pb2.sync__pb2.Request()
         resp = self.stub.SyncPrimary(request=request)
         return resp.status_code
+
+
+if __name__ == '__main__':
+    with Client('10.170.139.12:443') as c:
+        c.ping()

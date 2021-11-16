@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-import sync_pb2 as sync__pb2
+from services import sync_pb2 as sync__pb2
 
 
 class ServerStub(object):
