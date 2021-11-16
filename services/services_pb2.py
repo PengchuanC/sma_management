@@ -11,7 +11,7 @@ from google.protobuf import symbol_database as _symbol_database
 _sym_db = _symbol_database.Default()
 
 
-from services import sync_pb2 as sync__pb2
+import sync_pb2 as sync__pb2
 
 
 DESCRIPTOR = _descriptor.FileDescriptor(
@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0eservices.proto\x12\x08services\x1a\nsync.proto2p\n\x06Server\x12\x30\n\x07SyncAll\x12\x11.services.Request\x1a\x12.services.Response\x12\x34\n\x0bSyncPrimary\x12\x11.services.Request\x1a\x12.services.Responseb\x06proto3'
+  serialized_pb=b'\n\x0eservices.proto\x12\x08services\x1a\nsync.proto2\xa7\x01\n\x06Server\x12\x35\n\x04Ping\x12\x15.services.PingRequest\x1a\x16.services.PingResponse\x12\x30\n\x07SyncAll\x12\x11.services.Request\x1a\x12.services.Response\x12\x34\n\x0bSyncPrimary\x12\x11.services.Request\x1a\x12.services.Responseb\x06proto3'
   ,
   dependencies=[sync__pb2.DESCRIPTOR,])
 
@@ -37,13 +37,23 @@ _SERVER = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=40,
-  serialized_end=152,
+  serialized_start=41,
+  serialized_end=208,
   methods=[
+  _descriptor.MethodDescriptor(
+    name='Ping',
+    full_name='services.Server.Ping',
+    index=0,
+    containing_service=None,
+    input_type=sync__pb2._PINGREQUEST,
+    output_type=sync__pb2._PINGRESPONSE,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
   _descriptor.MethodDescriptor(
     name='SyncAll',
     full_name='services.Server.SyncAll',
-    index=0,
+    index=1,
     containing_service=None,
     input_type=sync__pb2._REQUEST,
     output_type=sync__pb2._RESPONSE,
@@ -53,7 +63,7 @@ _SERVER = _descriptor.ServiceDescriptor(
   _descriptor.MethodDescriptor(
     name='SyncPrimary',
     full_name='services.Server.SyncPrimary',
-    index=1,
+    index=2,
     containing_service=None,
     input_type=sync__pb2._REQUEST,
     output_type=sync__pb2._RESPONSE,

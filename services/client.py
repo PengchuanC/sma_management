@@ -1,12 +1,11 @@
 import grpc
-from sma_management.settings import RpcProxyHost
 
 from services import services_pb2, services_pb2_grpc
 
 
 class Client(object):
 
-    def __init__(self, host=RpcProxyHost):
+    def __init__(self, host):
         self.channel = grpc.insecure_channel(host)
         self.stub = services_pb2_grpc.ServerStub(self.channel)
 
@@ -15,6 +14,12 @@ class Client(object):
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.channel.close()
+
+    def ping(self):
+        request = services_pb2.sync__pb2.PingRequest(msg='msg from sma_management')
+        resp = self.stub.Ping(request=request)
+        print(resp.code)
+        print(resp.msg)
 
     def commit_all(self):
         request = services_pb2.sync__pb2.Request()

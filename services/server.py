@@ -2,6 +2,7 @@ import time
 from concurrent import futures
 
 import grpc
+from django.db import close_old_connections
 
 from services import services_pb2, services_pb2_grpc
 from proc.schedule import commit_all, priority_task
@@ -9,11 +10,18 @@ from proc.schedule import commit_all, priority_task
 
 class Server(services_pb2_grpc.ServerServicer):
 
+    def Ping(self, request, context):
+        msg = request.msg
+        ret_msg = f'received msg "{msg}"'
+        return services_pb2.sync__pb2.PingResponse(msg=ret_msg, code=0)
+
     def SyncAll(self, request, context):
+        close_old_connections()
         commit_all()
         return services_pb2.sync__pb2.Response(status_code=0)
 
     def SyncPrimary(self, request, context):
+        close_old_connections()
         priority_task()
         return services_pb2.sync__pb2.Response(status_code=0)
 
