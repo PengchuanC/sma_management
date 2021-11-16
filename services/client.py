@@ -1,11 +1,12 @@
 import grpc
 
+from sma_management.settings import RpcProxyHost
 from services import services_pb2, services_pb2_grpc
 
 
 class Client(object):
 
-    def __init__(self, host):
+    def __init__(self, host=RpcProxyHost):
         self.channel = grpc.insecure_channel(host)
         self.stub = services_pb2_grpc.ServerStub(self.channel)
 
