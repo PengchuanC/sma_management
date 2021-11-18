@@ -23,6 +23,7 @@ def commit_all_db_task():
         resp = client.commit_all()
     if resp == 0:
         commit_sma()
+        tools.commit_return_yield()
 
 
 def crawl_stock_price():
