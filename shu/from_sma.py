@@ -21,10 +21,10 @@ client = Client()
 
 def close_old_connections(func):
     @functools.wraps(func)
-    async def inner(*args, **kwargs):
+    def inner(*args, **kwargs):
         for conn in connections.all():
             conn.close_if_unusable_or_obsolete()
-        return await func(*args, **kwargs)
+        return func(*args, **kwargs)
     return inner
 
 
@@ -210,7 +210,6 @@ async def security_quote():
         await sync_to_async(models.SecurityPrice.objects.update_or_create)(id=d.id, defaults=default)
 
 
-@close_old_connections
 async def update_sma():
     await update_portfolio()
     whole = await sync_to_async(models.Portfolio.objects.filter)(settlemented=0)
@@ -230,6 +229,7 @@ async def update_sma():
         await security_quote()
 
 
+@close_old_connections
 def commit_sma():
     """从客户服务系统更新sma数据"""
     loop = asyncio.get_event_loop()

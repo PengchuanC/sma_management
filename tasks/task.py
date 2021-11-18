@@ -1,5 +1,3 @@
-from concurrent.futures import ProcessPoolExecutor
-
 from tasks.prev_valuation import pre_valuation
 from tasks.asset_allocate import portfolio_asset_allocate
 from tasks import fund_position
@@ -24,8 +22,7 @@ def commit_all_db_task():
     with Client() as client:
         resp = client.commit_all()
     if resp == 0:
-        pool = ProcessPoolExecutor()
-        pool.submit(commit_sma)
+        commit_sma()
 
 
 def crawl_stock_price():
