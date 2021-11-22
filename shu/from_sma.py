@@ -21,13 +21,14 @@ client = Client()
 
 def close_old_connections(func):
     @functools.wraps(func)
-    def inner(*args, **kwargs):
+    async def inner(*args, **kwargs):
         for conn in connections.all():
             conn.close_if_unusable_or_obsolete()
-        return func(*args, **kwargs)
+        return await func(*args, **kwargs)
     return inner
 
 
+@close_old_connections
 async def update_portfolio():
     async for p in client.sma_portfolio():
         try:
@@ -41,6 +42,7 @@ async def update_portfolio():
         await sync_to_async(portfolio.save)()
 
 
+@close_old_connections
 async def update_portfolio_expanded():
     async for p in client.sma_portfolio_expanded():
         portfolio = await sync_to_async(models.Portfolio.objects.get)(port_code=p.port_code_id)
@@ -49,11 +51,13 @@ async def update_portfolio_expanded():
         )
 
 
+@close_old_connections
 async def portfolio_instance(port_code):
     portfolio = await sync_to_async(models.Portfolio.objects.get)(port_code=port_code)
     return portfolio
 
 
+@close_old_connections
 async def launch_date(port_code):
     """组合成立日期"""
     portfolio = await sync_to_async(models.Portfolio.objects.get)(port_code=port_code)
@@ -61,6 +65,7 @@ async def launch_date(port_code):
     return date.date()
 
 
+@close_old_connections
 async def latest_update_date(model, port_code: str):
     """最后更新日期"""
     exist = await sync_to_async(model.objects.filter(port_code=port_code).exists)()
@@ -73,6 +78,7 @@ async def latest_update_date(model, port_code: str):
     return date
 
 
+@close_old_connections
 async def balance(portfolio: models.Portfolio):
     port_code = portfolio.port_code
     date = await latest_update_date(models.Balance, port_code)
@@ -88,6 +94,7 @@ async def balance(portfolio: models.Portfolio):
     await sync_to_async(models.Balance.objects.bulk_create)(ret)
 
 
+@close_old_connections
 async def balance_expanded(portfolio: models.Portfolio):
     port_code = portfolio.port_code
     date = await latest_update_date(models.BalanceExpanded, port_code)
@@ -102,6 +109,7 @@ async def balance_expanded(portfolio: models.Portfolio):
     await sync_to_async(models.BalanceExpanded.objects.bulk_create)(ret)
 
 
+@close_old_connections
 async def income(portfolio: models.Portfolio):
     port_code = portfolio.port_code
     date = await latest_update_date(models.Income, port_code)
@@ -115,6 +123,7 @@ async def income(portfolio: models.Portfolio):
     await sync_to_async(models.Income.objects.bulk_create)(ret)
 
 
+@close_old_connections
 async def income_asset(portfolio: models.Portfolio):
     port_code = portfolio.port_code
     date = await latest_update_date(models.IncomeAsset, port_code)
@@ -128,6 +137,7 @@ async def income_asset(portfolio: models.Portfolio):
     await sync_to_async(models.IncomeAsset.objects.bulk_create)(ret)
 
 
+@close_old_connections
 async def holding(portfolio: models.Portfolio):
     port_code = portfolio.port_code
     date = await latest_update_date(models.Holding, port_code)
@@ -143,6 +153,7 @@ async def holding(portfolio: models.Portfolio):
     await sync_to_async(models.Holding.objects.bulk_create)(ret)
 
 
+@close_old_connections
 async def transaction(portfolio: models.Portfolio):
     port_code = portfolio.port_code
     date = await latest_update_date(models.Transactions, port_code)
@@ -157,6 +168,7 @@ async def transaction(portfolio: models.Portfolio):
     await sync_to_async(models.Transactions.objects.bulk_create)(ret)
 
 
+@close_old_connections
 async def detail_fee(portfolio: models.Portfolio):
     port_code = portfolio.port_code
     date = await latest_update_date(models.DetailFee, port_code)
@@ -170,6 +182,7 @@ async def detail_fee(portfolio: models.Portfolio):
     await sync_to_async(models.DetailFee.objects.bulk_create)(ret)
 
 
+@close_old_connections
 async def benchmark(portfolio: models.Portfolio):
     port_code = portfolio.port_code
     date = await latest_update_date(models.ValuationBenchmark, port_code)
@@ -180,6 +193,7 @@ async def benchmark(portfolio: models.Portfolio):
     await sync_to_async(models.ValuationBenchmark.objects.bulk_create)(ret)
 
 
+@close_old_connections
 async def interest_tax(portfolio: models.Portfolio):
     port_code = portfolio.port_code
     date = await latest_update_date(models.InterestTax, port_code)
@@ -190,12 +204,14 @@ async def interest_tax(portfolio: models.Portfolio):
     await sync_to_async(models.InterestTax.objects.bulk_create)(ret)
 
 
+@close_old_connections
 async def security():
     async for d in client.sma_security():
         default = {'secuname': d.secuname, 'category': d.category, 'category_code': d.category_code}
         await sync_to_async(models.Security.objects.update_or_create)(secucode=d.secucode, defaults=default)
 
 
+@close_old_connections
 async def security_quote():
     try:
         max_id = await sync_to_async(models.SecurityPrice.objects.latest)('id')
@@ -229,7 +245,6 @@ async def update_sma():
         await security_quote()
 
 
-@close_old_connections
 def commit_sma():
     """从客户服务系统更新sma数据"""
     loop = asyncio.get_event_loop()
