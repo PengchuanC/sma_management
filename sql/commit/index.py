@@ -193,7 +193,7 @@ def commit_index_component():
     indexes_code: List[str] = [x.secucode for x in indexes]
     data = _commit_index_component(indexes_code)
     latest = latest_update_date(models.IndexComponent)
-    data = data[data.agg(lambda x: x.date > latest.get(x.secucode, datetime.date(2021, 1, 1)), axis=1)]
+    data = data[data.agg(lambda x: x.date.date() > latest.get(x.secucode, datetime.date(2021, 1, 1)), axis=1)]
     indexes: Dict[str, models.Index] = {x.secucode: x for x in indexes}
     data.secucode = data.secucode.apply(lambda x: indexes.get(x))
     commit_by_chunk(data, models.IndexComponent)
