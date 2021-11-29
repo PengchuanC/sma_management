@@ -20,10 +20,12 @@ def save_prev_valuation_nav():
 def commit_all_db_task():
     """同步组合净值"""
     with Client() as client:
-        resp = client.commit_all()
-    if resp == 0:
-        commit_sma()
-        tools.commit_return_yield()
+        try:
+            client.commit_all()
+        except Exception as e:
+            print(e)
+    commit_sma()
+    tools.commit_return_yield()
 
 
 def crawl_stock_price():
