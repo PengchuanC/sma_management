@@ -1,4 +1,4 @@
-#【FOF】SMA投资管理系统
+# 【FOF】SMA投资管理系统
 
 [点击这里](https://pengchuanc.github.io/posts/introduction_sma_management/) 前往我的主页查看
 
