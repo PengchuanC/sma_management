@@ -61,12 +61,10 @@ urlpatterns = [
 
     path('test/', views.TestViews.as_view()),
 
-    path('mvo/index/', views.IndexInfoViews.as_view()),
-    path('mvo/optimize/', views.MvoViews.as_view()),
-    path('backtest/', views.BackTestView.as_view()),
-    path('backtest/download/', views.BackTestView.download),
-    path('backtest/index/', views.BackTestIndexView.as_view()),
-    path('backtest/weight/', views.BacktestWeightView.as_view()),
+    path('backtest/', views.standard_portfolio),
+    path('backtest/download/', views.download),
+    path('backtest/index/', views.fund_index_portfolio),
+    path('backtest/weight/', views.BacktestWeightView.weight),
     path('backtest/weight/download/', views.BacktestWeightView.download),
 
     path('mock/date/', views.change_date),

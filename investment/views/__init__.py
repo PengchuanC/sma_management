@@ -4,7 +4,7 @@ from .basic_info import BasicInfo, Capital, ProfitAttribute, PurchaseAndRansom
 from .history import HistoryView
 from .analysis import *
 from .analysis_attribute import *
-from .backtest import BackTestView, BacktestWeightView, BackTestIndexView
+from .backtest import *
 from .overview import *
 from .trade_emulate import SimpleEmuView, ComplexEmuView, ComplexEmuBulkView
 from .announcement import AnnouncementViews

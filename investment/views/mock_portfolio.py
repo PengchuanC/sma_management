@@ -10,7 +10,6 @@ import numpy as np
 from copy import deepcopy
 from django.http import JsonResponse
 from investment import models
-from investment.views.backtest import BackTestView
 
 
 def change_date(request):

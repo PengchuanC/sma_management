@@ -1,16 +1,22 @@
 import datetime
+
+import arrow
 import pandas as pd
 
 from concurrent.futures import ThreadPoolExecutor
 from dateutil.parser import parse
 from django.forms import model_to_dict
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, JsonResponse
 from django.core.cache import cache
 from rest_framework.views import APIView, Response
+from channels.db import database_sync_to_async
+
+from sma_management.settings import RpcProxyHost
 from investment.utils.backtest import BackTest, BTConfig, IBTConfig, IBackTest
 from investment.utils.calc import Formula
 from investment import models
 from investment.utils.download import file_dir
+from services.backtest_client import Client
 
 
 tpe = ThreadPoolExecutor(2)
@@ -18,119 +24,104 @@ tpe = ThreadPoolExecutor(2)
 fund_date = None
 
 
-class BackTestView(APIView):
+async def index_data():
+    queryset = await database_sync_to_async(
+        models.IndexQuote.objects.filter(secucode__in=['Y00001', '000906'], date__gte='2017-01-01').values
+    )('secucode', 'date', 'close')
+    data = await database_sync_to_async(pd.DataFrame)(queryset)
+    data['close'] = data['close'].astype(float)
+    data = data.pivot_table(index='date', columns='secucode', values='close')
+    data /= data.iloc[0, :]
+    data = data.rename(columns={'Y00001': 'zcf', '000906': 'zz800'})
+    return data
 
-    date = None
 
-    def get(self, request):
-        resp = self.process(request)
-        return Response(resp)
+def calc_performance(data: pd.DataFrame):
+    ret = {}
 
-    @staticmethod
-    def process(request, btc=BTConfig, bt=BackTest):
-        date = request.query_params.get('date')
-        if not date:
-            date = datetime.date.today()
+    for item in [
+        "acc_return_yield",
+        "annualized_return_yield",
+        "annualized_volatility",
+        "max_drawback",
+        "sharpe_ratio",
+        "calmar_ratio",
+        "sortino_ratio",
+        "var",
+        "cvar"
+    ]:
+        n = getattr(Formula, item)(data).to_dict()
+        if item == 'annualized_volatility':
+            for item_ in ['vol', 'downside_vol']:
+                n_ = {x: y[item_] for x, y in n.items()}
+                ret.update({item_: n_})
+        elif item == 'max_drawback':
+            n = {x: y['drawback'] for x, y in n.items()}
+            ret.update({item: n})
         else:
-            date = parse(date).date()
-        btc = btc()
-        btc.end = date
-        bt = bt(btc)
-        bt.init()
-        port = {'cash': 0.02, 'fix': 0.05, 'equal': 0.10, 'increase': 0.15, 'equity': 0.18}
-        data = []
-        for name, risk in port.items():
-            ret = bt.run(risk)
-            ret.columns = [name]
-            data.append(ret)
-        data = pd.concat(data, axis=1)
-        index = BackTestView.get_index(date=data.index[0])
-        data = pd.merge(data, index, left_index=True, right_index=True, how='inner')
-        data = data[data.index <= date]
-        perf = data.copy()
-        perf = BackTestView.calc_performance(perf)
-        perf = perf.reset_index()
-        names = {
-            'cash': '现金型', 'fix': '固收型', 'equal': '平衡型', 'increase': '成长型', 'equity': '权益型',
-            'zz800': '中证800', 'zcf': '中债总财富'
-        }
-        perf['index'] = perf['index'].apply(lambda x: names.get(x))
-
-        # 子线程生成文件
-        def write_file(data_, perf_, file_dir_):
-            with pd.ExcelWriter(file_dir_ / 'backtest.xlsx') as excel:
-                nav = data_.rename(columns=names).copy()
-                nav.to_excel(excel, sheet_name='回测净值')
-                perf_.to_excel(excel, sheet_name='业绩表现')
-                excel.save()
-
-        global fund_date
-        if date != fund_date:
-            tpe.submit(write_file, data, perf, file_dir)
-
-        perf['key'] = perf.index + 1
-        data = data.reset_index()
-        data['key'] = data.index + 1
-        data = data.to_dict(orient='records')
-        perf = perf.to_dict(orient='records')
-        fund_date = date
-        return {'nav': data, 'perf': perf}
-
-    @staticmethod
-    def get_index(date='2017-01-01'):
-        """获取指数回测业绩"""
-        codes = {'000906': 'zz800', 'Y00001': 'zcf'}
-        data = models.IndexQuote.objects.filter(
-            secucode__in=codes.keys(), date__gte=date
-        ).values('secucode', 'date', 'close')
-        data = pd.DataFrame(data)
-        data.close = data.close.astype('float')
-        data = pd.pivot_table(data, columns='secucode', index='date', values='close')
-        data = data.fillna(method='pad')
-        data = data.rename(columns=codes)
-        data = data / data.iloc[0, :]
-        return data
-
-    @staticmethod
-    def download(request):
-        file_path = file_dir / 'backtest.xlsx'
-        if file_path.is_file():
-            with open(file_path, 'rb') as fh:
-                response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
-                response['Content-Disposition'] = 'inline; filename=' + file_path.name
-                return response
-        raise Http404
-
-    @staticmethod
-    def calc_performance(data: pd.DataFrame):
-        ret = {}
-
-        for item in [
-            "acc_return_yield",
-            "annualized_return_yield",
-            "annualized_volatility",
-            "max_drawback",
-            "sharpe_ratio",
-            "calmar_ratio",
-            "sortino_ratio",
-            "var",
-            "cvar"
-        ]:
-            n = getattr(Formula, item)(data).to_dict()
-            if item == 'annualized_volatility':
-                for item_ in ['vol', 'downside_vol']:
-                    n_ = {x: y[item_] for x, y in n.items()}
-                    ret.update({item_: n_})
-            elif item == 'max_drawback':
-                n = {x: y['drawback'] for x, y in n.items()}
-                ret.update({item: n})
-            else:
-                ret.update({item: n})
-        ret = pd.DataFrame(ret)
-        return ret
+            ret.update({item: n})
+    ret = pd.DataFrame(ret)
+    return ret
 
 
-class BacktestWeightView(APIView):
+async def portfolio_nav(request, rpc_method: str):
+    """标准基金组合数据"""
+    date = request.GET.get('date', datetime.date.today())
+    date = arrow.get(date).date()
+    with Client(*RpcProxyHost.split(':')) as client:
+        data = getattr(client, rpc_method)()
+    mapping = {1: 'cash', 2: 'fix', 3: 'equal', 4: 'increase', 5: 'equity'}
+    data = [{'port_name': mapping.get(x.port_code), 'date': arrow.get(x.date).date(), 'unitnv': x.unitnv} for x in data]
+    data = pd.DataFrame(data).pivot_table(index='date', columns='port_name', values='unitnv')
+    index = await index_data()
+    data = data.merge(index, left_index=True, right_index=True)
+    data = data[data.index <= date]
+    data = data.fillna(method='pad')
+    perf = calc_performance(data)
+    perf = perf.reset_index()
+    return data, perf
+
+
+async def standard_portfolio(request):
+    """标准基金组合数据"""
+    data, perf = await portfolio_nav(request, 'standard_portfolio')
+    names = {
+        'cash': '现金型', 'fix': '固收型', 'equal': '平衡型', 'increase': '成长型', 'equity': '权益型',
+        'zz800': '中证800', 'zcf': '中债总财富'
+    }
+    perf['index'] = perf['index'].apply(lambda x: names.get(x))
+    with pd.ExcelWriter(file_dir / 'backtest.xlsx') as excel:
+        data.rename(columns=names).to_excel(excel, sheet_name='回测净值')
+        perf.to_excel(excel, sheet_name='业绩表现')
+    perf = perf.to_dict(orient='records')
+    nav = data.reset_index().to_dict(orient='records')
+    return JsonResponse(data={'nav': nav, 'perf': perf})
+
+
+def download(request):
+    file_path = file_dir / 'backtest.xlsx'
+    if file_path.is_file():
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
+            response['Content-Disposition'] = 'inline; filename=' + file_path.name
+            return response
+    raise Http404
+
+
+async def fund_index_portfolio(request):
+    """基金指数组合净值"""
+    data, perf = await portfolio_nav(request, 'fund_index_portfolio')
+    names = {
+        'cash': '现金型', 'fix': '固收型', 'equal': '平衡型', 'increase': '成长型', 'equity': '权益型',
+        'zz800': '中证800', 'zcf': '中债总财富'
+    }
+    perf['index'] = perf['index'].apply(lambda x: names.get(x))
+    perf = perf.to_dict(orient='records')
+    nav = data.reset_index().to_dict(orient='records')
+    return JsonResponse(data={'nav': nav, 'perf': perf})
+
+
+class BacktestWeightView(object):
     def get(self, request):
         w = self.process(request)
         return Response(w)
@@ -168,6 +159,21 @@ class BacktestWeightView(APIView):
         return w
 
     @staticmethod
+    async def weight(request):
+        date = request.GET.get('date', datetime.date.today())
+        date = arrow.get(date).date()
+        with Client(*RpcProxyHost.split(':')) as client:
+            data = client.weight()
+        data = [{
+            'target_risk': round(x.target_risk, 2), 'date': x.date, 'equity_bound_limit': 0.5, 'equity': x.equity,
+            'bond': x.fixed_income, 'alter': x.alternative, 'cash': x.monetary, 'hs300': x.hs300, 'zz500': x.zz500,
+            'zz': x.zz, 'hs': x.hs, 'zcf': x.llz, 'qyz': x.xyz, 'hb': x.hb, 'hj': x.hj
+        } for x in data if arrow.get(x.date).date() <= date]
+        df = pd.DataFrame(data)
+        df.to_excel(file_dir / 'weight.xlsx', index=False)
+        return JsonResponse(data, safe=False)
+
+    @staticmethod
     def download(request):
         file_path = file_dir / 'weight.xlsx'
         if file_path.is_file():
@@ -176,14 +182,3 @@ class BacktestWeightView(APIView):
                 response['Content-Disposition'] = 'inline; filename=' + file_path.name
                 return response
         raise Http404
-
-
-class BackTestIndexView(APIView):
-    """指数组合回测
-
-    回测分为基金组合和指数组合，此处处理指数组合
-    """
-    @staticmethod
-    def get(request):
-        data = cache.get_or_set('index_backtest', BackTestView.process(request, btc=IBTConfig, bt=IBackTest))
-        return Response(data)
