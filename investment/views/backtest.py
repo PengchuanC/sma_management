@@ -3,25 +3,14 @@ import datetime
 import arrow
 import pandas as pd
 
-from concurrent.futures import ThreadPoolExecutor
-from dateutil.parser import parse
-from django.forms import model_to_dict
 from django.http import HttpResponse, Http404, JsonResponse
-from django.core.cache import cache
-from rest_framework.views import APIView, Response
 from channels.db import database_sync_to_async
 
 from sma_management.settings import RpcProxyHost
-from investment.utils.backtest import BackTest, BTConfig, IBTConfig, IBackTest
 from investment.utils.calc import Formula
 from investment import models
 from investment.utils.download import file_dir
 from services.backtest_client import Client
-
-
-tpe = ThreadPoolExecutor(2)
-
-fund_date = None
 
 
 async def index_data():
@@ -167,8 +156,8 @@ class BacktestWeightView(object):
         data = [{
             'target_risk': round(x.target_risk, 2), 'date': x.date, 'equity_bound_limit': 0.5, 'equity': x.equity,
             'bond': x.fixed_income, 'alter': x.alternative, 'cash': x.monetary, 'hs300': x.hs300, 'zz500': x.zz500,
-            'zz': x.zz, 'hs': x.hs, 'zcf': x.llz, 'qyz': x.xyz, 'hb': x.hb, 'hj': x.hj
-        } for x in data if arrow.get(x.date).date() <= date]
+            'zz': x.zz, 'hs': x.hs, 'zcf': x.llz, 'qyz': x.xyz, 'hb': x.hb, 'hj': x.hj, 'key': idx + 1
+        } for idx, x in enumerate(data) if arrow.get(x.date).date() <= date]
         df = pd.DataFrame(data)
         df.to_excel(file_dir / 'weight.xlsx', index=False)
         return JsonResponse(data, safe=False)
