@@ -8,6 +8,8 @@ from crawl.fund_fee_howbuy import commit_fund_fee_hb
 from crawl.fund_fee import commit_fund_fee_em
 from sql.commit.funds_extend import commit_fund_quote
 from services.client import Client
+from services.backtest_client import Client as BacktestClient
+from sma_management.settings import RpcProxyHost
 
 
 def save_prev_valuation_nav():
@@ -59,6 +61,12 @@ def commit_fund_fee():
 def commit_weighted_average_return():
     """更新组合单只基金加权收益"""
     tools.commit_return_yield()
+
+
+def commit_backtest():
+    """同步SMA标准组合回测数据"""
+    with BacktestClient(*RpcProxyHost.split(':')) as client:
+        client.sync_data()
 
 
 if __name__ == '__main__':
