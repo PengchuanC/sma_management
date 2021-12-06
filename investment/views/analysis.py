@@ -126,10 +126,10 @@ class AttributeChartView(APIView):
         ftd = (arrow.get(launch).shift(days=-1).date(), launch, date.date())
         week = AttributeChartView.last_trading_day_of_last_week(date_str)
         wsp = date.span('week')
-        wtd = (wsp[0].date(), week, wsp[1].date())
+        wtd = (wsp[0].date(), week, date_str)
         month = AttributeChartView.last_trading_day_of_last_month(date_str)
         msp = date.span('month')
-        mtd = (msp[0].date(), month, wsp[1].date())
+        mtd = (msp[0].shift(days=-1).date(), month, msp[1].date())
         ret = []
         for d in [ftd, wtd, mtd]:
             start, prev, end = d
