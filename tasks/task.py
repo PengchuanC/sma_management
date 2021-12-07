@@ -73,4 +73,5 @@ if __name__ == '__main__':
     # commit_portfolio_allocate()
     # commit_fund_pos()
     # pre_valuation()
-    commit_all_db_task()
+    # commit_all_db_task()
+    save_prev_valuation_nav()

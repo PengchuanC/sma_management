@@ -19,15 +19,15 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0e\x62\x61\x63ktest.proto\x12\x08services\"5\n\x07Request\x1a\r\n\x0bNullRequest\x1a\x1b\n\x0b\x44\x61teRequest\x12\x0c\n\x04\x64\x61te\x18\x01 \x01(\t\"\x8f\x01\n\x08Response\x1a*\n\x0bNavResponse\x12\x1b\n\x04\x64\x61ta\x18\x01 \x03(\x0b\x32\r.services.Nav\x1a\x30\n\x0eWeightResponse\x12\x1e\n\x04\x64\x61ta\x18\x01 \x03(\x0b\x32\x10.services.Weight\x1a%\n\x0eStatusResponse\x12\x13\n\x0bstatus_code\x18\x01 \x01(\x04\"6\n\x03Nav\x12\x11\n\tport_code\x18\x01 \x01(\x04\x12\x0c\n\x04\x64\x61te\x18\x02 \x01(\t\x12\x0e\n\x06unitnv\x18\x03 \x01(\x02\"\xe0\x01\n\x06Weight\x12\x0c\n\x04\x64\x61te\x18\x01 \x01(\t\x12\x13\n\x0btarget_risk\x18\x02 \x01(\x02\x12\x0e\n\x06\x65quity\x18\x03 \x01(\x02\x12\x14\n\x0c\x66ixed_income\x18\x04 \x01(\x02\x12\x13\n\x0b\x61lternative\x18\x05 \x01(\x02\x12\x10\n\x08monetary\x18\x06 \x01(\x02\x12\r\n\x05hs300\x18\x07 \x01(\x02\x12\r\n\x05zz500\x18\x08 \x01(\x02\x12\n\n\x02zz\x18\t \x01(\x02\x12\n\n\x02hs\x18\n \x01(\x02\x12\x0b\n\x03llz\x18\x0b \x01(\x02\x12\x0b\n\x03xyz\x18\x0c \x01(\x02\x12\n\n\x02hb\x18\r \x01(\x02\x12\n\n\x02hj\x18\x0e \x01(\x02\x32\xad\x03\n\x0e\x42\x61\x63ktestServer\x12U\n\x14StandardPortfolioNav\x12\x1d.services.Request.NullRequest\x1a\x1e.services.Response.NavResponse\x12J\n\x06Weight\x12\x1d.services.Request.NullRequest\x1a!.services.Response.WeightResponse\x12R\n\x11IndexPortfolioNav\x12\x1d.services.Request.NullRequest\x1a\x1e.services.Response.NavResponse\x12V\n\x15\x46undIndexPortfolioNav\x12\x1d.services.Request.NullRequest\x1a\x1e.services.Response.NavResponse\x12L\n\x08SyncData\x12\x1d.services.Request.NullRequest\x1a!.services.Response.StatusResponseb\x06proto3'
+  serialized_pb=b'\n\x0e\x62\x61\x63ktest.proto\x12\x08services\"6\n\x08\x42Request\x1a\r\n\x0bNullRequest\x1a\x1b\n\x0b\x44\x61teRequest\x12\x0c\n\x04\x64\x61te\x18\x01 \x01(\t\"\x90\x01\n\tBResponse\x1a*\n\x0bNavResponse\x12\x1b\n\x04\x64\x61ta\x18\x01 \x03(\x0b\x32\r.services.Nav\x1a\x30\n\x0eWeightResponse\x12\x1e\n\x04\x64\x61ta\x18\x01 \x03(\x0b\x32\x10.services.Weight\x1a%\n\x0eStatusResponse\x12\x13\n\x0bstatus_code\x18\x01 \x01(\x04\"6\n\x03Nav\x12\x11\n\tport_code\x18\x01 \x01(\x04\x12\x0c\n\x04\x64\x61te\x18\x02 \x01(\t\x12\x0e\n\x06unitnv\x18\x03 \x01(\x02\"\xe0\x01\n\x06Weight\x12\x0c\n\x04\x64\x61te\x18\x01 \x01(\t\x12\x13\n\x0btarget_risk\x18\x02 \x01(\x02\x12\x0e\n\x06\x65quity\x18\x03 \x01(\x02\x12\x14\n\x0c\x66ixed_income\x18\x04 \x01(\x02\x12\x13\n\x0b\x61lternative\x18\x05 \x01(\x02\x12\x10\n\x08monetary\x18\x06 \x01(\x02\x12\r\n\x05hs300\x18\x07 \x01(\x02\x12\r\n\x05zz500\x18\x08 \x01(\x02\x12\n\n\x02zz\x18\t \x01(\x02\x12\n\n\x02hs\x18\n \x01(\x02\x12\x0b\n\x03llz\x18\x0b \x01(\x02\x12\x0b\n\x03xyz\x18\x0c \x01(\x02\x12\n\n\x02hb\x18\r \x01(\x02\x12\n\n\x02hj\x18\x0e \x01(\x02\x32\xb7\x03\n\x0e\x42\x61\x63ktestServer\x12W\n\x14StandardPortfolioNav\x12\x1e.services.BRequest.NullRequest\x1a\x1f.services.BResponse.NavResponse\x12L\n\x06Weight\x12\x1e.services.BRequest.NullRequest\x1a\".services.BResponse.WeightResponse\x12T\n\x11IndexPortfolioNav\x12\x1e.services.BRequest.NullRequest\x1a\x1f.services.BResponse.NavResponse\x12X\n\x15\x46undIndexPortfolioNav\x12\x1e.services.BRequest.NullRequest\x1a\x1f.services.BResponse.NavResponse\x12N\n\x08SyncData\x12\x1e.services.BRequest.NullRequest\x1a\".services.BResponse.StatusResponseb\x06proto3'
 )
 
 
 
 
-_REQUEST_NULLREQUEST = _descriptor.Descriptor(
+_BREQUEST_NULLREQUEST = _descriptor.Descriptor(
   name='NullRequest',
-  full_name='services.Request.NullRequest',
+  full_name='services.BRequest.NullRequest',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
@@ -45,20 +45,20 @@ _REQUEST_NULLREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=39,
-  serialized_end=52,
+  serialized_start=40,
+  serialized_end=53,
 )
 
-_REQUEST_DATEREQUEST = _descriptor.Descriptor(
+_BREQUEST_DATEREQUEST = _descriptor.Descriptor(
   name='DateRequest',
-  full_name='services.Request.DateRequest',
+  full_name='services.BRequest.DateRequest',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='date', full_name='services.Request.DateRequest.date', index=0,
+      name='date', full_name='services.BRequest.DateRequest.date', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -76,13 +76,13 @@ _REQUEST_DATEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=54,
-  serialized_end=81,
+  serialized_start=55,
+  serialized_end=82,
 )
 
-_REQUEST = _descriptor.Descriptor(
-  name='Request',
-  full_name='services.Request',
+_BREQUEST = _descriptor.Descriptor(
+  name='BRequest',
+  full_name='services.BRequest',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
@@ -91,7 +91,7 @@ _REQUEST = _descriptor.Descriptor(
   ],
   extensions=[
   ],
-  nested_types=[_REQUEST_NULLREQUEST, _REQUEST_DATEREQUEST, ],
+  nested_types=[_BREQUEST_NULLREQUEST, _BREQUEST_DATEREQUEST, ],
   enum_types=[
   ],
   serialized_options=None,
@@ -101,20 +101,20 @@ _REQUEST = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=28,
-  serialized_end=81,
+  serialized_end=82,
 )
 
 
-_RESPONSE_NAVRESPONSE = _descriptor.Descriptor(
+_BRESPONSE_NAVRESPONSE = _descriptor.Descriptor(
   name='NavResponse',
-  full_name='services.Response.NavResponse',
+  full_name='services.BResponse.NavResponse',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='data', full_name='services.Response.NavResponse.data', index=0,
+      name='data', full_name='services.BResponse.NavResponse.data', index=0,
       number=1, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
@@ -132,20 +132,20 @@ _RESPONSE_NAVRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=96,
-  serialized_end=138,
+  serialized_start=98,
+  serialized_end=140,
 )
 
-_RESPONSE_WEIGHTRESPONSE = _descriptor.Descriptor(
+_BRESPONSE_WEIGHTRESPONSE = _descriptor.Descriptor(
   name='WeightResponse',
-  full_name='services.Response.WeightResponse',
+  full_name='services.BResponse.WeightResponse',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='data', full_name='services.Response.WeightResponse.data', index=0,
+      name='data', full_name='services.BResponse.WeightResponse.data', index=0,
       number=1, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
@@ -163,20 +163,20 @@ _RESPONSE_WEIGHTRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=140,
-  serialized_end=188,
+  serialized_start=142,
+  serialized_end=190,
 )
 
-_RESPONSE_STATUSRESPONSE = _descriptor.Descriptor(
+_BRESPONSE_STATUSRESPONSE = _descriptor.Descriptor(
   name='StatusResponse',
-  full_name='services.Response.StatusResponse',
+  full_name='services.BResponse.StatusResponse',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='status_code', full_name='services.Response.StatusResponse.status_code', index=0,
+      name='status_code', full_name='services.BResponse.StatusResponse.status_code', index=0,
       number=1, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -194,13 +194,13 @@ _RESPONSE_STATUSRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=190,
-  serialized_end=227,
+  serialized_start=192,
+  serialized_end=229,
 )
 
-_RESPONSE = _descriptor.Descriptor(
-  name='Response',
-  full_name='services.Response',
+_BRESPONSE = _descriptor.Descriptor(
+  name='BResponse',
+  full_name='services.BResponse',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
@@ -209,7 +209,7 @@ _RESPONSE = _descriptor.Descriptor(
   ],
   extensions=[
   ],
-  nested_types=[_RESPONSE_NAVRESPONSE, _RESPONSE_WEIGHTRESPONSE, _RESPONSE_STATUSRESPONSE, ],
+  nested_types=[_BRESPONSE_NAVRESPONSE, _BRESPONSE_WEIGHTRESPONSE, _BRESPONSE_STATUSRESPONSE, ],
   enum_types=[
   ],
   serialized_options=None,
@@ -218,8 +218,8 @@ _RESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=84,
-  serialized_end=227,
+  serialized_start=85,
+  serialized_end=229,
 )
 
 
@@ -264,8 +264,8 @@ _NAV = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=229,
-  serialized_end=283,
+  serialized_start=231,
+  serialized_end=285,
 )
 
 
@@ -387,76 +387,76 @@ _WEIGHT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=286,
-  serialized_end=510,
+  serialized_start=288,
+  serialized_end=512,
 )
 
-_REQUEST_NULLREQUEST.containing_type = _REQUEST
-_REQUEST_DATEREQUEST.containing_type = _REQUEST
-_RESPONSE_NAVRESPONSE.fields_by_name['data'].message_type = _NAV
-_RESPONSE_NAVRESPONSE.containing_type = _RESPONSE
-_RESPONSE_WEIGHTRESPONSE.fields_by_name['data'].message_type = _WEIGHT
-_RESPONSE_WEIGHTRESPONSE.containing_type = _RESPONSE
-_RESPONSE_STATUSRESPONSE.containing_type = _RESPONSE
-DESCRIPTOR.message_types_by_name['Request'] = _REQUEST
-DESCRIPTOR.message_types_by_name['Response'] = _RESPONSE
+_BREQUEST_NULLREQUEST.containing_type = _BREQUEST
+_BREQUEST_DATEREQUEST.containing_type = _BREQUEST
+_BRESPONSE_NAVRESPONSE.fields_by_name['data'].message_type = _NAV
+_BRESPONSE_NAVRESPONSE.containing_type = _BRESPONSE
+_BRESPONSE_WEIGHTRESPONSE.fields_by_name['data'].message_type = _WEIGHT
+_BRESPONSE_WEIGHTRESPONSE.containing_type = _BRESPONSE
+_BRESPONSE_STATUSRESPONSE.containing_type = _BRESPONSE
+DESCRIPTOR.message_types_by_name['BRequest'] = _BREQUEST
+DESCRIPTOR.message_types_by_name['BResponse'] = _BRESPONSE
 DESCRIPTOR.message_types_by_name['Nav'] = _NAV
 DESCRIPTOR.message_types_by_name['Weight'] = _WEIGHT
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
-Request = _reflection.GeneratedProtocolMessageType('Request', (_message.Message,), {
+BRequest = _reflection.GeneratedProtocolMessageType('BRequest', (_message.Message,), {
 
   'NullRequest' : _reflection.GeneratedProtocolMessageType('NullRequest', (_message.Message,), {
-    'DESCRIPTOR' : _REQUEST_NULLREQUEST,
+    'DESCRIPTOR' : _BREQUEST_NULLREQUEST,
     '__module__' : 'backtest_pb2'
-    # @@protoc_insertion_point(class_scope:services.Request.NullRequest)
+    # @@protoc_insertion_point(class_scope:services.BRequest.NullRequest)
     })
   ,
 
   'DateRequest' : _reflection.GeneratedProtocolMessageType('DateRequest', (_message.Message,), {
-    'DESCRIPTOR' : _REQUEST_DATEREQUEST,
+    'DESCRIPTOR' : _BREQUEST_DATEREQUEST,
     '__module__' : 'backtest_pb2'
-    # @@protoc_insertion_point(class_scope:services.Request.DateRequest)
+    # @@protoc_insertion_point(class_scope:services.BRequest.DateRequest)
     })
   ,
-  'DESCRIPTOR' : _REQUEST,
+  'DESCRIPTOR' : _BREQUEST,
   '__module__' : 'backtest_pb2'
-  # @@protoc_insertion_point(class_scope:services.Request)
+  # @@protoc_insertion_point(class_scope:services.BRequest)
   })
-_sym_db.RegisterMessage(Request)
-_sym_db.RegisterMessage(Request.NullRequest)
-_sym_db.RegisterMessage(Request.DateRequest)
+_sym_db.RegisterMessage(BRequest)
+_sym_db.RegisterMessage(BRequest.NullRequest)
+_sym_db.RegisterMessage(BRequest.DateRequest)
 
-Response = _reflection.GeneratedProtocolMessageType('Response', (_message.Message,), {
+BResponse = _reflection.GeneratedProtocolMessageType('BResponse', (_message.Message,), {
 
   'NavResponse' : _reflection.GeneratedProtocolMessageType('NavResponse', (_message.Message,), {
-    'DESCRIPTOR' : _RESPONSE_NAVRESPONSE,
+    'DESCRIPTOR' : _BRESPONSE_NAVRESPONSE,
     '__module__' : 'backtest_pb2'
-    # @@protoc_insertion_point(class_scope:services.Response.NavResponse)
+    # @@protoc_insertion_point(class_scope:services.BResponse.NavResponse)
     })
   ,
 
   'WeightResponse' : _reflection.GeneratedProtocolMessageType('WeightResponse', (_message.Message,), {
-    'DESCRIPTOR' : _RESPONSE_WEIGHTRESPONSE,
+    'DESCRIPTOR' : _BRESPONSE_WEIGHTRESPONSE,
     '__module__' : 'backtest_pb2'
-    # @@protoc_insertion_point(class_scope:services.Response.WeightResponse)
+    # @@protoc_insertion_point(class_scope:services.BResponse.WeightResponse)
     })
   ,
 
   'StatusResponse' : _reflection.GeneratedProtocolMessageType('StatusResponse', (_message.Message,), {
-    'DESCRIPTOR' : _RESPONSE_STATUSRESPONSE,
+    'DESCRIPTOR' : _BRESPONSE_STATUSRESPONSE,
     '__module__' : 'backtest_pb2'
-    # @@protoc_insertion_point(class_scope:services.Response.StatusResponse)
+    # @@protoc_insertion_point(class_scope:services.BResponse.StatusResponse)
     })
   ,
-  'DESCRIPTOR' : _RESPONSE,
+  'DESCRIPTOR' : _BRESPONSE,
   '__module__' : 'backtest_pb2'
-  # @@protoc_insertion_point(class_scope:services.Response)
+  # @@protoc_insertion_point(class_scope:services.BResponse)
   })
-_sym_db.RegisterMessage(Response)
-_sym_db.RegisterMessage(Response.NavResponse)
-_sym_db.RegisterMessage(Response.WeightResponse)
-_sym_db.RegisterMessage(Response.StatusResponse)
+_sym_db.RegisterMessage(BResponse)
+_sym_db.RegisterMessage(BResponse.NavResponse)
+_sym_db.RegisterMessage(BResponse.WeightResponse)
+_sym_db.RegisterMessage(BResponse.StatusResponse)
 
 Nav = _reflection.GeneratedProtocolMessageType('Nav', (_message.Message,), {
   'DESCRIPTOR' : _NAV,
@@ -481,16 +481,16 @@ _BACKTESTSERVER = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=513,
-  serialized_end=942,
+  serialized_start=515,
+  serialized_end=954,
   methods=[
   _descriptor.MethodDescriptor(
     name='StandardPortfolioNav',
     full_name='services.BacktestServer.StandardPortfolioNav',
     index=0,
     containing_service=None,
-    input_type=_REQUEST_NULLREQUEST,
-    output_type=_RESPONSE_NAVRESPONSE,
+    input_type=_BREQUEST_NULLREQUEST,
+    output_type=_BRESPONSE_NAVRESPONSE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),
@@ -499,8 +499,8 @@ _BACKTESTSERVER = _descriptor.ServiceDescriptor(
     full_name='services.BacktestServer.Weight',
     index=1,
     containing_service=None,
-    input_type=_REQUEST_NULLREQUEST,
-    output_type=_RESPONSE_WEIGHTRESPONSE,
+    input_type=_BREQUEST_NULLREQUEST,
+    output_type=_BRESPONSE_WEIGHTRESPONSE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),
@@ -509,8 +509,8 @@ _BACKTESTSERVER = _descriptor.ServiceDescriptor(
     full_name='services.BacktestServer.IndexPortfolioNav',
     index=2,
     containing_service=None,
-    input_type=_REQUEST_NULLREQUEST,
-    output_type=_RESPONSE_NAVRESPONSE,
+    input_type=_BREQUEST_NULLREQUEST,
+    output_type=_BRESPONSE_NAVRESPONSE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),
@@ -519,8 +519,8 @@ _BACKTESTSERVER = _descriptor.ServiceDescriptor(
     full_name='services.BacktestServer.FundIndexPortfolioNav',
     index=3,
     containing_service=None,
-    input_type=_REQUEST_NULLREQUEST,
-    output_type=_RESPONSE_NAVRESPONSE,
+    input_type=_BREQUEST_NULLREQUEST,
+    output_type=_BRESPONSE_NAVRESPONSE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),
@@ -529,8 +529,8 @@ _BACKTESTSERVER = _descriptor.ServiceDescriptor(
     full_name='services.BacktestServer.SyncData',
     index=4,
     containing_service=None,
-    input_type=_REQUEST_NULLREQUEST,
-    output_type=_RESPONSE_STATUSRESPONSE,
+    input_type=_BREQUEST_NULLREQUEST,
+    output_type=_BRESPONSE_STATUSRESPONSE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),

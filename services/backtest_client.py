@@ -19,27 +19,27 @@ class Client(object):
         self.channel.close()
 
     def standard_portfolio(self):
-        request = pb.Request.NullRequest()
+        request = pb.BRequest.NullRequest()
         resp = self.stub.StandardPortfolioNav(request=request)
         return resp.data
 
     def weight(self):
-        request = pb.Request.NullRequest()
+        request = pb.BRequest.NullRequest()
         resp = self.stub.Weight(request=request)
         return resp.data
 
     def index_portfolio(self):
-        request = pb.Request.NullRequest()
+        request = pb.BRequest.NullRequest()
         resp = self.stub.IndexPortfolioNav(request=request)
         return resp.data
 
     def fund_index_portfolio(self):
-        request = pb.Request.NullRequest()
+        request = pb.BRequest.NullRequest()
         resp = self.stub.FundIndexPortfolioNav(request=request)
         return resp.data
 
     def sync_data(self):
-        request = pb.Request.NullRequest()
+        request = pb.BRequest.NullRequest()
         self.stub.SyncData(request=request)
 
 

@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-from . import backtest_pb2 as backtest__pb2
+from services import backtest_pb2 as backtest__pb2
 
 
 class BacktestServerStub(object):
@@ -16,28 +16,28 @@ class BacktestServerStub(object):
         """
         self.StandardPortfolioNav = channel.unary_unary(
                 '/services.BacktestServer/StandardPortfolioNav',
-                request_serializer=backtest__pb2.Request.NullRequest.SerializeToString,
-                response_deserializer=backtest__pb2.Response.NavResponse.FromString,
+                request_serializer=backtest__pb2.BRequest.NullRequest.SerializeToString,
+                response_deserializer=backtest__pb2.BResponse.NavResponse.FromString,
                 )
         self.Weight = channel.unary_unary(
                 '/services.BacktestServer/Weight',
-                request_serializer=backtest__pb2.Request.NullRequest.SerializeToString,
-                response_deserializer=backtest__pb2.Response.WeightResponse.FromString,
+                request_serializer=backtest__pb2.BRequest.NullRequest.SerializeToString,
+                response_deserializer=backtest__pb2.BResponse.WeightResponse.FromString,
                 )
         self.IndexPortfolioNav = channel.unary_unary(
                 '/services.BacktestServer/IndexPortfolioNav',
-                request_serializer=backtest__pb2.Request.NullRequest.SerializeToString,
-                response_deserializer=backtest__pb2.Response.NavResponse.FromString,
+                request_serializer=backtest__pb2.BRequest.NullRequest.SerializeToString,
+                response_deserializer=backtest__pb2.BResponse.NavResponse.FromString,
                 )
         self.FundIndexPortfolioNav = channel.unary_unary(
                 '/services.BacktestServer/FundIndexPortfolioNav',
-                request_serializer=backtest__pb2.Request.NullRequest.SerializeToString,
-                response_deserializer=backtest__pb2.Response.NavResponse.FromString,
+                request_serializer=backtest__pb2.BRequest.NullRequest.SerializeToString,
+                response_deserializer=backtest__pb2.BResponse.NavResponse.FromString,
                 )
         self.SyncData = channel.unary_unary(
                 '/services.BacktestServer/SyncData',
-                request_serializer=backtest__pb2.Request.NullRequest.SerializeToString,
-                response_deserializer=backtest__pb2.Response.StatusResponse.FromString,
+                request_serializer=backtest__pb2.BRequest.NullRequest.SerializeToString,
+                response_deserializer=backtest__pb2.BResponse.StatusResponse.FromString,
                 )
 
 
@@ -84,28 +84,28 @@ def add_BacktestServerServicer_to_server(servicer, server):
     rpc_method_handlers = {
             'StandardPortfolioNav': grpc.unary_unary_rpc_method_handler(
                     servicer.StandardPortfolioNav,
-                    request_deserializer=backtest__pb2.Request.NullRequest.FromString,
-                    response_serializer=backtest__pb2.Response.NavResponse.SerializeToString,
+                    request_deserializer=backtest__pb2.BRequest.NullRequest.FromString,
+                    response_serializer=backtest__pb2.BResponse.NavResponse.SerializeToString,
             ),
             'Weight': grpc.unary_unary_rpc_method_handler(
                     servicer.Weight,
-                    request_deserializer=backtest__pb2.Request.NullRequest.FromString,
-                    response_serializer=backtest__pb2.Response.WeightResponse.SerializeToString,
+                    request_deserializer=backtest__pb2.BRequest.NullRequest.FromString,
+                    response_serializer=backtest__pb2.BResponse.WeightResponse.SerializeToString,
             ),
             'IndexPortfolioNav': grpc.unary_unary_rpc_method_handler(
                     servicer.IndexPortfolioNav,
-                    request_deserializer=backtest__pb2.Request.NullRequest.FromString,
-                    response_serializer=backtest__pb2.Response.NavResponse.SerializeToString,
+                    request_deserializer=backtest__pb2.BRequest.NullRequest.FromString,
+                    response_serializer=backtest__pb2.BResponse.NavResponse.SerializeToString,
             ),
             'FundIndexPortfolioNav': grpc.unary_unary_rpc_method_handler(
                     servicer.FundIndexPortfolioNav,
-                    request_deserializer=backtest__pb2.Request.NullRequest.FromString,
-                    response_serializer=backtest__pb2.Response.NavResponse.SerializeToString,
+                    request_deserializer=backtest__pb2.BRequest.NullRequest.FromString,
+                    response_serializer=backtest__pb2.BResponse.NavResponse.SerializeToString,
             ),
             'SyncData': grpc.unary_unary_rpc_method_handler(
                     servicer.SyncData,
-                    request_deserializer=backtest__pb2.Request.NullRequest.FromString,
-                    response_serializer=backtest__pb2.Response.StatusResponse.SerializeToString,
+                    request_deserializer=backtest__pb2.BRequest.NullRequest.FromString,
+                    response_serializer=backtest__pb2.BResponse.StatusResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -129,8 +129,8 @@ class BacktestServer(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/services.BacktestServer/StandardPortfolioNav',
-            backtest__pb2.Request.NullRequest.SerializeToString,
-            backtest__pb2.Response.NavResponse.FromString,
+            backtest__pb2.BRequest.NullRequest.SerializeToString,
+            backtest__pb2.BResponse.NavResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -146,8 +146,8 @@ class BacktestServer(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/services.BacktestServer/Weight',
-            backtest__pb2.Request.NullRequest.SerializeToString,
-            backtest__pb2.Response.WeightResponse.FromString,
+            backtest__pb2.BRequest.NullRequest.SerializeToString,
+            backtest__pb2.BResponse.WeightResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -163,8 +163,8 @@ class BacktestServer(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/services.BacktestServer/IndexPortfolioNav',
-            backtest__pb2.Request.NullRequest.SerializeToString,
-            backtest__pb2.Response.NavResponse.FromString,
+            backtest__pb2.BRequest.NullRequest.SerializeToString,
+            backtest__pb2.BResponse.NavResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -180,8 +180,8 @@ class BacktestServer(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/services.BacktestServer/FundIndexPortfolioNav',
-            backtest__pb2.Request.NullRequest.SerializeToString,
-            backtest__pb2.Response.NavResponse.FromString,
+            backtest__pb2.BRequest.NullRequest.SerializeToString,
+            backtest__pb2.BResponse.NavResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
 
@@ -197,7 +197,7 @@ class BacktestServer(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/services.BacktestServer/SyncData',
-            backtest__pb2.Request.NullRequest.SerializeToString,
-            backtest__pb2.Response.StatusResponse.FromString,
+            backtest__pb2.BRequest.NullRequest.SerializeToString,
+            backtest__pb2.BResponse.StatusResponse.FromString,
             options, channel_credentials,
             insecure, call_credentials, compression, wait_for_ready, timeout, metadata)
