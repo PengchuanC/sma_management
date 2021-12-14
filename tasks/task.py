@@ -26,6 +26,9 @@ def commit_all_db_task():
             client.commit_all()
         except Exception as e:
             print(e)
+
+
+def commit_all_db_task_hook():
     commit_sma()
     tools.commit_return_yield()
 
