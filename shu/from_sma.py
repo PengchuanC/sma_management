@@ -82,13 +82,14 @@ async def balance_expanded(portfolio: models.Portfolio):
     date = await latest_update_date(models.BalanceExpanded, port_code)
     ret = []
     async for d in client.sma_balance_expanded(port_code, date):
-        m = models.BalanceExpanded(
-            port_code=portfolio, dividend_rec=d.dividend_rec, interest_rec=d.interest_rec, purchase_rec=d.purchase_rec,
+        m = dict(
+            dividend_rec=d.dividend_rec, interest_rec=d.interest_rec, purchase_rec=d.purchase_rec,
             redemption_pay=d.redemption_pay, redemption_fee_pay=d.redemption_fee_pay, management_pay=d.management_pay,
-            custodian_pay=d.custodian_pay, withholding_pay=d.withholding_pay, interest_pay=d.interest_pay, date=d.date
+            custodian_pay=d.custodian_pay, withholding_pay=d.withholding_pay, interest_pay=d.interest_pay
         )
         ret.append(m)
-    await sync_to_async(models.BalanceExpanded.objects.bulk_create)(ret)
+        await sync_to_async(models.BalanceExpanded.objects.update_or_create)(
+            port_code=portfolio, date=d.date, defaults=m)
 
 
 async def income(portfolio: models.Portfolio):
@@ -99,7 +100,6 @@ async def income(portfolio: models.Portfolio):
             port_code=portfolio, unit_nav=d.unit_nav, net_asset=d.net_asset, change=d.change, change_pct=d.change_pct,
             date=d.date
         )
-        print(m['port_code'], m['date'])
         await sync_to_async(models.Income.objects.update_or_create)(port_code=portfolio, date=d.date, defaults=m)
 
 
@@ -117,16 +117,15 @@ async def income_asset(portfolio: models.Portfolio):
 async def holding(portfolio: models.Portfolio):
     port_code = portfolio.port_code
     date = await latest_update_date(models.Holding, port_code)
-    ret = []
     async for d in client.sma_holding(port_code, date):
-        m = models.Holding(
+        m = dict(
             port_code=portfolio, secucode=d.secucode, holding_value=d.holding_value, mkt_cap=d.mkt_cap,
             current_cost=d.current_cost, total_cost=d.total_cost, fee=d.fee, flow_profit=d.flow_profit,
             total_profit=d.total_profit, dividend=d.dividend, total_dividend=d.total_dividend, category=d.category,
             trade_market=d.trade_market, date=d.date
         )
-        ret.append(m)
-    await sync_to_async(models.Holding.objects.bulk_create)(ret)
+        await sync_to_async(
+            models.Holding.objects.update_or_create)(port_code=portfolio, secucode=d.secucode, date=d.date, defaults=m)
 
 
 async def transaction(portfolio: models.Portfolio):
@@ -146,34 +145,31 @@ async def transaction(portfolio: models.Portfolio):
 async def detail_fee(portfolio: models.Portfolio):
     port_code = portfolio.port_code
     date = await latest_update_date(models.DetailFee, port_code)
-    ret = []
     async for d in client.sma_detail_fee(port_code, date):
-        m = models.DetailFee(
+        m = dict(
             port_code=portfolio, management=d.management, custodian=d.custodian, audit=d.audit, interest=d.interest,
             interest_tax=d.interest_tax, date=d.date
         )
-        ret.append(m)
-    await sync_to_async(models.DetailFee.objects.bulk_create)(ret)
+        await sync_to_async(models.DetailFee.objects.update_or_create)(port_code=portfolio, date=d.date, defaults=m)
 
 
 async def benchmark(portfolio: models.Portfolio):
     port_code = portfolio.port_code
     date = await latest_update_date(models.ValuationBenchmark, port_code)
-    ret = []
     async for d in client.sma_benchmark(port_code, date):
-        m = models.ValuationBenchmark(port_code=portfolio, unit_nav=d.unit_nav, date=d.date)
-        ret.append(m)
-    await sync_to_async(models.ValuationBenchmark.objects.bulk_create)(ret)
+        m = dict(port_code=portfolio, unit_nav=d.unit_nav, date=d.date)
+        await sync_to_async(
+            models.ValuationBenchmark.objects.update_or_create)(port_code=portfolio, date=d.date, defaults=m)
 
 
 async def interest_tax(portfolio: models.Portfolio):
     port_code = portfolio.port_code
     date = await latest_update_date(models.InterestTax, port_code)
-    ret = []
     async for d in client.sma_interest_tax(port_code, date):
-        m = models.InterestTax(port_code=portfolio, secucode=d.secucode, tax=d.tax, date=d.date)
-        ret.append(m)
-    await sync_to_async(models.InterestTax.objects.bulk_create)(ret)
+        m = dict(port_code=portfolio, secucode=d.secucode, tax=d.tax, date=d.date)
+        await sync_to_async(models.InterestTax.objects.update_or_create)(
+            port_code=portfolio, secucode=d.secucode, date=d.date, defaults=m
+        )
 
 
 async def security():
@@ -184,16 +180,18 @@ async def security():
 
 async def security_quote():
     try:
-        max_id = await sync_to_async(models.SecurityPrice.objects.latest)('id')
-        max_id = max_id.id
+        max_id = await sync_to_async(models.SecurityPrice.objects.latest)('auto_date')
+        max_id = max_id.auto_date
     except models.SecurityPrice.DoesNotExist:
-        max_id = 0
-    async for d in client.sma_security_quote(str(max_id)):
+        max_id = datetime.date(2020, 1, 1)
+    async for d in client.sma_security_quote(max_id.strftime('%Y-%m-%d')):
         default = {
             'secucode_id': d.secucode_id, 'date': d.date, 'auto_date': d.auto_date, 'price': d.price, 'note': d.note,
             'o32': d.o32
         }
-        await sync_to_async(models.SecurityPrice.objects.update_or_create)(id=d.id, defaults=default)
+        await sync_to_async(models.SecurityPrice.objects.update_or_create)(
+            id=d.id, defaults=default
+        )
 
 
 async def update_sma():
@@ -201,6 +199,7 @@ async def update_sma():
     whole = await sync_to_async(models.Portfolio.objects.filter)(settlemented=0)
     whole = await sync_to_async(list)(whole)
     for portfolio in whole:
+        print(portfolio)
         await update_portfolio_expanded()
         await balance(portfolio)
         await balance_expanded(portfolio)
@@ -217,7 +216,6 @@ async def update_sma():
 
 def commit_sma():
     """从客户服务系统更新sma数据"""
-    print('update')
     loop = asyncio.get_event_loop()
     loop.run_until_complete(update_sma())
 
