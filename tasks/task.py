@@ -74,4 +74,5 @@ if __name__ == '__main__':
     # commit_fund_pos()
     # pre_valuation()
     # commit_all_db_task()
-    save_prev_valuation_nav()
+    # save_prev_valuation_nav()
+    commit_sma()

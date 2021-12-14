@@ -67,16 +67,14 @@ async def latest_update_date(model, port_code: str):
 async def balance(portfolio: models.Portfolio):
     port_code = portfolio.port_code
     date = await latest_update_date(models.Balance, port_code)
-    ret = []
     async for d in client.sma_balance(port_code, date):
-        m = models.Balance(
+        m = dict(
             port_code=portfolio, asset=d.asset, debt=d.debt, net_asset=d.net_asset, shares=d.shares,
             unit_nav=d.unit_nav, acc_nav=d.acc_nav, savings=d.savings, fund_invest=d.fund_invest,
             liquidation=d.liquidation, value_added=d.value_added, profit_pay=d.profit_pay,
             cash_dividend=d.cash_dividend, security_deposit=d.security_deposit, date=d.date
         )
-        ret.append(m)
-    await sync_to_async(models.Balance.objects.bulk_create)(ret)
+        await sync_to_async(models.Balance.objects.update_or_create)(port_code=portfolio, date=d.date, defaults=m)
 
 
 async def balance_expanded(portfolio: models.Portfolio):
@@ -96,27 +94,24 @@ async def balance_expanded(portfolio: models.Portfolio):
 async def income(portfolio: models.Portfolio):
     port_code = portfolio.port_code
     date = await latest_update_date(models.Income, port_code)
-    ret = []
     async for d in client.sma_income(port_code, date):
-        m = models.Income(
+        m = dict(
             port_code=portfolio, unit_nav=d.unit_nav, net_asset=d.net_asset, change=d.change, change_pct=d.change_pct,
             date=d.date
         )
-        ret.append(m)
-    await sync_to_async(models.Income.objects.bulk_create)(ret)
+        print(m['port_code'], m['date'])
+        await sync_to_async(models.Income.objects.update_or_create)(port_code=portfolio, date=d.date, defaults=m)
 
 
 async def income_asset(portfolio: models.Portfolio):
     port_code = portfolio.port_code
     date = await latest_update_date(models.IncomeAsset, port_code)
-    ret = []
     async for d in client.sma_income_asset(port_code, date):
-        m = models.IncomeAsset(
+        m = dict(
             port_code=portfolio, total_profit=d.total_profit, equity=d.equity, bond=d.bond, alter=d.alter,
             money=d.money, date=d.date
         )
-        ret.append(m)
-    await sync_to_async(models.IncomeAsset.objects.bulk_create)(ret)
+        await sync_to_async(models.IncomeAsset.objects.update_or_create)(port_code=portfolio, date=d.date, defaults=m)
 
 
 async def holding(portfolio: models.Portfolio):
@@ -222,6 +217,7 @@ async def update_sma():
 
 def commit_sma():
     """从客户服务系统更新sma数据"""
+    print('update')
     loop = asyncio.get_event_loop()
     loop.run_until_complete(update_sma())
 
