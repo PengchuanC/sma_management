@@ -110,6 +110,19 @@ async def fund_index_portfolio(request):
     return JsonResponse(data={'nav': nav, 'perf': perf})
 
 
+async def index_portfolio(request):
+    """宽基指数组合"""
+    with Client(*RpcProxyHost.split(':')) as client:
+        data = client.index_portfolio()
+    mapping = {1: 'cash', 2: 'fix', 3: 'equal', 4: 'increase', 5: 'equity'}
+    data = [{'port_code': mapping.get(x.port_code), 'date': x.date, 'unitnv': x.unitnv} for x in data]
+    data = pd.DataFrame(data)
+    data = data.pivot_table(index='date', columns='port_code', values='unitnv')
+    data['date'] = data.index
+    data = data.to_dict(orient='records')
+    return JsonResponse(data, safe=False)
+
+
 class BacktestWeightView(object):
     def get(self, request):
         w = self.process(request)

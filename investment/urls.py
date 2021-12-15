@@ -64,6 +64,7 @@ urlpatterns = [
     path('backtest/', views.standard_portfolio),
     path('backtest/download/', views.download),
     path('backtest/index/', views.fund_index_portfolio),
+    path('backtest/index2/', views.index_portfolio),
     path('backtest/weight/', views.BacktestWeightView.weight),
     path('backtest/weight/download/', views.BacktestWeightView.download),
 
