@@ -21,7 +21,6 @@ schema_view = get_schema_view(
 urlpatterns = [
     path('management/admin/', admin.site.urls),
     path('management/api/v1/', include('investment.urls')),
-    path('management/api/v1/cta/', include('cta_fof.urls')),
     path('questionnaire/', include('questionnaire.urls')),
     path('question/', include('questionnaire.urls2')),
     # 文档
