@@ -28,7 +28,7 @@ class Portfolio(models.Model):
         choices=((1, '现金型'), (2, '固收型'), (3, '平衡型'), (4, '成长型'), (5, '权益型'), (6, 'CTA'))
     )
     launch_date = models.DateTimeField(null=False, verbose_name="成立日期")
-    settlemented = models.IntegerField(verbose_name='是否已清算', choices=((0, '是'), (1, '否')), default=1)
+    settlemented = models.IntegerField(verbose_name='是否已清算', choices=((0, '否'), (1, '是')), default=1)
     t_n = models.IntegerField(verbose_name="估值频率", default=1)
 
     class Meta:
