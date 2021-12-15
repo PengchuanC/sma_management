@@ -21,7 +21,7 @@ def save_prev_valuation_nav():
 
 def commit_all_db_task():
     """同步组合净值"""
-    with Client() as client:
+    with Client(RpcProxyHost) as client:
         try:
             client.commit_all()
         except Exception as e:
@@ -76,6 +76,6 @@ if __name__ == '__main__':
     # commit_portfolio_allocate()
     # commit_fund_pos()
     # pre_valuation()
-    # commit_all_db_task()
+    commit_all_db_task()
     # save_prev_valuation_nav()
-    commit_sma()
+    # commit_sma()
