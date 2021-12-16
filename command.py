@@ -10,7 +10,7 @@ import click
 from sql import tools
 from shu.run import shu_commit
 from crawl import fund_limit
-from proc import commit as proc_commit
+from sma_management.logger import logger
 
 
 @click.group()
@@ -72,17 +72,15 @@ def proc():
 @root.command()
 def run_all():
     """存在依赖顺序，shu必须先commit"""
-    shu_commit()
-    tools.commit_stocks()
-    tools.commit_fund()
-    tools.commit_basic_info()
-    tools.commit_index_gil()
-    tools.commit_tradingdays()
-    tools.commit_preprocess()
-
-    proc_commit.commit_valuation()
-    proc_commit.commit_transaction()
-    proc_commit.commit_holding()
+    tasks = [
+        shu_commit, tools.commit_tradingdays, tools.commit_stocks, tools.commit_fund, tools.commit_basic_info,
+        tools.commit_index_gil, tools.commit_preprocess
+    ]
+    for task in tasks:
+        try:
+            task()
+        except Exception as e:
+            logger.error(e)
 
 
 if __name__ == '__main__':

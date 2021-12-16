@@ -28,7 +28,7 @@ def commit_all_db_task():
             print(e)
 
 
-def commit_all_db_task_hook():
+def commit_all_db_task_hook(task):
     commit_sma()
     tools.commit_return_yield()
 
@@ -76,6 +76,6 @@ if __name__ == '__main__':
     # commit_portfolio_allocate()
     # commit_fund_pos()
     # pre_valuation()
-    commit_all_db_task()
+    tools.commit_return_yield()
     # save_prev_valuation_nav()
     # commit_sma()
