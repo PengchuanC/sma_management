@@ -99,6 +99,7 @@ def commit_fund_adj_nav():
     latest = latest_update_date(models.FundAdjPrice)
     data = data[data.agg(lambda x: x.date.date() > latest.get(x.secucode, ThisYear), axis=1)]
     data = replace_fund_instance(data)
+    data = data.dropna()
     commit_by_chunk(data, models.FundAdjPrice)
 
 
@@ -121,4 +122,4 @@ def commit_fund_acc_nav():
 
 
 if __name__ == '__main__':
-    commit_fund_acc_nav()
+    commit_fund_adj_nav()

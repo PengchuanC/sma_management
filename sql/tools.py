@@ -6,7 +6,7 @@ commit
 @desc:
 """
 
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, wait
 
 from django.db.transaction import atomic
 from sql.commit.index import (
@@ -56,8 +56,11 @@ def commit_fund():
         commit_fund_advisor, commit_asset_allocate_hk, commit_fund_holding_stock_hk
     )
 
+    tasks = []
     for target in targets:
-        pool.submit(target)
+        p = pool.submit(target)
+        tasks.append(p)
+    wait(tasks)
 
 
 def commit_trading_day():
