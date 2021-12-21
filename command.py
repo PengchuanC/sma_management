@@ -61,13 +61,6 @@ def shu():
 
 
 @root.command()
-def proc():
-    proc_commit.commit_valuation()
-    proc_commit.commit_transaction()
-    proc_commit.commit_holding()
-
-
-@root.command()
 def run_all():
     """存在依赖顺序，shu必须先commit"""
     tasks = [
