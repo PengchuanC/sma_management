@@ -73,9 +73,8 @@ async def fetch_stock_quote_loop(payload: dict):
         payload["page"] += 1
 
 
-async def fetch(params: dict):
+async def fetch(params: dict, date: datetime.datetime):
     params = update_query_params(**params)
-    date = datetime.datetime.now()
     dt = date.strftime('%Y-%m-%d')
     tm = date.strftime('%H:%M:%S')
     async for stocks in fetch_stock_quote_loop(params):
@@ -90,8 +89,9 @@ async def fetch(params: dict):
 
 
 async def commit():
-    await fetch({'size': 1000, 'market': 'CN'})
-    await fetch({'size': 1000, 'market': 'HK'})
+    date = datetime.datetime.now()
+    await fetch({'size': 1000, 'market': 'CN'}, date)
+    await fetch({'size': 1000, 'market': 'HK'}, date)
 
 
 if __name__ == '__main__':
