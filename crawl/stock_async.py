@@ -231,17 +231,17 @@ async def clear():
     await database.close()
 
 
-def schedule():
-    scheduler.add_job(main, 'cron', day_of_week='0-4', hour='9', minute='30-59', second='*/10')
-    scheduler.add_job(main, 'cron', day_of_week='0-4', hour='10,13,14', second='*/10')
-    scheduler.add_job(main, 'cron', day_of_week='0-4', hour='11', minute='0-29', second='*/10')
-    scheduler.add_job(main, 'cron', day_of_week='0-4', hour='15', minute='0', second='10')
-    scheduler.add_job(clear, 'cron', day_of_week='0-4', hour='9', minute='0', second='0')
+def schedule(task1, task2):
+    scheduler.add_job(task1, 'cron', day_of_week='0-4', hour='9', minute='30-59', second='*/10')
+    scheduler.add_job(task1, 'cron', day_of_week='0-4', hour='10,13,14', second='*/10')
+    scheduler.add_job(task1, 'cron', day_of_week='0-4', hour='11', minute='0-29', second='*/10')
+    scheduler.add_job(task1, 'cron', day_of_week='0-4', hour='15', minute='0', second='10')
+    scheduler.add_job(task2, 'cron', day_of_week='0-4', hour='9', minute='0', second='0')
     scheduler.start()
 
 
-def executor():
-    schedule()
+def executor(task1, task2):
+    schedule(task1, task2)
     pool = asyncio.get_event_loop()
     pool.run_forever()
 
@@ -252,4 +252,4 @@ def test():
 
 
 if __name__ == '__main__':
-    executor()
+    executor(main, clear)
