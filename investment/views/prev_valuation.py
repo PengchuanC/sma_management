@@ -69,6 +69,7 @@ class PreValuationConsumer(AsyncJsonWebsocketConsumer):
         stocks['change'] = stocks.price / stocks.prev_close - 1
         data = holding.merge(stocks, left_on='secucode',
                              right_on='secucode', how='inner')
+        data = data[data.ratio > 0]
         data['real_change'] = data.ratio * data.change.astype('float')
         data = data.groupby('time')['real_change'].sum().reset_index()
         data = data.rename(columns={'time': 'name', 'real_change': 'value'})
