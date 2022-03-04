@@ -78,7 +78,7 @@ def portfolio_holding_security(port_code: str, date):
     LOF、场外公募基金穿透到底层
     """
     holdings = models.Holding.objects.filter(port_code=port_code, date=date).values('secucode', 'mkt_cap')
-    balance = models.Balance.objects.get(port_code=port_code, date=date)
+    balance = models.Valuation.objects.get(port_code=port_code, date=date)
     net_value = balance.net_asset
     holdings = {x['secucode']: x['mkt_cap'] / net_value for x in holdings}
     ret = {}

@@ -20,8 +20,8 @@ def commit_return_yield():
 
 def _commit_return_yield(portfolio: models.Portfolio):
     last = models.Holding.objects.filter(port_code=portfolio.port_code).aggregate(mdate=Max('date'))['mdate']
-    holding = models.Holding.objects.filter(port_code=portfolio.port_code, date=last).values('secucode', 'trade_market')
-    holding = {x['secucode']: x['trade_market'] for x in holding}
+    holding = models.Holding.objects.filter(port_code=portfolio.port_code, date=last).values('secucode', 'market')
+    holding = {x['secucode']: x['market'] for x in holding}
     for secucode in holding:
         market = holding.get(secucode)
         ret = transactions(portfolio.port_code, secucode, last)
@@ -50,54 +50,54 @@ def transactions(port_code, secucode, date):
     ]
     history = models.Transactions.objects.filter(
         port_code=port_code, secucode=secucode, operation__in=operations, date__lte=date
-    ).values('date', 'order_price', 'order_value', 'operation')
+    ).values('date', 'entrust_price', 'busin_quantity', 'operation')
     history = pd.DataFrame(history)
     if history.empty:
         # 回购
         return
-    history['order_value'] = history['order_value'].astype(float)
+    history['busin_quantity'] = history['busin_quantity'].astype(float)
     buy_op = ['开放式基金认购成交确认', '开放式基金申购成交确认', '开放式基金转换转入成交确认', '证券买入', '开放式基金红利再投资']
     sell_op = ['开放式基金赎回成交确认', '开放式基金转换转出成交确认', '证券卖出']
-    buy = history[history.operation.isin(buy_op)][['date', 'order_price', 'order_value']]
-    buy = buy.groupby(['date', 'order_price']).sum().reset_index().sort_values('date')
-    buy = buy[buy['order_price'] != 0]
-    sell = history[history.operation.isin(sell_op)][['date', 'order_price', 'order_value']]
+    buy = history[history.operation.isin(buy_op)][['date', 'entrust_price', 'busin_quantity']]
+    buy = buy.groupby(['date', 'entrust_price']).sum().reset_index().sort_values('date')
+    buy = buy[buy['entrust_price'] != 0]
+    sell = history[history.operation.isin(sell_op)][['date', 'entrust_price', 'busin_quantity']]
     ret = []
     if sell.empty:
         # 没有卖出
         for _, d in buy.iterrows():
             ret.append({
-                'buy_at': d.date, 'sell_at': date + datetime.timedelta(days=1), 'deal_value': d.order_value,
-                'buy_price': d.order_price, 'sell_price': None
+                'buy_at': d.date, 'sell_at': date + datetime.timedelta(days=1), 'deal_value': d.busin_quantity,
+                'buy_price': d.entrust_price, 'sell_price': None
             })
         return ret
-    sell = sell.groupby(['date', 'order_price']).sum().reset_index()
+    sell = sell.groupby(['date', 'entrust_price']).sum().reset_index()
     data = [r for _, r in buy.iterrows()]
     for _, r in sell.iterrows():
         for b in data:
             d = weakref.ref(b)()
-            if r.order_value <= d.order_value:
+            if r.busin_quantity <= d.busin_quantity:
                 ret.append({
-                    'buy_at': d.date, 'sell_at': r.date, 'deal_value': r.order_value,
-                    'buy_price': d.order_price, 'sell_price': r.order_price
+                    'buy_at': d.date, 'sell_at': r.date, 'deal_value': r.busin_quantity,
+                    'buy_price': d.entrust_price, 'sell_price': r.entrust_price
                 })
-                d.order_value -= r.order_value
+                d.busin_quantity -= r.busin_quantity
                 break
-            elif r.order_value > d.order_value:
+            elif r.busin_quantity > d.busin_quantity:
                 ret.append({
-                    'buy_at': d.date, 'sell_at': r.date, 'deal_value': d.order_value,
-                    'buy_price': d.order_price, 'sell_price': r.order_price
+                    'buy_at': d.date, 'sell_at': r.date, 'deal_value': d.busin_quantity,
+                    'buy_price': d.entrust_price, 'sell_price': r.entrust_price
                 })
-                r.order_value -= d.order_value
-                d.order_value = 0
+                r.busin_quantity -= d.busin_quantity
+                d.busin_quantity = 0
 
     for d in data:
         # 小份额视为OP做账误差
-        if float(d.order_value) > 10:
+        if float(d.busin_quantity) > 10:
             # 加1天是为了后续能取到当日净值（后续会取T-1日净值）
             ret.append({
-                'buy_at': d.date, 'sell_at': date+datetime.timedelta(days=1), 'deal_value': d.order_value,
-                'buy_price': d.order_price, 'sell_price': None
+                'buy_at': d.date, 'sell_at': date+datetime.timedelta(days=1), 'deal_value': d.busin_quantity,
+                'buy_price': d.entrust_price, 'sell_price': None
             })
     ret = sorted(ret, key=lambda x: x['buy_at'])
     ret = sorted(ret, key=lambda x: x['sell_at'])

@@ -19,7 +19,7 @@ def pre_valuation():
                 date = models.PreValuedNav.objects.filter(port_code=port_code).latest('date').date
             except models.PreValuedNav.DoesNotExist:
                 date = datetime.date(2020, 1, 1)
-            dates = models.Balance.objects.filter(port_code=port_code, date__gte=date).values('date').distinct()
+            dates = models.Valuation.objects.filter(port_code=port_code, date__gte=date).values('date').distinct()
             if not dates:
                 continue
             dates = sorted([x['date'] for x in dates])
@@ -39,7 +39,7 @@ def pre_valuation():
 
 def _pre_valuation(port_code: str):
     """获取组合预估值"""
-    date = models.Balance.objects.filter(port_code=port_code).last().date
+    date = models.Valuation.objects.filter(port_code=port_code).last().date
     holding = fund_holding_stock(port_code, date)
     ret = PreValuationConsumer.calc(holding)[0]
     return {'date': datetime.date.today(), 'value': ret['value']}
@@ -47,7 +47,7 @@ def _pre_valuation(port_code: str):
 
 def _pre_valuation_gil(port_code: str, date: datetime.date):
     """预估组合当日涨跌幅，利用聚源数据而非爬虫数据"""
-    v_date = models.Balance.objects.filter(port_code=port_code, date__lte=date).last().date
+    v_date = models.Valuation.objects.filter(port_code=port_code, date__lte=date).last().date
     holding = portfolio_holding_security(port_code, v_date)
     holding = pd.Series(holding, dtype=float)
     holding = holding[holding > 0]
@@ -59,7 +59,7 @@ def _pre_valuation_gil(port_code: str, date: datetime.date):
     hk_price = models.StockDailyQuoteHK.objects.filter(
             secucode__in=stocks, date=date).values('secucode', 'closeprice', 'prevcloseprice')
     hk_price = DataFrame(hk_price)
-    price = price.append(hk_price)
+    price = pd.concat([price, hk_price])
     if price.empty:
         return
     price['change'] = price['closeprice'] / price['prevcloseprice'] - 1
