@@ -1,0 +1,103 @@
+syntax = 'proto3';
+
+package serializers;
+
+
+import "balance.proto";
+import "transaction.proto";
+import "security.proto";
+import "income.proto";
+import "users.proto";
+
+
+service SMABackendService {
+  // 获取SMA组合基础信息
+  rpc Portfolio(ReqNull) returns(stream RspPortfolio);
+
+  // 获取SMA组合扩充信息
+  rpc PortfolioEx(ReqNull) returns(stream RspPortfolioEx);
+
+  // 获取SMA估值表
+  rpc Balance(ReqNormal) returns (stream serializers.RspBalance);
+
+  // 获取SMA估值表扩充信息
+  rpc BalanceEx(ReqNormal) returns (stream serializers.RspBalanceEx);
+
+  // 获取SMA产品基准净值
+  rpc BalanceBenchmark(ReqNormal) returns (stream serializers.RspBalanceBenchmark);
+
+  // 凭证
+  rpc Voucher(ReqNormal) returns (stream serializers.RspVoucher);
+
+  // 流水
+  rpc Trans(ReqNormal) returns (stream serializers.RspTrans);
+
+  // 持仓
+  rpc Holding(ReqNormal) returns (stream serializers.RspHolding);
+
+  // 证券基础信息
+  rpc Security(ReqNull) returns (stream serializers.RspSecurity);
+
+  // 证券行情
+  rpc SecurityQuote(ReqNormal) returns (stream serializers.RspSecurityQuote);
+
+  // 证券分类
+  rpc SecurityCategory(ReqNull) returns (stream serializers.RspSecurityCategory);
+
+  // 基金收益
+  rpc Income(ReqNormal) returns (stream serializers.RspIncome);
+
+  // 基金收益扩充信息
+  rpc IncomeEx(ReqNormal) returns (stream serializers.RspIncomeEx);
+
+  // SMA客户
+  rpc Customer(ReqNull) returns (stream serializers.RspCustomer);
+
+  // 销售
+  rpc Sales(ReqNull) returns (stream serializers.RspSales);
+
+  // 客户产品关联信息
+  rpc CustomerMapping(ReqNull) returns (stream serializers.RspCustomerMapping);
+
+  // 销售产品关联信息
+  rpc SalesMapping(ReqNull) returns (stream serializers.RspSalesMapping);
+}
+
+
+// 无参请求
+message ReqNull {}
+
+// 组合ID + Date请求
+message ReqNormal {
+  string port_code = 1;
+  string date = 2;
+}
+
+// 日期请求
+message ReqDate {
+  string data = 1;
+}
+
+// ID请求
+message ReqID {
+  int64 data = 1;
+}
+
+message RspPortfolio {
+  uint64 id = 1;
+  string port_code = 2;
+  string port_name = 3;
+  string port_type = 4;
+  string benchmark = 5;
+  uint32 t_n = 6;
+  uint32 settlemented = 7;
+}
+
+message RspPortfolioEx {
+  uint64 id = 1;
+  float init_money = 2;
+  float activation = 3;
+  uint32 fund_id = 4;
+  string launch = 5;
+  uint64 port_code_id = 6;
+}

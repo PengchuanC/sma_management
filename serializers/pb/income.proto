@@ -1,0 +1,36 @@
+syntax = 'proto3';
+
+package serializers;
+
+
+// 基金收益
+message RspIncome {
+  uint64 id = 1;
+  string port_code_id = 2;
+  string date = 3;
+  double unit_nav = 4;
+  double net_asset_chg = 5;
+  double total_net_asset_chg = 6;
+  double unit_nav_chg = 7;
+}
+
+// 基金收益扩充信息
+message RspIncomeEx {
+  uint64 id = 1;
+  string port_code_id = 2;
+  string date = 3;
+  double total = 4;
+  double today_total = 5;
+  double equity = 6;
+  double today_equity = 7;
+  double fix_income = 8;
+  double today_fix_income = 9;
+  double alternative = 10;
+  double today_alternative = 11;
+  double monetary = 12;
+  double today_monetary = 13;
+  double fare = 14;
+  double today_fare = 15;
+  double other = 16;
+  double today_other = 17;
+}

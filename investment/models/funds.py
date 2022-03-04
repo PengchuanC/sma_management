@@ -231,39 +231,3 @@ class FundQuote(models.Model):
 
     def __str__(self):
         return self.secucode.secucode
-
-
-class Security(models.Model):
-    # uid = BigIntegerField(primary_key=True)
-    secucode = models.CharField(
-        max_length=12, primary_key=True, verbose_name='证券代码')
-    secuname = models.CharField(max_length=50, verbose_name='证券简称')
-    category = models.CharField(max_length=20, verbose_name='证券类别')
-    category_code = models.CharField(max_length=20, verbose_name="类别代码", default='100000')
-
-    class Meta:
-        db_table = "sma_security"
-        verbose_name = '5.5 证券主表(估值表)'
-        verbose_name_plural = verbose_name
-        unique_together = ('secucode', 'category')
-
-
-class SecurityPrice(models.Model):
-    secucode = models.ForeignKey(
-        Security, to_field='secucode', on_delete=models.CASCADE)
-    date = models.DateField(verbose_name='业务日期',
-                            null=False, default=timezone.now)
-    auto_date = models.DateField(
-        verbose_name='操作日期', null=False, default=timezone.now)
-    price = models.FloatField(verbose_name='前收盘价', null=False)
-    note = models.CharField(
-        verbose_name='备注', max_length=50, null=True, blank=True)
-    o32 = models.IntegerField(verbose_name='组合O32代码', null=False, blank=False)
-
-    class Meta:
-        db_table = "sma_security_quote"
-        verbose_name = "5.6 证券行情数据(估值表)"
-        verbose_name_plural = verbose_name
-
-    def __str__(self):
-        return self.secucode.secuname

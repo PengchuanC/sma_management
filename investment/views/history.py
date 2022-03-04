@@ -13,7 +13,7 @@ from django.db.models import Sum, Max, Min, Avg
 from rest_framework.views import APIView, Response
 
 from investment.models.portfolio import Transactions as ta
-from investment.models.portfolio import Balance as bl
+from investment.models.portfolio import Valuation as bl
 from investment.utils import fund
 
 
@@ -27,13 +27,13 @@ class HistoryView(APIView):
             date = today
         net_asset = bl.objects.filter(port_code=port_code, date__lte=date).last().net_asset
         # 全部调仓费用
-        total = ta.objects.filter(port_code=port_code, date__lte=date).aggregate(total=Sum('fee'))['total']
+        total = ta.objects.filter(port_code=port_code, date__lte=date).aggregate(total=Sum('fare'))['total']
 
         # 最近调仓日期
         last = ta.objects.filter(
             port_code=port_code, date__lte=date, operation__icontains='成交确认'
         ).aggregate(date=Max('date'))['date']
-        exact = ta.objects.filter(port_code=port_code, date=last).aggregate(total=Sum('fee'))['total']
+        exact = ta.objects.filter(port_code=port_code, date=last).aggregate(total=Sum('fare'))['total']
 
         turn_over = self.turn_over(port_code)
         return Response({
@@ -58,17 +58,17 @@ class HistoryView(APIView):
         operation_filter = ['申购', '赎回', '转入', '转出']
         for r in records:
             if r.operation == '开放式基金申购成交确认':
-                h = {'operation': '申购', 'cap': - r.operation_amount}
+                h = {'operation': '申购', 'cap': - r.occur_amount}
             elif r.operation == '开放式基金赎回成交确认':
-                h = {'operation': '赎回', 'cap': r.operation_amount + r.fee}
+                h = {'operation': '赎回', 'cap': r.occur_amount + r.fare}
             elif r.operation == '开放式基金转换转出成交确认':
-                h = {'operation': '转出', 'cap': r.order_value * r.order_price}
+                h = {'operation': '转出', 'cap': r.busin_quantity * r.entrust_price}
             else:
-                h = {'operation': '转入', 'cap': r.order_value * r.order_price + r.fee}
+                h = {'operation': '转入', 'cap': r.busin_quantity * r.entrust_price + r.fare}
             name = names.get(r.secucode)
             h.update({
-                'secucode': r.secucode, 'date': r.date, 'price': r.order_price, 'amount': r.order_value,
-                'fee': r.fee, 'secuname': name, 'key': count
+                'secucode': r.secucode, 'date': r.date, 'price': r.entrust_price, 'amount': r.busin_quantity,
+                'fee': r.fare, 'secuname': name, 'key': count
             })
             ret.append(h)
             name_filter.append(name)
@@ -90,13 +90,13 @@ class HistoryView(APIView):
         cap = 0
         for r in records:
             if r.operation == '开放式基金申购成交确认':
-                cap += - r.operation_amount
+                cap += - r.occur_amount
             elif r.operation == '开放式基金赎回成交确认':
-                cap += r.operation_amount
+                cap += r.occur_amount
             elif r.operation == '开放式基金转换转出成交确认':
-                cap += r.order_value * r.order_price
+                cap += r.busin_quantity * r.entrust_price
             else:
-                cap += r.order_value * r.order_price + r.fee
+                cap += r.busin_quantity * r.entrust_price + r.fare
         # 获取期初和期末平均资产
         dates = bl.objects.filter(port_code=port_code).aggregate(min=Min('date'), max=Max('date'))
         dates = [dates['min'], dates['max']]

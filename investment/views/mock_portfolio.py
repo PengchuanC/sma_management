@@ -10,6 +10,7 @@ import numpy as np
 from copy import deepcopy
 from django.http import JsonResponse
 from investment import models
+from investment.views import backtest
 
 
 def change_date(request):
@@ -48,13 +49,13 @@ def change_detail(request):
     for x in trans:
         op = x.operation
         if '赎回' in op:
-            r = {'secucode': x.secucode, 'operation': '赎回', 'amount': x.order_value, 'measure': '份'}
+            r = {'secucode': x.secucode, 'operation': '赎回', 'amount': x.busin_quantity, 'measure': '份'}
         elif '申购' in op:
-            r = {'secucode': x.secucode, 'operation': '申购', 'amount': x.order_value, 'measure': '元'}
+            r = {'secucode': x.secucode, 'operation': '申购', 'amount': x.busin_quantity, 'measure': '元'}
         elif '转出' in op:
-            r = {'secucode': x.secucode, 'operation': '转出', 'amount': x.order_value, 'measure': '份'}
+            r = {'secucode': x.secucode, 'operation': '转出', 'amount': x.busin_quantity, 'measure': '份'}
         else:
-            r = {'secucode': x.secucode, 'operation': '转入', 'amount': x.order_value, 'measure': '元'}
+            r = {'secucode': x.secucode, 'operation': '转入', 'amount': x.busin_quantity, 'measure': '元'}
         ret.append(r)
     return JsonResponse({'data': ret})
 
@@ -75,8 +76,8 @@ def mock(request):
     # 调仓后持仓
     holding = models.Holding.objects.filter(
         port_code=port_code, date=date
-    ).values('secucode', 'holding_value', 'mkt_cap')
-    holding = {x['secucode']: float(x['holding_value']) for x in holding}
+    ).values('secucode', 'current_shares', 'mkt_cap')
+    holding = {x['secucode']: float(x['current_shares']) for x in holding}
     holding.update({'cny': 0})
     trans = models.Transactions.objects.filter(
         port_code=port_code, date=date, operation__contains='成交确认'
@@ -85,19 +86,19 @@ def mock(request):
     for x in trans:
         op = x.operation
         if '赎回' in op:
-            mock_holding[x.secucode] += float(x.order_value)
-            mock_holding['cny'] -= float(x.operation_amount)
+            mock_holding[x.secucode] += float(x.busin_quantity)
+            mock_holding['cny'] -= float(x.occur_amount)
         elif '申购' in op:
-            mock_holding[x.secucode] -= float(x.order_value)
-            mock_holding['cny'] += -float(x.operation_amount)
+            mock_holding[x.secucode] -= float(x.busin_quantity)
+            mock_holding['cny'] += -float(x.occur_amount)
 
         # 转入和转出是相对应的，有转出就有转入，转换操作会影响费用
         elif '转出' in op:
-            mock_holding[x.secucode] += float(x.order_value)
-            mock_holding['cny'] += float(x.fee)
+            mock_holding[x.secucode] += float(x.busin_quantity)
+            mock_holding['cny'] += float(x.fare)
         else:
-            mock_holding[x.secucode] -= float(x.order_value)
-            mock_holding['cny'] += float(x.fee)
+            mock_holding[x.secucode] -= float(x.busin_quantity)
+            mock_holding['cny'] += float(x.fare)
     funds = sorted(list(holding.keys()))
     h_values = [[x, y] for x, y in holding.items()]
     h_values = list(sorted(h_values, key=lambda x: x[0]))
@@ -113,13 +114,14 @@ def mock(request):
     nav = nav.dropna(how='any')
     nav['cny'] = 1
     private_fund = [x for x in funds if x not in nav.columns]
-    pf_nav = models.SecurityPrice.objects.filter(
-        secucode__in=private_fund, date__gte=date).values('secucode', 'date', 'price', 'auto_date')
+    pf_nav = models.SecurityQuote.objects.filter(
+        secucode__in=private_fund, date__gte=date).values('secucode_id', 'date', 'quote', 'auto_date')
     pf_nav = pd.DataFrame(pf_nav)
-    pf_nav = pf_nav.sort_values(
-        ['secucode', 'auto_date'], ascending=[True, False]).drop_duplicates(['secucode', 'date'], keep='first')
-    pf_nav = pf_nav.pivot_table(index='date', columns='secucode', values='price')
-    nav = nav.merge(pf_nav, left_index=True, right_index=True, how='left').fillna(method='pad')
+    if not pf_nav.empty:
+        pf_nav = pf_nav.sort_values(
+            ['secucode_id', 'auto_date'], ascending=[True, False]).drop_duplicates(['secucode_id', 'date'], keep='first')
+        pf_nav = pf_nav.pivot_table(index='date', columns='secucode_id', values='quote')
+        nav = nav.merge(pf_nav, left_index=True, right_index=True, how='left').fillna(method='pad')
     funds = sorted(nav.columns)
     nav = nav.loc[:, funds]
     weight = weight.loc[:, funds]
@@ -128,7 +130,7 @@ def mock(request):
     ret = pd.DataFrame(ret.T, columns=['调仓组合', '不调仓组合'], index=index)
     ret = ret / ret.iloc[0, :]
     last = ret.index[-1]
-    perf = BackTestView.calc_performance(ret)
+    perf = backtest.calc_performance(ret)
     perf = perf.reset_index()
     perf = perf.to_dict(orient='records')
     ret = np.round(ret, 4)

@@ -10,59 +10,61 @@ from dateutil.parser import parse
 from django.http import JsonResponse
 from django.forms.models import model_to_dict
 
-from investment.models import portfolio, Balance, Income, ClientPR
+from investment import models
+from investment.models import portfolio, Valuation, Income, ClientPR
 from investment.utils.date import latest_trading_day, quarter_end_in_date_series
 
 
 class BasicInfo(APIView):
+
     @staticmethod
     def get(request):
-        last = Balance.objects.filter(port_code__settlemented=0).values('port_code').annotate(m=Max('date'))
+        ps = models.Portfolio.objects.filter(settlemented=0).order_by('port_code')
+        last = models.Valuation.objects.filter(port_code__settlemented=0).values('port_code').annotate(m=Max('date'))
         last = {x['port_code']: x['m'] for x in last}
-        ports = []
-        for port_code, date in last.items():
-            port = portfolio.Portfolio.objects.filter(
-                balance__date=date, port_code=port_code
-            ).values(
-                'port_code', 'port_type', 'port_name', 'launch_date', 'balance__net_asset', 'init_money',
-                'balance__unit_nav', 'balance__acc_nav', 'balance__savings', 'sales__name', 'balance__security_deposit'
-            ).last()
-            if port['port_type'] not in (1, 2, 3, 4, 5):
+        ret = {'sma': [], 'cta': []}
+        sma_key = 1
+        cta_key = 1
+        sma_stat = {'num': 0, 'total': 0, 'avg': 0}
+        cta_stat = {'num': 0, 'total': 0, 'avg': 0}
+        for p in ps:
+            date = last.get(p.port_code)
+            if not date:
                 continue
-            ports.append(port)
-        purchase = portfolio.Transactions.objects.filter(operation='TA申购').values('port_code').annotate(
-            money=Sum('operation_amount'))
-        purchase = {x['port_code']: x['money'] for x in purchase}
-        redemption = portfolio.Transactions.objects.filter(operation='TA赎回').values('port_code').annotate(
-            money=Sum('operation_amount'))
-        redemption = {x['port_code']: x['money'] for x in redemption}
-        add = dict(Counter(purchase) + Counter(redemption))
-        profit = portfolio.Income.objects.values('port_code').annotate(profit=Sum('change'))
-        profit = {x['port_code']: x['profit'] for x in profit}
-        rename = {
-            'balance__net_asset': 'net_asset', 'balance__unit_nav': 'nav', 'balance__acc_nav': 'nav_acc',
-            'sales__name': 'fa'
-        }
-        f_ports = []
-        pt = {1: '现金型', 2: '固收型', 3: '平衡型', 4: '成长型', 5: '权益型', 6: 'CTA'}
-        count = 0
-        total = 0
-        for p in ports:
-            for o, n in rename.items():
-                p[n] = p.pop(o)
-            p['launch_date'] = p['launch_date'].strftime('%Y-%m-%d')
-            p['add'] = add.get(p['port_code'])
-            p['profit'] = profit.get(p['port_code'])
-            p['port_type'] = pt.get(p['port_type'])
-            p['key'] = count
-            p['cash'] = p.pop('balance__savings') + p.pop('balance__security_deposit')
-            p['last'] = last.get(p['port_code']).strftime('%Y-%m-%d')
-            f_ports.append(p)
-            count += 1
-            total += float(p['net_asset'])
-        f_ports = sorted(f_ports, key=lambda x: x['port_code'])
-        return Response(
-            {'data': f_ports, 'num': count, 'total': total, 'avg': total / count, 'last': ''})
+            pex = p.portfolioexpanded
+            v = models.Valuation.objects.get(port_code=p, date=date)
+            vex = models.ValuationEx.objects.get(port_code=v)
+            pr = list(models.PurchaseAndRansom.objects.filter(port_code=p).order_by('date'))
+            init = pr[0]
+            pr = pr[1:]
+            ic = models.Income.objects.get(port_code=p, date=date)
+            add = sum([x.pr_amount-x.rs_amount for x in pr])
+            cash = vex.savings + vex.deposit
+            fa = models.ProductSalesMapping.objects.filter(port_code=p)
+            fa = fa[0].sales.username if fa else ''
+            need = {
+                'port_code': p.port_code, 'port_name': p.port_name, 'port_type': p.port_type, 'nav': float(v.unit_nav),
+                'nav_acc': float(v.accu_nav), 'launch_date': pex.launch.strftime('%Y-%m-%d'),
+                'init_money': float(init.pr_amount), 'add': float(add), 'net_asset': float(v.net_asset),
+                'profit': float(ic.total_net_asset_chg), 'last': date.strftime('%Y-%m-%d'), 'cash': float(cash),
+                'fa': fa if fa != 'AM FOF' else '',
+            }
+            if p.port_type != 'CTA':
+                need['key'] = sma_key
+                ret['sma'].append(need)
+                sma_stat['num'] += 1
+                sma_stat['total'] += float(v.net_asset)
+                sma_key += 1
+            else:
+                need['key'] = cta_key
+                ret['cta'].append(need)
+                cta_stat['num'] += 1
+                cta_stat['total'] += float(v.net_asset)
+                cta_key += 1
+        sma_stat['avg'] = sma_stat['total'] / sma_stat['num']
+        cta_stat['avg'] = cta_stat['total'] / cta_stat['num']
+        ret.update({'sma_stat': sma_stat, 'cta_stat': cta_stat})
+        return JsonResponse(ret)
 
 
 class Capital(APIView):

@@ -61,7 +61,7 @@ def commit_style():
     port = models.Portfolio.objects.all()
     for p in port:
         port_code = p.port_code
-        date = models.Balance.objects.filter(port_code=port_code).values('date')
+        date = models.Valuation.objects.filter(port_code=port_code).values('date')
         last = models.PortfolioStyle.objects.filter(port_code=port_code).last()
         l: datetime.date = datetime.date(2020, 1, 1)
         if last:

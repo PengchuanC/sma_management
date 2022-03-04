@@ -14,7 +14,7 @@ def fund_names(funds):
     query_ret = Funds.objects.filter(secucode__in=funds).all()
     ret = {x.secucode: x.secuname for x in query_ret}
     query_ret = Security.objects.filter(secucode__in=funds).all()
-    ret.update({x.secucode: re.sub(r'[(私募基金)|(私募证券投资基金)|(集合资产管理计划)]', '', x.secuname) for x in query_ret})
+    ret.update({x.secucode: re.sub(r'[(私募基金)|(私募证券投资基金)|(集合资产管理计划)]', '', x.secuabbr) for x in query_ret})
     return ret
 
 
@@ -33,13 +33,14 @@ def fund_is_monetary(fund: str) -> bool:
 
 
 async def fund_name_async(funds):
+    query_ret = await sync_to_async(Security.objects.filter(secucode__in=funds).all)()
+    query_ret = await sync_to_async(list)(query_ret)
+    diy = {x.secucode: re.sub(r'[(私募基金)|(私募证券投资基金)|(集合资产管理计划)]', '', x.secuabbr) for x in query_ret}
     query_ret = await sync_to_async(Funds.objects.filter(secucode__in=funds).all)()
     query_ret = await sync_to_async(list)(query_ret)
     ret = {x.secucode: x.secuname for x in query_ret}
-    query_ret = await sync_to_async(Security.objects.filter(secucode__in=funds).all)()
-    query_ret = await sync_to_async(list)(query_ret)
-    ret.update({x.secucode: re.sub(r'[(私募基金)|(私募证券投资基金)|(集合资产管理计划)]', '', x.secuname) for x in query_ret})
-    return ret
+    diy.update(ret)
+    return diy
 
 
 def fund_classify(funds: list) -> dict:

@@ -1,0 +1,32 @@
+syntax = 'proto3';
+
+package serializers;
+
+
+// 证券基础信息
+message RspSecurity {
+  int64 id = 1;
+  string secucode = 2;
+  string secuabbr = 3;
+  string category = 4;
+  string category_code = 5;
+}
+
+// 证券行情
+message RspSecurityQuote {
+  int64 id = 1;
+  string port_code_id = 2;
+  string secucode_id = 3;
+  string date = 4;
+  string auto_date = 5;
+  string note = 6;
+  double quote = 7;
+}
+
+// 证券分类
+message RspSecurityCategory {
+  uint32 id = 1;
+  string first = 2;
+  string second = 3;
+  string secucode_id = 4;
+}

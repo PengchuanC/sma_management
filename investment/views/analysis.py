@@ -77,102 +77,50 @@ class AttributeChartView(APIView):
     @staticmethod
     def get(request):
         date = request.query_params.get('date')
-        port_code = request.query_params.get('portCode')
+        p = request.query_params.get('portCode')
         if not date:
             date = datetime.date.today().strftime('%Y-%m-%d')
-        d: models.IncomeAsset = models.IncomeAsset.objects.filter(
-            port_code=port_code, date__lte=date).latest('date')
-        date = d.date.strftime('%Y-%m-%d')
-        cp = float(models.Income.objects.filter(port_code=port_code,
-                   date__lte=date).last().unit_nav) - 1
-        a = d.total_profit
-        data = {
-            'total_profit': round(cp * 100, 2), 'equity': round(cp * float(d.equity/a) * 100, 2),
-            'bond': round(cp*float(d.bond/a)*100, 2), 'alter': round(cp*float(d.alter/a)*100, 2),
-            'money': round(cp*float(d.money/a)*100, 2)
-        }
-        # 周度区间
+        date = models.Income.objects.filter(port_code=p, date__lte=date).latest('date').date
         week = AttributeChartView.last_trading_day_of_last_week(date)
         month = AttributeChartView.last_trading_day_of_last_month(date)
-        start = models.IncomeAsset.objects.filter(port_code=port_code).first().date
-        ret = []
-        for ltw in [week, month]:
-            if ltw < start:
-                ltw = start
-            sd: models.IncomeAsset = models.IncomeAsset.objects.get(
-                port_code=port_code, date=ltw)
-            scp = float(models.Income.objects.filter(
-                port_code=port_code, date=ltw).last().unit_nav)
-            scp = (cp + 1) / scp - 1
-            a = d.total_profit - sd.total_profit
-            change = {}
-            for attr in ['total_profit', 'equity', 'bond', 'alter', 'money']:
-                change[attr] = round(
-                    scp * float((getattr(d, attr) - getattr(sd, attr)) / a) * 100, 2)
-            ret.append(change)
-        return Response({'data': data, 'week': ret[0], 'month': ret[1]})
+        start = models.IncomeEx.objects.filter(port_code=p).order_by('date').first().date
+        ret = {}
+        ei = models.Income.objects.get(port_code_id=p, date=date)
+        eiex = models.IncomeEx.objects.get(port_code_id=p, date=date)
+        for attr, st in {'data': start, 'month': month, 'week': week}.items():
+            # 避免小于成立日
+            if st < start:
+                st = start
+            si = models.Income.objects.get(port_code_id=p, date=st)
+            siex = models.IncomeEx.objects.get(port_code_id=p, date=st)
+            total_profit = float(ei.unit_nav / si.unit_nav - 1) * 100
+            a_total = float(eiex.total - siex.total)
+            a_equity = float(eiex.equity - siex.equity)
+            a_fix_income = float(eiex.fix_income - siex.fix_income)
+            a_alternative = float(eiex.alternative - siex.alternative)
+            a_monetary = float(eiex.monetary - siex.monetary)
+            value = {
+                'total_profit': round(total_profit, 2), 'equity': round(total_profit * a_equity / a_total, 2),
+                'bond': round(total_profit * a_fix_income / a_total, 2),
+                'alter': round(total_profit * a_alternative / a_total, 2),
+                'money': round(total_profit * a_monetary / a_total, 2)
+            }
+            ret[attr] = value
+        return JsonResponse(ret)
 
     @staticmethod
-    def monthly_attribute(request):
-        """月度收益归因"""
-        port_code = request.GET.get('portCode')
-        date = request.GET.get('date')
-        if not date:
-            date: str = datetime.date.today().strftime('%Y-%m-%d')
-        d: models.IncomeAsset = models.IncomeAsset.objects.filter(port_code=port_code, date__lte=date).last()
-        date_str: str = d.date.strftime('%Y-%m-%d')
-        date: arrow.Arrow = arrow.get(date_str)
-        launch = models.Income.objects.filter(port_code=port_code).first().date
-        ftd = (arrow.get(launch).shift(days=-1).date(), launch, date.date())
-        week = AttributeChartView.last_trading_day_of_last_week(date_str)
-        wsp = date.span('week')
-        wtd = (wsp[0].date(), week, date_str)
-        month = AttributeChartView.last_trading_day_of_last_month(date_str)
-        msp = date.span('month')
-        mtd = (msp[0].shift(days=-1).date(), month, msp[1].date())
-        ret = []
-        for d in [ftd, wtd, mtd]:
-            start, prev, end = d
-            changes = models.Income.objects.filter(
-                port_code=port_code, date__range=(prev, end)).values('date', 'unit_nav', 'change')
-            changes = [x for x in changes]
-            total = float(sum([x['change'] for x in changes[1:]]))
-            columns = ['equity', 'bond', 'alter', 'money']
-            fee = models.DetailFee.objects.filter(
-                port_code=port_code, date__range=(start, end)).values('management', 'custodian', 'audit')
-            fee = float(sum(x['management'] + x['custodian'] + x['audit'] for x in fee))
-
-            asset = models.IncomeAsset.objects.filter(
-                port_code=port_code, date__in=(prev, date.date())).values('date', *columns)
-            asset = pd.DataFrame(asset).set_index('date')
-            asset = asset.diff(1).dropna().astype(float)
-            asset /= asset.sum(axis=1).sum()
-            change = float(changes[-1]['unit_nav'] / changes[0]['unit_nav']) - 1
-            fee_ratio = - fee / total * change
-            asset *= (change - fee_ratio)
-            asset['fee'] = fee_ratio
-            asset['change'] = change
-            asset = asset.to_dict(orient='records')[0]
-            asset['total_profit'] = change
-            asset = {x: round(y*100, 2) for x, y in asset.items()}
-            ret.append(asset)
-        return JsonResponse({'data': ret[0], 'week': ret[1], 'month': ret[2]})
-
-    @staticmethod
-    def last_trading_day_of_last_week(date: str):
+    def last_trading_day_of_last_week(date: datetime.date):
         """上周最后一个交易日"""
-        date = parse(date).date()
         sunday = date - datetime.timedelta(days=date.weekday()+1)
-        prev = models.Balance.objects.filter(date__lt=sunday).latest('date').date
+        prev = models.TradingDays.objects.filter(date__lt=sunday).latest('date').date
         return prev
 
     @staticmethod
-    def last_trading_day_of_last_month(date: str):
+    def last_trading_day_of_last_month(date: datetime.date):
         """上月最后一个交易日"""
-        date = parse(date).date()
         begin = datetime.date(date.year, date.month, 1) - \
             datetime.timedelta(days=1)
-        prev = models.Balance.objects.filter(date__lte=begin).latest('date').date
+        prev = models.TradingDays.objects.filter(date__lte=begin).latest('date').date
         return prev
 
 
@@ -232,15 +180,18 @@ class FundHoldingView(APIView):
         else:
             date = models.Holding.objects.filter(port_code=port_code, date__lte=date).latest('date').date
         holdings = models.Holding.objects.filter(
-            port_code=port_code, date__lte=date, trade_market__in=(1, 2), category='开放式基金'
+            port_code=port_code, date__lte=date, market__in=(1, 2)
         ).values()
         holdings = pd.DataFrame(holdings)
-        holdings = holdings.drop_duplicates(['holding_value', 'mkt_cap', 'total_profit'])
+        items = ['current_shares', 'mkt_cap', 'profit']
+        for item in items:
+            holdings[item] = holdings[item].astype(float)
+        holdings = holdings.drop_duplicates(items).reset_index(drop=True)
         holdings['key'] = holdings.index
         funds = list(set(list(holdings.secucode)))
         names = fund.fund_names(funds)
         holdings['secuabbr'] = holdings['secucode'].apply(lambda x: names.get(x))
-        need = ['key', 'secucode', 'secuabbr', 'date', 'total_profit', 'fee', 'mkt_cap', 'holding_value']
+        need = ['key', 'secucode', 'secuabbr', 'date', 'profit', 'fare', 'mkt_cap', 'current_shares']
         holdings = holdings[need]
 
         ret = []
@@ -249,9 +200,9 @@ class FundHoldingView(APIView):
             g_max = g[g.date == g.date.max()]
             g_max = g_max.to_dict(orient='records')[0]
             g_max['key'] = len(holdings) + count
-            for attr in ['total_profit', 'fee']:
+            for attr in ['profit', 'fare']:
                 g[attr] = g[attr].diff()
-            g = g[g['total_profit'].notnull()].sort_values('date', ascending=False)
+            g = g[g['profit'].notnull()].sort_values('date', ascending=False)
             g = g.to_dict(orient='records')
             g_max['children'] = g
             ret.append(g_max)
@@ -293,28 +244,28 @@ class FundHoldingView(APIView):
         date = last.date
         trans = models.Transactions.objects.filter(
             port_code=port_code, secucode=secucode, operation__in=('证券买入', '证券卖出')
-        ).values('secucode', 'date', 'operation', 'order_price', 'order_value', 'fee').order_by('date')
+        ).values('secucode', 'date', 'operation', 'entrust_price', 'busin_quantity', 'fare').order_by('date')
         buy = [x for x in trans if x['operation'] == '证券买入']
         buy = pd.DataFrame(buy)
         sell = [x for x in trans if x['operation'] == '证券卖出']
         sell = pd.DataFrame(sell)
-        for attr in ['order_price', 'order_value', 'fee']:
+        for attr in ['entrust_price', 'busin_quantity', 'fare']:
             buy[attr] = buy[attr].astype(float)
             if attr in sell.columns:
                 sell[attr] = sell[attr].astype(float)
-        buy = buy.groupby(['secucode', 'date', 'operation', 'order_price']).sum().reset_index()
+        buy = buy.groupby(['secucode', 'date', 'operation', 'entrust_price']).sum().reset_index()
         if not sell.empty:
-            sell = sell.groupby(['secucode', 'date', 'operation', 'order_price']).sum().reset_index()
+            sell = sell.groupby(['secucode', 'date', 'operation', 'entrust_price']).sum().reset_index()
 
         ret = []
         for idx1, b in buy.iterrows():
-            b_value = b['order_value']
-            b_price = b['order_price']
-            b_fee = b['fee']
+            b_value = b['busin_quantity']
+            b_price = b['entrust_price']
+            b_fee = b['fare']
             b_date = b['date']
             secucode = b['secucode']
             while b_value > 0:
-                if sell.empty or sell['order_value'].sum() == 0:
+                if sell.empty or sell['busin_quantity'].sum() == 0:
                     s_price = round(price, 4)
                     r = s_price / b_price - 1
                     value = b_value
@@ -328,10 +279,10 @@ class FundHoldingView(APIView):
                     })
                     continue
                 for idx2, s in sell.iterrows():
-                    s_value = s['order_value']
-                    s_price = s['order_price']
+                    s_value = s['busin_quantity']
+                    s_price = s['entrust_price']
                     s_date = s['date']
-                    s_fee = s['fee']
+                    s_fee = s['fare']
                     r = s_price / b_price - 1
                     if s_value == 0:
                         continue
@@ -339,8 +290,8 @@ class FundHoldingView(APIView):
                         real_s_fee = s_fee * b_value / s_value
                         profit = (b_value * s_price - real_s_fee - b_fee) - (b_value * b_price)
                         fee = real_s_fee + b_fee
-                        sell.loc[idx2, 'order_value'] = s_value - b_value
-                        sell.loc[idx2, 'fee'] = s_fee - real_s_fee
+                        sell.loc[idx2, 'busin_quantity'] = s_value - b_value
+                        sell.loc[idx2, 'fare'] = s_fee - real_s_fee
                         value = b_value
                         b_value = 0
                     else:
@@ -350,7 +301,7 @@ class FundHoldingView(APIView):
                         b_fee -= real_b_fee
                         b_value -= s_value
                         value = s_value
-                        sell.loc[idx2, 'order_value'] = 0
+                        sell.loc[idx2, 'busin_quantity'] = 0
 
                     ret.append({
                         'buy_date': b_date.strftime('%Y-%m-%d'), 'sell_date': s_date.strftime('%Y-%m-%d'),
@@ -362,16 +313,16 @@ class FundHoldingView(APIView):
     @staticmethod
     def fund_ratio(port_code: str, date: datetime.date, otc=False):
         """组合持有基金的比例"""
-        cannot_resolve = ['国债标准券']
+        cannot_resolve = ['888880']
         if otc:
             market = [6]
         else:
             market = (1, 2, 6)
         holding = models.Holding.objects.filter(
-            port_code=port_code, date=date, trade_market__in=market
-        ).exclude(category__in=cannot_resolve).values(
-            'secucode', 'mkt_cap', 'total_profit')
-        na = models.Balance.objects.get(port_code=port_code, date=date).net_asset
+            port_code=port_code, date=date, market__in=market
+        ).exclude(secucode__in=cannot_resolve).values(
+            'secucode', 'mkt_cap', 'profit')
+        na = models.Valuation.objects.get(port_code=port_code, date=date).net_asset
         holding = pd.DataFrame(holding)
 
         holding['ratio'] = holding.mkt_cap / na
@@ -382,10 +333,10 @@ class FundHoldingView(APIView):
 
     @staticmethod
     def fund_performance(port_code, date):
-        holding = models.Holding.objects.filter(
-            port_code=port_code, date=date, category='开放式基金').values('secucode', 'trade_market')
-        cw = [x['secucode'] for x in holding if x['trade_market'] == 6]
-        cn = [x['secucode'] for x in holding if x['trade_market'] in (1, 2)]
+        holding = models.Holding.objects.filter(port_code=port_code, date=date).values('secucode', 'market')
+        holding = list(filter(lambda x: x['secucode'][0] in {str(x) for x in range(0, 10)}, holding))
+        cw = [x['secucode'] for x in holding if x['market'] == 6]
+        cn = [x['secucode'] for x in holding if x['market'] in (1, 2)]
         cw_data = FundHoldingView.period_return(cw, date, 6)
         cn_data = FundHoldingView.period_return(cn, date, 1)
         data = cw_data.append(cn_data)
@@ -492,9 +443,9 @@ class FundHoldingView(APIView):
         date = models.Holding.objects.filter(port_code=port_code, date__lte=date).aggregate(
             mdate=Max('date'))['mdate']
         holding = models.Holding.objects.filter(
-            port_code=port_code, date=date).values('secucode', 'mkt_cap', 'holding_value')
+            port_code=port_code, date=date).values('secucode', 'mkt_cap', 'current_shares')
         holding = pd.DataFrame(holding)
-        holding = holding[holding['holding_value'] != 0]
+        holding = holding[holding['current_shares'] != 0]
         holding_yx = models.HoldingYX.objects.filter(
             port_code=port_code, date=date).values('secucode', 'shares')
         holding_yx = pd.DataFrame(holding_yx)
@@ -504,7 +455,7 @@ class FundHoldingView(APIView):
         else:
             data = holding.merge(holding_yx, how='left', on='secucode')
             data['shares'] = data['shares'].fillna(0)
-        data['ratio'] = data['shares'] / data['holding_value']
+        data['ratio'] = data['shares'] / data['current_shares']
         funds = list(set(list(data.secucode)))
         names = fund.fund_names(funds)
         data['secuname'] = data.secucode.apply(lambda x: names.get(x))
@@ -536,10 +487,10 @@ class FundHoldingStockView(APIView):
         port_code = request.query_params.get('portCode')
         date = request.query_params.get('date')
         if not date:
-            date = models.Balance.objects.filter(
+            date = models.Valuation.objects.filter(
                 port_code=port_code).last().date.strftime('%Y-%m-%d')
         else:
-            date = models.Balance.objects.filter(
+            date = models.Valuation.objects.filter(
                 port_code=port_code, date__lte=date).last().date.strftime('%Y-%m-%d')
         ret = holding_v2.portfolio_holding_stock(port_code, date)
         ind = FundHoldingStockView.industry_sw(ret)
@@ -593,9 +544,9 @@ class FundHoldingNomuraOIView(object):
         date = request.GET.get('date')
         port_code = request.GET.get('portCode')
         if not date:
-            date = models.Balance.objects.filter(port_code=port_code)
+            date = models.Valuation.objects.filter(port_code=port_code)
         else:
-            date = models.Balance.objects.filter(port_code=port_code, date__lte=date)
+            date = models.Valuation.objects.filter(port_code=port_code, date__lte=date)
         date = date.latest('date').date
         data = FundHoldingView.fund_ratio(port_code, date)
         data.mkt_cap = data.mkt_cap.astype('float')

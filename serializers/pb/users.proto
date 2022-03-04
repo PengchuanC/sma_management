@@ -1,0 +1,38 @@
+syntax = 'proto3';
+
+package serializers;
+
+
+// SMA用户
+message RspCustomer {
+  uint32 id = 1;
+  string username = 2;
+  string password = 3;
+  string chiname = 4;
+  string identify_no = 5;
+  string mobile = 6;
+  uint32 gender = 7;
+  uint32 role = 8;
+}
+
+// SMA用户产品关联表
+message RspCustomerMapping {
+  uint32 id = 1;
+  uint32 holder_id = 2;
+  string port_code_id = 3;
+}
+
+// 销售
+message RspSales {
+  uint32 id = 1;
+  string username = 2;
+  string telephone = 3;
+  string email = 4;
+}
+
+// 销售产品关联表
+message RspSalesMapping {
+  uint32 id = 1;
+  string port_code_id = 2;
+  uint32 sales_id = 3;
+}

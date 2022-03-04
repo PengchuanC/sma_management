@@ -35,7 +35,6 @@ urlpatterns = [
     path('analysis/expose/', views.Exposure.exposure),
     path('analysis/brinson/', views.BrinsonAnalysis.as_view()),
     path('analysis/std/', views.MovingVolatility.as_view()),
-    path('analysis/monthly/', views.AttributeChartView.monthly_attribute),
     path('analysis/profit/', views.ProfitAnalysis.get),
     path('analysis/holding/', views.AnalysisHolding.get),
 

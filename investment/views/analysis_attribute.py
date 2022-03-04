@@ -83,9 +83,9 @@ class Exposure(object):
     async def nearest_tradingday(port_code, date):
         """最近交易日"""
         if date:
-            date = await sync_to_async(models.Balance.objects.filter(port_code=port_code, date__lte=date).last)()
+            date = await sync_to_async(models.Valuation.objects.filter(port_code=port_code, date__lte=date).last)()
         else:
-            date = await sync_to_async(models.Balance.objects.filter(port_code=port_code).last)()
+            date = await sync_to_async(models.Valuation.objects.filter(port_code=port_code).last)()
         date = date.date
         return date
 
@@ -182,15 +182,15 @@ class MovingVolatility(APIView):
         date: str = params.get('date')
         if not date:
             date = datetime.date.today().strftime('%Y-%m-%d')
-        nav = models.Balance.objects.filter(port_code=port_code, date__lte=date).values('acc_nav', 'date')
+        nav = models.Valuation.objects.filter(port_code=port_code, date__lte=date).values('accu_nav', 'date')
         nav = pd.DataFrame(nav).set_index('date')
         pct = nav.pct_change().dropna()
         std = pct.rolling(30).std().dropna()
         std = np.round(std * np.sqrt(250)*100, 2)
-        std = std.acc_nav
+        std = std.accu_nav
         std.name = 'vol'
 
-        downside_pct = pct['acc_nav'].apply(MovingVolatility.return_bound)
+        downside_pct = pct['accu_nav'].apply(MovingVolatility.return_bound)
         downside_std = downside_pct.copy().rolling(30).std().dropna()
         downside_std = np.round(downside_std * np.sqrt(250) * 100, 2)
         downside_std.name = 'downside_vol'
@@ -248,7 +248,7 @@ class ProfitAnalysis(object):
         prev_holding = None
         prev = 1
         if start is not None:
-            queryset = await sync_to_async(models.Balance.objects.filter)(port_code=port_code, date__lte=start)
+            queryset = await sync_to_async(models.Valuation.objects.filter)(port_code=port_code, date__lte=start)
             exists = await sync_to_async(queryset.exists)()
             if exists:
                 obj = await sync_to_async(queryset.latest)('date')
@@ -256,23 +256,23 @@ class ProfitAnalysis(object):
                 start = obj.date
                 prev_holding = await sync_to_async(
                     models.Holding.objects.filter(port_code=port_code, date=start).values
-                )('secucode', 'total_profit')
+                )('secucode', 'profit')
                 prev_holding = await sync_to_async(list)(prev_holding)
-                prev_holding = {x['secucode']: x['total_profit'] for x in prev_holding}
-        current = await sync_to_async(models.Balance.objects.get)(port_code=port_code, date=end)
+                prev_holding = {x['secucode']: x['profit'] for x in prev_holding}
+        current = await sync_to_async(models.Valuation.objects.get)(port_code=port_code, date=end)
         cur_holding = await sync_to_async(
             models.Holding.objects.filter(port_code=port_code, date=end).values
-        )('secucode', 'total_profit')
+        )('secucode', 'profit')
         cur_holding = await sync_to_async(list)(cur_holding)
-        cur_holding = {x['secucode']: x['total_profit'] for x in cur_holding}
-        cur_holding = pd.Series(cur_holding, name='current')
+        cur_holding = {x['secucode']: x['profit'] for x in cur_holding}
+        cur_holding = pd.Series(cur_holding, name='current', dtype=float)
         if prev_holding is not None:
-            prev_holding = pd.Series(prev_holding, name='prev')
+            prev_holding = pd.Series(prev_holding, name='prev', dtype=float)
             data = pd.concat([prev_holding, cur_holding], axis=1).fillna(0)
             cur_holding = data.current - data.prev
         cur_holding /= cur_holding.sum()
         current = current.unit_nav
-        change = current / prev - 1
+        change = float(current / prev - 1)
         cur_holding *= change
         cur_holding[port_code] = change
         return cur_holding

@@ -4,7 +4,7 @@ import pandas as pd
 from django.http.response import JsonResponse
 from django.forms.models import model_to_dict
 from django.db.models import Sum
-from investment.models import Funds, Portfolio, Balance, Transactions, Holding, Security
+from investment.models import Funds, Portfolio, Valuation as Balance, Transactions, Holding, Security
 
 
 def cta_info(request):

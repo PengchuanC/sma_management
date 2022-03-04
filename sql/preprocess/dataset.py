@@ -21,11 +21,14 @@ def data_for_rbsm(start: datetime.date, end: datetime.date):
 
 def portfolio_nav(port_code: str, date: datetime.date, length=20):
     """获取组合累计单位净值"""
-    nav = models.Balance.objects.filter(port_code=port_code, date__lte=date).order_by('date').values('date', 'acc_nav')
+    nav = models.Valuation.objects.filter(
+        port_code=port_code, date__lte=date).order_by('date').values('date', 'accu_nav')
     nav_length = len(nav)
     if nav_length <= length:
         return pd.DataFrame()
     nav = nav[nav_length-length-1:]
+    td = models.TradingDays.objects.filter(date__gte=nav[0]['date'])
     data = pd.DataFrame(nav).set_index('date')
+    data = data[data.index.isin(td)]
     data = data.astype('float')
     return data

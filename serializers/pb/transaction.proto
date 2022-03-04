@@ -1,0 +1,52 @@
+syntax = 'proto3';
+
+package serializers;
+
+
+// 凭证
+message RspVoucher {
+  int64 id = 1;
+  string port_code_id = 2;
+  string digest = 3;
+  string code = 4;
+  double value = 5;
+  string date = 6;
+}
+
+
+// 交易记录
+message RspTrans {
+  int64 id = 1;
+  string port_code_id = 2;
+  string date = 3;
+  string operation = 4;
+  int32 operation_flag = 5;
+  string secucode = 6;
+  double entrust_quantity = 7;
+  double entrust_price = 8;
+  double busin_quantity = 9;
+  double occur_amount = 10;
+  double subject_amount = 11;
+  double fare = 12;
+  string note = 13;
+  string market = 14;
+}
+
+
+// 持仓
+message RspHolding {
+  int64 id = 1;
+  string port_code_id = 2;
+  string date = 3;
+  string secucode = 4;
+  uint32 market = 5;
+  double begin_shares = 6;
+  double current_shares = 7;
+  double mkt_cap = 8;
+  double today_fare = 9;
+  double fare = 10;
+  double today_dividend = 11;
+  double dividend = 12;
+  double today_profit = 13;
+  double profit = 14;
+}

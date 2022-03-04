@@ -56,7 +56,7 @@ class AnalysisHolding(object):
     async def holding(port_code: str, date: datetime.date):
         """持仓占比，累计收益"""
         holding = await sync_to_async(
-            models.Holding.objects.filter(port_code=port_code, date=date).values)('secucode', 'mkt_cap', 'total_profit')
+            models.Holding.objects.filter(port_code=port_code, date=date).values)('secucode', 'mkt_cap', 'profit')
         data = await sync_to_async(pd.DataFrame)(holding)
         data['holding_ratio'] = data['mkt_cap'] / data['mkt_cap'].sum()
         return data
@@ -67,7 +67,7 @@ class AnalysisHolding(object):
         official = await sync_to_async(pd.DataFrame)(official)
         query = list(official.secucode)
         other = [x for x in funds if x not in query]
-        other = await sync_to_async(models.Security.objects.filter(secucode__in=other).values)('secucode', 'secuname')
+        other = await sync_to_async(models.Security.objects.filter(secucode__in=other).values)('secucode', 'secuabbr')
         other = await sync_to_async(pd.DataFrame)(other)
         data = pd.concat([official, other])
         return data
@@ -75,7 +75,7 @@ class AnalysisHolding(object):
     @staticmethod
     def format(data: pd.DataFrame):
         """格式化数据"""
-        func = {'mkt_cap': 'sum', 'total_profit': 'sum', 'holding_ratio': 'sum', 'ret_yield': 'mean'}
+        func = {'mkt_cap': 'sum', 'profit': 'sum', 'holding_ratio': 'sum', 'ret_yield': 'mean'}
         total = data.agg(func)
         total = total.to_dict()
         total.update({'category': '合计', 'second': None, 'secuname': '合计', 'key': 0, 'secucode': None})

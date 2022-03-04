@@ -31,10 +31,10 @@ class IndexComponentAdmin(admin.ModelAdmin):
     list_display = ('secucode', 'stockcode', 'weight', 'date')
 
 
-@admin.register(models.DetailFee)
-class DetailFeeAdmin(admin.ModelAdmin):
-    list_display = ['port_code', 'management', 'custodian', 'audit', 'interest', 'date']
-    list_filter = ['port_code', 'date']
+@admin.register(models.Vouchers)
+class VouchersAdmin(admin.ModelAdmin):
+    list_display = ('id', 'port_code', 'digest', 'code', 'value', 'date')
+    list_filter = ('port_code', 'digest', 'code', 'date')
 
 
 # 基金部分
@@ -104,65 +104,121 @@ class FundPosEstimateAdmin(admin.ModelAdmin):
 # 组合部分
 @admin.register(models.Portfolio)
 class PortfolioAdmin(admin.ModelAdmin):
-    list_display = (
-        'id', 'port_code', 'port_name', 'manager', 'init_money', 'purchase_fee', 'redemption_fee', 'base', 'describe',
-        'port_type', 'launch_date', 'settlemented', 't_n'
-    )
-    list_display_links = ('port_code', )
+    list_display = ('id', 'port_code', 'port_name', 'port_type', 'benchmark', 't_n', 'settlemented')
+    list_filter = ('port_type', 'benchmark', 't_n', 'settlemented')
+    list_display_links = ('port_code',)
 
 
-@admin.register(models.Balance)
-class BalanceAdmin(admin.ModelAdmin):
+@admin.register(models.PortfolioExpanded)
+class PortfolioExpandedAdmin(admin.ModelAdmin):
+    list_display = ('id', 'port_code', 'init_money', 'activation', 'fund_id', 'launch')
+    list_display_links = ('port_code',)
+
+
+@admin.register(models.User)
+class UserAdmin(admin.ModelAdmin):
+    list_display = ('id', 'username', 'chiname', 'identify_', 'mobile_', 'gender', 'role')
+    list_filter = ('gender', 'role')
+    list_display_links = ('username',)
+
+    def identify_(self, m: models.User):
+        return m.real_identify_no
+
+    def mobile_(self, m: models.User):
+        return m.real_mobile
+
+    identify_.short_description = '身份证ID'
+    mobile_.short_description = '手机号码'
+
+
+@admin.register(models.NomuraOISales)
+class SalesAdmin(admin.ModelAdmin):
+    list_display = ('id', 'username', 'telephone', 'email')
+    list_display_links = ('username',)
+
+
+@admin.register(models.ProductUserMapping)
+class ProductUserMappingAdmin(admin.ModelAdmin):
+    list_display = ('id', 'port_code', 'holder')
+    list_filter = ('port_code', 'holder')
+
+
+@admin.register(models.ProductSalesMapping)
+class ProductSalesMappingAdmin(admin.ModelAdmin):
+    list_display = ('id', 'port_code', 'sales')
+    list_filter = ('port_code', 'sales')
+
+
+@admin.register(models.Valuation)
+class ValuationAdmin(admin.ModelAdmin):
+    list_display = ('id', 'port_code', 'date', 'asset', 'debt', 'net_asset', 'unit_nav', 'accu_nav', 'nav_increment')
+    list_filter = ('port_code', 'date')
+    list_display_links = ('id', 'port_code')
+
+
+@admin.register(models.ValuationEx)
+class ValuationExAdmin(admin.ModelAdmin):
     list_display = (
-        'port_code', 'asset', 'debt', 'net_asset', 'shares', 'unit_nav', 'acc_nav', 'savings', 'fund_invest',
-        'liquidation', 'value_added', 'profit_pay', 'cash_dividend', 'date'
+        'id', 'port_code', 'date', 'savings', 'settlement_reserve', 'deposit', 'stocks', 'bonds', 'abs', 'funds',
+        'metals', 'other', 'resale_agreements', 'purchase_rec', 'ransom_pay'
     )
     list_filter = ('port_code', 'date')
+    list_display_links = ('id', 'port_code')
 
 
-@admin.register(models.BalanceExpanded)
-class BalanceExpandedAdmin(admin.ModelAdmin):
-    list_display = (
-        'port_code', 'dividend_rec', 'purchase_rec', 'redemption_pay', 'redemption_fee_pay', 'management_pay',
-        'custodian_pay', 'withholding_pay', 'date'
-    )
+@admin.register(models.ValuationBenchmark)
+class BenchmarkAdmin(admin.ModelAdmin):
+    list_display = ['port_code', 'unit_nav', 'date']
     list_filter = ('port_code', 'date')
 
 
 @admin.register(models.Income)
 class IncomeAdmin(admin.ModelAdmin):
-    list_display = ('port_code', 'unit_nav', 'net_asset', 'change', 'change_pct', 'date')
+    list_display = (
+        'id', 'port_code', 'date', 'unit_nav', 'net_asset_chg', 'total_net_asset_chg', 'unit_nav_chg'
+    )
     list_filter = ('port_code', 'date')
+    list_display_links = ('id', 'port_code')
 
 
-@admin.register(models.IncomeAsset)
-class IncomeAssetAdmin(admin.ModelAdmin):
-    list_display = ('port_code', 'total_profit', 'equity', 'bond', 'alter', 'money', 'date')
+@admin.register(models.IncomeEx)
+class IncomeExAdmin(admin.ModelAdmin):
+    list_display = (
+        'id', 'port_code', 'date', 'total', 'today_total', 'equity', 'today_equity', 'fix_income', 'today_fix_income',
+        'alternative', 'today_alternative', 'monetary', 'today_monetary', 'fare', 'today_fare', 'other', 'today_other'
+    )
     list_filter = ('port_code', 'date')
+    list_display_links = ('id', 'port_code')
 
 
 @admin.register(models.Holding)
 class HoldingAdmin(admin.ModelAdmin):
     list_display = (
-        'port_code', 'secucode', 'holding_value', 'mkt_cap', 'current_cost', 'total_cost', 'fee', 'flow_profit',
-        'dividend', 'total_dividend', 'date'
+        'id', 'port_code', 'date', 'secucode', 'market', 'begin_shares', 'current_shares', 'mkt_cap', 'today_fare',
+        'fare', 'today_dividend', 'dividend', 'today_profit', 'profit'
     )
-    list_filter = ('port_code', 'secucode', 'date')
+    list_filter = ('port_code', 'date', 'secucode', 'market')
+    list_display_links = ('id', 'port_code')
 
 
 @admin.register(models.Transactions)
 class TransactionsAdmin(admin.ModelAdmin):
     list_display = (
-        'port_code', 'secucode', 'amount', 'balance', 'order_price', 'order_value', 'deal_value', 'fee',
-        'operation_amount', 'operation', 'subject_name', 'date'
+        'id', 'port_code', 'date', 'operation', 'operation_flag', 'secucode', 'entrust_quantity', 'entrust_price',
+        'busin_quantity', 'occur_amount', 'subject_amount', 'fare', 'note', 'market'
     )
-    list_filter = ('port_code', 'secucode', 'operation', 'date')
+    list_filter = ('port_code', 'date', 'operation', 'secucode')
+    list_display_links = ('id', 'port_code')
 
 
-@admin.register(models.ValuationBenchmark)
-class BenchmarkValuationAdmin(admin.ModelAdmin):
-    list_display = ('port_code', 'unit_nav', 'date')
-    list_filter = ('port_code', 'date')
+@admin.register(models.PurchaseAndRansom)
+class PurchaseAndRansomAdmin(admin.ModelAdmin):
+    list_display = (
+        'id', 'port_code', 'date', 'confirm', 'pr_quantity', 'pr_amount', 'rs_quantity', 'rs_amount', 'pr_fee_backend',
+        'rs_fee', 'rs_fee_org', 'org_name'
+    )
+    list_filter = ('port_code', 'date', 'confirm', 'org_name')
+    list_display_links = ('id', 'port_code')
 
 
 @admin.register(models.PortfolioStyle)
@@ -185,11 +241,6 @@ class ClientQAdmin(admin.ModelAdmin):
         'port_code', 'risk', 'maturity', 'arr', 'volatility', 'fluidity', 'age', 'experience', 'plan', 'tolerance',
         'alter_limit', 'cross_border_limit'
     )
-
-
-@admin.register(models.Sales)
-class SalesAdmin(admin.ModelAdmin):
-    list_display = ('port_code', 'name', 'mobile', 'mail')
 
 
 @admin.register(models.PreValuedNav)

@@ -56,7 +56,7 @@ def open_fund_maincode(secucode: str):
 def asset_type_penetrate(port_code: str, date: datetime.date) -> dict:
     """组合在指定日期的穿透持仓"""
     holdings = models.Holding.objects.filter(port_code=port_code, date=date).values('secucode', 'mkt_cap')
-    balance = models.Balance.objects.get(port_code=port_code, date=date)
+    balance = models.Valuation.objects.get(port_code=port_code, date=date)
     net_value = balance.net_asset
 
     mkt_cap = sum(x['mkt_cap'] for x in holdings)
@@ -129,7 +129,7 @@ def portfolio_holding_stock(port_code: str, date: datetime.date):
     """
     holdings = models.Holding.objects.filter(
         port_code=port_code, date=date).exclude(mkt_cap=0).values('secucode', 'mkt_cap')
-    balance = models.Balance.objects.get(port_code=port_code, date=date)
+    balance = models.Valuation.objects.get(port_code=port_code, date=date)
     net_value = balance.net_asset
     holdings = {x['secucode']: x['mkt_cap'] / net_value for x in holdings}
     ret = []

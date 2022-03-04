@@ -1,0 +1,44 @@
+syntax = 'proto3';
+
+package serializers;
+
+
+// 响应
+message RspBalance {
+  int64 id = 1;
+  string port_code_id = 2;
+  double asset = 3;
+  double debt = 4;
+  double net_asset = 5;
+  double unit_nav = 6;
+  double accu_nav = 7;
+  double nav_increment = 8;
+  string date = 9;
+}
+
+// 响应 额外内容
+message RspBalanceEx {
+  int64 id = 1;
+  int64 port_code_id = 2;
+  double savings = 3;
+  double settlement_reserve = 4;
+  double deposit = 5;
+  double stocks = 6;
+  double bonds = 7;
+  double abs = 8;
+  double funds = 9;
+  double metals = 10;
+  double other = 11;
+  double resale_agreements = 12;
+  double purchase_rec = 13;
+  double ransom_pay = 14;
+  string date = 15;
+}
+
+// 响应 基准
+message RspBalanceBenchmark {
+  int64 id = 1;
+  string port_code_id = 2;
+  double unit_nav = 3;
+  string date = 4;
+}

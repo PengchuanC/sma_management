@@ -85,7 +85,7 @@ WSGI_APPLICATION = 'sma_management.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'sma_management',
+        'NAME': 'sma_management_2',
         'USER': 'fof',
         'PASSWORD': '123456',
         'HOST': '10.170.129.129',
@@ -93,7 +93,7 @@ DATABASES = {
     },
     'test': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'sma_management',
+        'NAME': 'sma_management_2',
         'USER': 'fof',
         'PASSWORD': '123456',
         'HOST': '10.170.129.129',
@@ -209,3 +209,6 @@ SIMPLEUI_ANALYSIS = False
 
 
 RpcProxyHost = '10.170.139.12:443'
+# AES加密 key和iv的长度必须为16位
+KEY = SECRET_KEY[:16]
+IV = "NomuraOISecurity"

@@ -38,7 +38,7 @@ async def last_tradingday_in_balance(port_code: str, date: Optional[datetime.dat
     """估值表中最新交易日，若无交易日，则取组合成立日"""
     if date is None:
         date = datetime.date.today()
-    exists = await sync_to_async(models.Balance.objects.filter)(port_code=port_code, date__lte=date)
+    exists = await sync_to_async(models.Valuation.objects.filter)(port_code=port_code, date__lte=date)
     exist = await sync_to_async(exists.exists)()
     if not exist:
         launch = await sync_to_async(models.Portfolio.objects.get)(port_code=port_code)

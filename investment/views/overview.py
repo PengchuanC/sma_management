@@ -27,9 +27,9 @@ class OverviewView(APIView):
         """产品净值曲线"""
         port_code: str = request.GET.get('portCode')
         base = await sync_to_async(models.Portfolio.objects.get)(port_code=port_code)
-        base = base.base
+        base = base.benchmark
         p = await sync_to_async(
-            models.Balance.objects.filter(port_code=port_code).annotate(p=F('unit_nav')).values)('date', 'p')
+            models.Valuation.objects.filter(port_code=port_code).annotate(p=F('unit_nav')).values)('date', 'p')
         b = await sync_to_async(
             models.ValuationBenchmark.objects.filter(port_code=port_code).annotate(b=F('unit_nav')).values)('date', 'b')
         b = await sync_to_async(list)(b)
@@ -38,14 +38,17 @@ class OverviewView(APIView):
         p = await sync_to_async(list)(p)
         for p_ in p:
             date = p_['date']
-            ret.append({'date': date, 'p': p_['p'], 'b': b[date]})
+            b_ = b.get(date)
+            if not b_:
+                continue
+            ret.append({'date': date, 'p': p_['p'], 'b': b_})
         return JsonResponse({'data': ret, 'base': base})
 
     @staticmethod
     async def asset_allocate(request):
         """穿透资产配置"""
         port_code: str = request.GET.get('portCode')
-        date = await sync_to_async(models.Balance.objects.filter(port_code=port_code).last)()
+        date = await sync_to_async(models.Valuation.objects.filter(port_code=port_code).last)()
         date = date.date
         r = await sync_to_async(asset_type_penetrate)(port_code, date)
         ret = [
@@ -65,7 +68,7 @@ class OverviewView(APIView):
         start = request.GET.get('start')
         end = request.GET.get('end')
         if not start or not end:
-            end = await database_sync_to_async(models.Balance.objects.filter(port_code=port_code).last)()
+            end = await database_sync_to_async(models.Valuation.objects.filter(port_code=port_code).last)()
             end = end.date
             start = end - relativedelta(days=30)
         ret = await database_sync_to_async(
@@ -122,9 +125,11 @@ class OverviewView(APIView):
     async def pre_valuation_compare_real(request):
         port_code = request.GET.get('portCode')
         pre = await sync_to_async(models.PreValuedNav.objects.filter(port_code=port_code).values)('date', 'value')
-        income = await sync_to_async(models.Income.objects.filter(port_code=port_code).values)('date', 'change_pct')
+        income = await sync_to_async(models.Income.objects.filter(port_code=port_code).values)('date', 'unit_nav_chg')
         pre = await sync_to_async(DataFrame)(pre)
         income = await sync_to_async(DataFrame)(income)
+        income = income.rename(columns={'unit_nav_chg': 'change_pct'})
+        income['change_pct'] /= 100
         data = pre.merge(income, on='date', how='left').dropna(how='any')
         data = data.sort_values('date')
         data = data.to_dict(orient='records')

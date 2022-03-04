@@ -13,3 +13,5 @@ from .stock import *
 from .backtest import *
 from .client_questionnaire import *
 from .portfolio_extends import *
+from .security import *
+from .userprofile import *
