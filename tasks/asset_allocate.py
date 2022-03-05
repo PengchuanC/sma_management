@@ -14,9 +14,9 @@ def _portfolio_asset_allocate(portfolio: models.Portfolio):
     last_update = models.PortfolioAssetAllocate.objects.filter(port_code=portfolio).last()
     if last_update:
         date = last_update.date
-        dates = models.Balance.objects.filter(date__gt=date, port_code=portfolio).values('date').order_by('date')
+        dates = models.Valuation.objects.filter(date__gt=date, port_code=portfolio).values('date').order_by('date')
     else:
-        dates = models.Balance.objects.filter(port_code=portfolio).values('date').order_by('date')
+        dates = models.Valuation.objects.filter(port_code=portfolio).values('date').order_by('date')
     dates = [x['date'] for x in dates]
     ret = []
     for date in dates:

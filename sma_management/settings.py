@@ -212,3 +212,6 @@ RpcProxyHost = '10.170.139.12:443'
 # AES加密 key和iv的长度必须为16位
 KEY = SECRET_KEY[:16]
 IV = "NomuraOISecurity"
+
+# CSRF
+CSRF_TRUSTED_ORIGINS = ['https://sma.nomuraoi-sec.com', 'http://10.170.129.129']
