@@ -48,7 +48,7 @@ class FundPrice(models.Model):
 class FundAdjPrice(models.Model):
     secucode = models.ForeignKey(Funds, to_field='secucode', on_delete=models.CASCADE)
     nav = models.DecimalField(verbose_name='单位净值', max_digits=18, decimal_places=6, null=True, blank=True)
-    adj_nav = models.DecimalField(verbose_name='累计单位净值', max_digits=18, decimal_places=6, null=True, blank=True)
+    adj_nav = models.DecimalField(verbose_name='复权单位净值', max_digits=18, decimal_places=6, null=True, blank=True)
     date = models.DateField(verbose_name='交易日', null=False, default=timezone.now)
 
     class Meta:

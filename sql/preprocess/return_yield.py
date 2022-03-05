@@ -6,10 +6,16 @@
 import datetime
 import math
 import weakref
+from collections import namedtuple
+
 import pandas as pd
 from django.db.models import Max
 
 from sql import models
+
+
+AdjPrice = namedtuple('AdjPrice', ['secucode', 'date', 'adj_nav'])
+MF = [str(x) for x in range(10)]
 
 
 def commit_return_yield():
@@ -105,6 +111,8 @@ def transactions(port_code, secucode, date):
 
 
 def security_category(secucode):
+    if secucode[0] not in MF:
+        return '私募理财'
     security = models.Security.objects.filter(secucode=secucode).last()
     if not security:
         return '开放式基金'
@@ -112,8 +120,11 @@ def security_category(secucode):
 
 
 def one_day_before_adjust_nav(secucode, date):
-    """前一日复权单位净值"""
-    obj = models.FundAdjPrice.objects.filter(secucode=secucode, date__lt=date).latest('date')
+    try:
+        obj = models.FundAdjPrice.objects.filter(secucode=secucode, date__lt=date).latest('date')
+    except models.FundAdjPrice.DoesNotExist:
+        obj = models.SecurityQuote.objects.filter(secucode_id=secucode, date__lt=date).latest('auto_date')
+        obj = AdjPrice(obj.secucode_id, obj.date, obj.quote)
     return obj
 
 
@@ -133,11 +144,11 @@ def proc_inner_market(port_code, secucode, trans: list):
         if t['sell_price']:
             sell_price = float(t['sell_price'])
         else:
-            o32 = models.PortfolioExpanded.objects.get(port_code=port_code).o32
             try:
-                sp = models.SecurityPrice.objects.filter(o32=o32, secucode=secucode, date__lt=end).latest('date')
+                sp = models.SecurityQuote.objects.filter(
+                    port_code=port_code, secucode=secucode, date__lt=end).latest('date')
                 t['sell_at'] = sp.date
-                sell_price = sp.price
+                sell_price = float(sp.quote)
             except models.SecurityPrice.DoesNotExist:
                 sp = models.FundQuote.objects.filter(secucode=secucode, date=end).last()
                 sell_price = sp.closeprice
