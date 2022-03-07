@@ -35,8 +35,12 @@ class BasicInfo(APIView):
             v = models.Valuation.objects.get(port_code=p, date=date)
             vex = models.ValuationEx.objects.get(port_code=v)
             pr = list(models.PurchaseAndRansom.objects.filter(port_code=p).order_by('date'))
-            init = pr[0]
-            pr = pr[1:]
+            if pr:
+                init = pr[0].pr_amount
+                pr = pr[1:]
+            else:
+                init = 0
+                pr = []
             ic = models.Income.objects.get(port_code=p, date=date)
             add = sum([x.pr_amount-x.rs_amount for x in pr])
             cash = vex.savings + vex.deposit
@@ -45,7 +49,7 @@ class BasicInfo(APIView):
             need = {
                 'port_code': p.port_code, 'port_name': p.port_name, 'port_type': p.port_type, 'nav': float(v.unit_nav),
                 'nav_acc': float(v.accu_nav), 'launch_date': pex.launch.strftime('%Y-%m-%d'),
-                'init_money': float(init.pr_amount), 'add': float(add), 'net_asset': float(v.net_asset),
+                'init_money': float(init), 'add': float(add), 'net_asset': float(v.net_asset),
                 'profit': float(ic.total_net_asset_chg), 'last': date.strftime('%Y-%m-%d'), 'cash': float(cash),
                 'fa': fa if fa != 'AM FOF' else '',
             }
