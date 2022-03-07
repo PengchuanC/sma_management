@@ -26,6 +26,8 @@ def _portfolio_asset_allocate(portfolio: models.Portfolio):
             for idx, attr in enumerate(['equity', 'fix_income', 'alternative', 'monetary', 'other']):
                 allocate[names[idx]] = allocate.pop(attr)
             allocate.update({'port_code': portfolio, 'date': date})
+            if round(allocate['money'], 0) == 1:
+                continue
             allocate: models.PortfolioAssetAllocate = models.PortfolioAssetAllocate(**allocate)
             ret.append(allocate)
         except Exception as e:
