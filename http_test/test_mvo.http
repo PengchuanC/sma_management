@@ -1,8 +1,0 @@
-GET http://localhost:8000/api/v1/optimize/
-Accept: application/json
-
-{
-"indexes": ['000300', '000905']
-}
-
-###

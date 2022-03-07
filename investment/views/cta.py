@@ -1,3 +1,10 @@
+"""
+@author: chuanchao.peng
+@date: 2022/3/7 14:07
+@file cta.py
+@desc:
+"""
+
 import requests as r
 import pandas as pd
 
@@ -44,7 +51,7 @@ def holding(request):
     last = Holding.objects.filter(port_code=port_code).latest('date').date
     asset = Balance.objects.filter(port_code=port_code, date=last).last().net_asset
     hold = Holding.objects.filter(
-        port_code=port_code, date=last).values('secucode', 'holding_value', 'mkt_cap', 'date')
+        port_code=port_code, date=last).values('secucode', 'current_shares', 'mkt_cap', 'date')
     hold = pd.DataFrame(hold)
     resp = r.get('http://10.170.129.129/cta/api/')
     data = resp.json()['data']
@@ -52,7 +59,7 @@ def holding(request):
     columns = ['secucode', 'secuabbr', 'recent', 'week', 'month', 'quarter', 'ytd', 'last_year', 'si']
     data = data[columns]
     names = Security.objects.filter(secucode__in=list(hold.secucode))
-    names = {x.secucode: x.secuname for x in names}
+    names = {x.secucode: x.secuabbr for x in names}
     hold = hold.merge(data, on='secucode', how='left')
     hold.secuabbr = hold.agg(lambda x: names.get(x.secucode), axis=1)
     hold = hold.sort_values('mkt_cap', ascending=False)
@@ -71,8 +78,8 @@ def transaction(request):
     ret = []
     for x in data:
         v = {
-            'secucode': x['secucode'], 'amount': -x['operation_amount'], 'share': x['order_value'],
-            'price': x['order_price'], 'date': x['date']
+            'secucode': x['secucode'], 'amount': x['subject_amount'], 'share': x['busin_quantity'],
+            'price': x['entrust_price'], 'date': x['date']
         }
         ret.append(v)
     return JsonResponse(ret, safe=False)

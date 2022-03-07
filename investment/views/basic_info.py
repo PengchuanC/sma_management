@@ -81,34 +81,18 @@ class Capital(APIView):
             date = portfolio.Balance.objects.last().date
         else:
             date = parse(date).date()
-        date = portfolio.Balance.objects.filter(date__lte=date).last().date
-        rename = {'TA申购冲现': 'purchase', 'TA赎回冲现': 'ransom'}
-        ret = portfolio.Transactions.objects.filter(
-            date=date, operation__in=['TA申购冲现', 'TA赎回冲现'], port_code__balance__date=date
-        ).values('operation').annotate(amount=Sum('operation_amount')).values(
-            'operation', 'amount', 'port_code__balance__unit_nav'
-        )
-
-        ret = {rename.get(x['operation']): x['amount'] if x['operation'] == 'TA申购' else x['amount'] * x[
-            'port_code__balance__unit_nav'] for x in ret}
-
-        pr = []
-        if ret:
-            # 检测到当日有申赎，查询具体申赎纪录
-            pr_ = portfolio.Transactions.objects.filter(
-                date=date, operation__in=list(rename.keys()), port_code__balance__date=date
-            ).values(
-                'port_code', 'operation', 'operation_amount', 'port_code__balance__unit_nav',
-                'port_code__port_name'
-            )
-            count = 1
-            for _pr in pr_:
-                _pr['nav'] = _pr.pop('port_code__balance__unit_nav')
-                _pr['port_name'] = _pr.pop('port_code__port_name')
-                _pr['key'] = count
-                pr.append(_pr)
-                count += 1
-        return Response({'total': ret, 'date': date.strftime('%Y-%m-%d'), 'detail': pr})
+        date = portfolio.Valuation.objects.filter(date__lte=date).last().date
+        pr = models.PurchaseAndRansom.objects.filter(
+            date__lte=date).values('confirm', 'pr_amount', 'rs_amount', 'rs_fee')
+        pr = pd.DataFrame(pr)
+        pr['net'] = pr['pr_amount'] - pr['rs_amount']
+        pr = pr.groupby('confirm').sum().astype(float).reset_index().sort_values('confirm', ascending=False)
+        pr['key'] = range(1, len(pr)+1)
+        p_total = pr['pr_amount'].sum()
+        r_total = pr['rs_amount'].sum()
+        n_total = pr['net'].sum()
+        pr = pr.to_dict(orient='records')
+        return Response({'data': pr, 'p_total': p_total, 'r_total': r_total, 'n_total': n_total})
 
 
 class ProfitAttribute(object):
@@ -127,13 +111,14 @@ class ProfitAttribute(object):
             季度末新增资金
 
         """
-        dates = Balance.objects.filter(port_code__valid=True).values('date').order_by('date').distinct()
+        dates = models.Valuation.objects.filter(port_code__settlemented=0).values('date').order_by('date').distinct()
         dates = [x['date'] for x in dates]
         dates = quarter_end_in_date_series(dates)
-        asset = Balance.objects.filter(
-            port_code__valid=True, date__in=dates
-        ).values('date').annotate(s=Sum('asset'), c=Count('asset'))
+        asset = models.Valuation.objects.filter(
+            port_code__settlemented=0, date__in=dates
+        ).values('date').annotate(s=Sum('net_asset'), c=Count('net_asset'))
         asset = [x for x in asset]
+        asset = sorted(asset, key=lambda x: x['date'])
         asset = [{'date': 0, 's': 0, 'c': 0}] + asset
         asset = pd.DataFrame(asset).set_index('date')
         asset = asset.diff(1).dropna()
@@ -155,7 +140,8 @@ class ProfitAttribute(object):
         Returns:
 
         """
-        profit_sum = Income.objects.filter(port_code__valid=True).values('port_code').annotate(s=Sum('change'))
+        profit_sum = models.Income.objects.filter(
+            port_code__settlemented=0).values('port_code').annotate(s=Sum('net_asset_chg'))
         profit = {'up': 0, 'down': 0}
         count = {'up': 0, 'down': 0}
         for p in profit_sum:
@@ -183,11 +169,9 @@ class PurchaseAndRansom(APIView):
         Returns:
 
         """
-        completed = ClientPR.objects.filter(complete=True).all()
-        completed = [PurchaseAndRansom.to_dict(x) for x in completed]
-        uncompleted = ClientPR.objects.filter(complete=False).all()
-        uncompleted = [PurchaseAndRansom.to_dict(x) for x in uncompleted]
-        return Response({'completed': completed, 'uncompleted': uncompleted})
+        completed = models.PurchaseAndRansom.objects.values()
+        completed = [x for x in completed]
+        return Response({'completed': completed})
 
     @staticmethod
     def put(request):

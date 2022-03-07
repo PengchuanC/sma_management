@@ -52,7 +52,7 @@ class PreValuationConsumer(AsyncJsonWebsocketConsumer):
         """连接时一次性返回的数据"""
         if datetime.datetime.now().time() < datetime.time(9, 30, 0):
             return
-        date = models.Balance.objects.filter(port_code=port_code).last().date
+        date = models.Valuation.objects.filter(port_code=port_code).last().date
         holding = portfolio_holding_security(port_code, date)
         holding = [{'secucode': x, 'ratio': y} for x, y in holding.items()]
         holding = pd.DataFrame(holding)

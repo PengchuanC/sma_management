@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'django_q',
 
-    'cta_fof.apps.CtaFofConfig',
+    # 'cta_fof.apps.CtaFofConfig',
 ]
 
 MIDDLEWARE = [
