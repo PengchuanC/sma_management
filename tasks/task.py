@@ -2,7 +2,6 @@ from tasks.prev_valuation import pre_valuation
 from tasks.asset_allocate import portfolio_asset_allocate
 from tasks import fund_position
 from sql import tools
-from crawl.stock_async import executor
 from crawl.fund_fee_howbuy import commit_fund_fee_hb
 from crawl.fund_fee import commit_fund_fee_em
 from sql.commit.funds_extend import commit_fund_quote
