@@ -185,7 +185,7 @@ DATABASE_ROUTERS = ['investment.router.AuthRouter', 'investment.router.Router']
 
 
 Q_CLUSTER = {
-    'name': 'fund-filter',
+    'name': 'sma_management',
     'workers': 4,
     'retry': 500,
     'recycle': 500,
