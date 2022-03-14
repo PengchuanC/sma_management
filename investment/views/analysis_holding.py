@@ -33,8 +33,6 @@ class AnalysisHolding(object):
         names = await ah.names(funds)
         data = data.merge(category, on='secucode', how='outer')
         data = data.merge(names, on='secucode', how='outer')
-        data['secuabbr'] = data['secuabbr'].astype(object)
-        data = data.where(data.notnull(), None)
         ret = ah.format(data)
         return JsonResponse({'data': ret})
 
@@ -71,6 +69,7 @@ class AnalysisHolding(object):
         other = [x for x in funds if x not in query]
         other = await sync_to_async(models.Security.objects.filter(secucode__in=other).values)('secucode', 'secuabbr')
         other = await sync_to_async(pd.DataFrame)(other)
+        other = other.rename(columns={'secuabbr': 'secuname'})
         data = pd.concat([official, other])
         return data
 
