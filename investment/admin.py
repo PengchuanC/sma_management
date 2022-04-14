@@ -310,3 +310,8 @@ class ObservePoolAdmin(admin.ModelAdmin):
 class ImportantHoldingAdmin(admin.ModelAdmin):
     list_display = ('secucode', 'secuname', 'important', 'style', 'flag')
     list_filter = ('important', 'style', 'flag')
+
+
+@admin.register(models.SecurityDividend)
+class SecurityDividend(admin.ModelAdmin):
+    list_display = ('secucode', 'date', 'dividend')

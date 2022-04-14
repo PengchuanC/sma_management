@@ -55,3 +55,17 @@ class SecurityCategory(models.Model):
 
     def __str__(self):
         return self.secucode.secucode
+
+
+class SecurityDividend(models.Model):
+    secucode = models.ForeignKey(Security, to_field='secucode', on_delete=models.CASCADE, verbose_name='证券代码')
+    date = models.DateField(verbose_name='分红日期')
+    dividend = models.DecimalField(decimal_places=4, max_digits=6, default=0, verbose_name='每份分红')
+
+    class Meta:
+        db_table = 'sma_security_dividend'
+        verbose_name = '3.4 证券分红表（自定义）'
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.secucode.secucode

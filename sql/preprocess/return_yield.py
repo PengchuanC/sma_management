@@ -9,7 +9,7 @@ import weakref
 from collections import namedtuple
 
 import pandas as pd
-from django.db.models import Max
+from django.db.models import Max, Sum
 
 from sql import models
 
@@ -124,7 +124,9 @@ def one_day_before_adjust_nav(secucode, date):
         obj = models.FundAdjPrice.objects.filter(secucode=secucode, date__lt=date).latest('date')
     except models.FundAdjPrice.DoesNotExist:
         obj = models.SecurityQuote.objects.filter(secucode_id=secucode, date__lt=date).latest('auto_date')
-        obj = AdjPrice(obj.secucode_id, obj.date, obj.quote)
+        divide = models.SecurityDividend.objects.filter(
+            secucode_id=secucode, date__lte=date).aggregate(d=Sum('dividend'))['d'] or 0
+        obj = AdjPrice(obj.secucode_id, obj.date, obj.quote+divide)
     return obj
 
 
@@ -148,8 +150,10 @@ def proc_inner_market(port_code, secucode, trans: list):
                 sp = models.SecurityQuote.objects.filter(
                     port_code=port_code, secucode=secucode, date__lt=end).latest('date')
                 t['sell_at'] = sp.date
-                sell_price = float(sp.quote)
-            except models.SecurityPrice.DoesNotExist:
+                divide = models.SecurityDividend.objects.filter(
+                    secucode_id=secucode, date__range=(start, end)).aggregate(d=Sum('dividend'))['d'] or 0
+                sell_price = float(sp.quote) + float(divide)
+            except models.SecurityQuote.DoesNotExist:
                 sp = models.FundQuote.objects.filter(secucode=secucode, date=end).last()
                 sell_price = sp.closeprice
         buy_price = float(t['buy_price'])
