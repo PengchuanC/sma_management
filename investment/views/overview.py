@@ -48,7 +48,7 @@ class OverviewView(APIView):
     async def asset_allocate(request):
         """穿透资产配置"""
         port_code: str = request.GET.get('portCode')
-        date = await sync_to_async(models.Valuation.objects.filter(port_code=port_code).last)()
+        date = await sync_to_async(models.Holding.objects.filter(port_code=port_code).last)()
         date = date.date
         r = await sync_to_async(asset_type_penetrate)(port_code, date)
         ret = [
